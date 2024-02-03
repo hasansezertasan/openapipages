@@ -11,7 +11,7 @@
 
 OpenAPI Spec-based pages ([SwaggerUI], [ReDoc], [RapiDoc], [Elements], [Scalar]) ready with configuration features.
 
-> Keep in mind, this package doesn't generate [OpenAPI] Spec, it just renders the pages with the given configuration.
+> Keep in mind, that this package doesn't generate [OpenAPI] Spec, it just renders the pages with the given configuration.
 
 ---
 
@@ -75,11 +75,11 @@ pip install openapidoc
 
 ## Usage
 
-I know it looks a bit boilerplate but it's all straight-forward. `.render()` method returns the HTML as a string. Thanks to this design, you can extend and configure the pages as you wish (e.g. add extra logic like to restrict access to the page).
+I know it looks a bit boilerplate but it's all straight-forward. The `.render()` method returns the HTML as a string. Thanks to this design, you can extend and configure the pages as you wish (e.g. add extra logic to restrict access to the page).
 
 ### FastAPI
 
-> `include_in_schema` parameter is set to `False` in each endpoint to avoid including these endpoints in the OpenAPI Spec.
+> The `include_in_schema` parameter is set to `False` in each endpoint to avoid including these endpoints in the OpenAPI Spec.
 
 ```python
 from fastapi import FastAPI
@@ -122,7 +122,7 @@ def get_rapidoc() -> str:
 
 ### Litestar
 
-> `include_in_schema` parameter is set to `False` in each endpoint to avoid including these endpoints in the OpenAPI Spec.
+> The `include_in_schema` parameter is set to `False` in each endpoint to avoid including these endpoints in the OpenAPI Spec.
 
 ```python
 from litestar import Litestar, MediaType, get
@@ -170,7 +170,7 @@ TL;DR - I don't want to copy and paste it again...
 
 ### Developer Experience
 
-Several API Documentation tools ready to use at your fingertips with a standard interface.
+Several API Documentation tools are ready to use at your fingertips with a standard interface.
 
 No more copying and pasting the same thing from one project to another. Import the package and use it!
 
@@ -184,7 +184,7 @@ Also, the author's answer to this PR shows that we won't be seeing more alternat
 
 ### Alternatives
 
-Here is another pull request made to the [FastAPI] repo. It brings [Scalar] support, but it's not approved/merged yet and we can think it will stay that way thanks to the previous PR.
+Here is another pull request made to the [FastAPI] repo. It brings [Scalar] support, but it's not approved/merged yet and we think it will stay that way thanks to the previous PR.
 
 - [feat: add scalar integration (additional alternative to Swagger UI/Redoc) by marclave · Pull Request #10674 · tiangolo/fastapi](https://github.com/tiangolo/fastapi/pull/10674)
 
@@ -192,7 +192,7 @@ Here is another pull request made to the [FastAPI] repo. It brings [Scalar] supp
 
 > A standard interface for many API Documentation Interfaces with configuration features.
 
-Lately, OpenAPI Spec-based Documentation tools became popular in the Python community. We see a lot of projects ([FastAPI], [Litestar], [APISpec], [flasgger], [SpecTree], [Connexion], etc) offering support for OpenAPI Specification out of the box.
+Lately, OpenAPI Spec-based Documentation tools have become popular in the Python community. We see a lot of projects ([FastAPI], [Litestar], [APISpec], [flasgger], [SpecTree], [Connexion], etc) offering support for OpenAPI Specification out of the box.
 
 [Litestar] has support for [SwaggerUI], [ReDoc], [RapiDoc], and [Elements] and [FastAPI] has support for [SwaggerUI], and [ReDoc] but what is next? Will the next one be enough?
 
@@ -202,7 +202,7 @@ Do you see where I am going?
 
 I want `openapidoc` to be SQLAlchemy of OpenAPI Spec-based Documentation tools.
 
-One interface for many! And of course Framework agnostic... So you can use it in your [FastAPI], [Litestar] projects or any other project that generates OpenAPI specification.
+One interface for many! And of course Framework agnostic... So you can use it in your [FastAPI], [Litestar] projects, or any other project that generates OpenAPI specifications.
 
 ## See Also
 
@@ -228,7 +228,7 @@ One interface for many! And of course Framework agnostic... So you can use it in
 
 ## Disclaimer
 
-[FastAPI] and [Litestar] projects and two pull requests mentioned above inspired me to create this package.
+[FastAPI] and [Litestar] projects and the two pull requests mentioned above inspired me to create this package.
 
 ## License
 
