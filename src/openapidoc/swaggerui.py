@@ -6,7 +6,7 @@ from typing_extensions import Annotated, Any, Dict, Doc, List, Optional
 from .base import Base
 
 default_parameters: Annotated[
-	dict[str, Any],
+	Dict[str, Any],
 	Doc(
 		"""
         Default configurations for Swagger UI.
@@ -21,7 +21,7 @@ default_parameters: Annotated[
 	"showCommonExtensions": True,
 }
 default_parameters_presets: Annotated[
-	list[str],
+	List[str],
 	Doc(
 		"""
         Default configurations for Swagger UI presets.

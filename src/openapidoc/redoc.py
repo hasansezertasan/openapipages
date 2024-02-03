@@ -6,7 +6,7 @@ from typing_extensions import Annotated, Any, Dict, Doc, Optional
 from .base import Base
 
 default_parameters: Annotated[
-	dict[str, Any],
+	Dict[str, Any],
 	Doc(
 		"""
         Default configurations for Redoc UI.
