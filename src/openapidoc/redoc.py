@@ -1,8 +1,7 @@
 import json
 from dataclasses import dataclass
-from typing import Annotated, Any, Optional
 
-from typing_extensions import Doc
+from typing_extensions import Annotated, Any, Doc, Optional
 
 from .base import Base
 

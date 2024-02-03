@@ -1,7 +1,6 @@
 from dataclasses import dataclass, field
-from typing import Annotated
 
-from typing_extensions import Doc
+from typing_extensions import Annotated, Doc
 
 
 @dataclass
