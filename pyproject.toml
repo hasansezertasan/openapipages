@@ -1,0 +1,147 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "openapidoc"
+dynamic = ["version"]
+description = 'OpenAPI Spec-based pages (SwaggerUI, ReDoc, RapiDoc, Elements, Scalar) ready with configuration features.'
+readme = "README.md"
+requires-python = ">=3.8"
+license = "MIT"
+keywords = [
+  "openapidoc",
+  "fastapi",
+  "flask",
+  "litestar",
+  "openapi",
+  "swagger",
+  "swagger-ui",
+  "scalar",
+  "elements",
+  "redoc",
+  "radoc",
+  "api",
+  "documentation",
+  "specification",
+  "spec",
+]
+authors = [{ name = "Hasan Sezer Taşan", email = "hasansezertasan@gmail.com" }]
+maintainers = [{ name = "Hasan Sezer Taşan", email = "hasansezertasan@gmail.com" }]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Topic :: Internet",
+  "Topic :: Internet :: WWW/HTTP",
+  "Topic :: Internet :: WWW/HTTP :: HTTP Servers",
+  "Topic :: Software Development",
+  "Topic :: Software Development :: Libraries",
+  "Topic :: Software Development :: Libraries :: Application Frameworks",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+  "License :: OSI Approved :: MIT License",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Information Technology",
+  "Operating System :: OS Independent",
+  "Typing :: Typed",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Programming Language :: Python :: Implementation :: PyPy",
+  "Framework :: FastAPI",
+  "Framework :: Flask",
+  "Environment :: Web Environment",
+]
+dependencies = []
+
+[project.urls]
+Documentation = "https://github.com/unknown/openapidoc#readme"
+Issues = "https://github.com/unknown/openapidoc/issues"
+Source = "https://github.com/unknown/openapidoc"
+
+[tool.hatch.version]
+path = "src/openapidoc/__about__.py"
+
+[tool.hatch.envs.default]
+dependencies = ["coverage[toml]>=6.5", "pytest", "pre-commit >=2.20.0, <4.0.0"]
+[tool.hatch.envs.default.scripts]
+test = "pytest {args:tests}"
+test-cov = "coverage run -m pytest {args:tests}"
+cov-report = ["- coverage combine", "coverage report"]
+cov = ["test-cov", "cov-report"]
+pre = "pre-commit run --all-files --hook-stage manual --show-diff-on-failure"
+
+[[tool.hatch.envs.all.matrix]]
+python = ["3.8", "3.9", "3.10", "3.11", "3.12"]
+
+[tool.hatch.envs.lint]
+dependencies = ["mypy>=1.0.0", "ruff==0.2.0"]
+[tool.hatch.envs.lint.scripts]
+typing = "mypy --install-types --non-interactive {args:src/openapidoc tests}"
+style = ["ruff {args:.}"]
+format = ["ruff format {args:.}"]
+all = ["typing", "style", "format"]
+
+[tool.ruff]
+# Run `ruff linter` command to see all available linters and their descriptions
+target-version = "py38"
+line-length = 120
+show-fixes = true
+fix = true
+
+[tool.ruff.lint]
+ignore-init-module-imports = true
+select = [
+  "E4",
+  "E7",
+  "E9",
+  "E",  # pycodestyle errors
+  "F",  # pyflakes
+  "W",  # pycodestyle warnings
+  "I",  # isort
+  "B9",
+  "B",  # flake8-bugbear
+  "C",  # flake8-comprehensions
+]
+ignore = [
+  "E501", # line too long, handled by black
+  "E402", # module level import not at top of file
+  "W191", # indentation contains tabs
+]
+# Allow fix for all enabled rules (when `--fix`) is provided.
+fixable = ["ALL"]
+
+[tool.ruff.format]
+# Like Black, use double quotes for strings.
+quote-style = "double"
+# Like Black, indent with spaces, rather than tabs.
+indent-style = "tab"
+# Like Black, respect magic trailing commas.
+skip-magic-trailing-comma = false
+# Like Black, automatically detect the appropriate line ending.
+line-ending = "auto"
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.isort]
+known-third-party = ["openapidoc"]
+
+[tool.mypy]
+strict = true
+pretty = true
+
+[tool.coverage.run]
+source_pkgs = ["openapidoc", "tests"]
+branch = true
+parallel = true
+omit = ["src/openapidoc/__about__.py"]
+
+[tool.coverage.paths]
+openapidoc = ["src/openapidoc", "*/openapidoc/src/openapidoc"]
+tests = ["tests", "*/openapidoc/tests"]
+
+[tool.coverage.report]
+exclude_lines = ["no cov", "if __name__ == .__main__.:", "if TYPE_CHECKING:"]
