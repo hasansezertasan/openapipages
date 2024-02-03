@@ -235,6 +235,7 @@ One interface for many! And of course Framework agnostic... So you can use it in
 `openapidoc` is distributed under the terms of the [MIT](https://spdx.org/licenses/MIT.html) license.
 
 <!-- Links -->
+[OpenAPI]: https://github.com/OAI/OpenAPI-Specification
 <!-- Python Projects -->
 [FastAPI]: https://github.com/tiangolo/fastapi
 [Litestar]: https://github.com/litestar-org/litestar
