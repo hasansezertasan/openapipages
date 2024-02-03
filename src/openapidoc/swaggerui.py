@@ -1,7 +1,7 @@
 import json
 from dataclasses import dataclass
 
-from typing_extensions import Annotated, Any, Doc, Optional
+from typing_extensions import Annotated, Any, Dict, Doc, List, Optional
 
 from .base import Base
 
@@ -62,7 +62,7 @@ class SwaggerUI(Base):
 		),
 	] = "/docs/oauth2-redirect"
 	init_oauth: Annotated[
-		Optional[dict[str, Any]],
+		Optional[Dict[str, Any]],
 		Doc(
 			"""
             A dictionary with Swagger UI OAuth2 initialization configurations.
@@ -70,7 +70,7 @@ class SwaggerUI(Base):
 		),
 	] = None
 	swagger_ui_parameters: Annotated[
-		Optional[dict[str, Any]],
+		Optional[Dict[str, Any]],
 		Doc(
 			"""
             Configuration parameters for Swagger UI.
@@ -79,7 +79,7 @@ class SwaggerUI(Base):
 		),
 	] = None
 	swagger_ui_presets: Annotated[
-		Optional[list[str]],
+		Optional[List[str]],
 		Doc(
 			"""
             Configuration parameters for Swagger UI presets.

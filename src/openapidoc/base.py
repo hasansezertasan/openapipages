@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 
-from typing_extensions import Annotated, Doc
+from typing_extensions import Annotated, Doc, List
 
 
 @dataclass
@@ -34,7 +34,7 @@ class Base:
 		),
 	] = "/openapi.json"
 	head_js_urls: Annotated[
-		list[str],
+		List[str],
 		Doc(
 			"""
             A list of URLs to JavaScript files that should be loaded in the `<head>` tag.
@@ -42,7 +42,7 @@ class Base:
 		),
 	] = field(default_factory=list)
 	tail_js_urls: Annotated[
-		list[str],
+		List[str],
 		Doc(
 			"""
             A list of URLs to JavaScript files that should be loaded at the end of the `<body>` tag.
@@ -50,7 +50,7 @@ class Base:
 		),
 	] = field(default_factory=list)
 	head_css_urls: Annotated[
-		list[str],
+		List[str],
 		Doc(
 			"""
             A list of URLs to CSS files that should be loaded in the `<head>` tag.

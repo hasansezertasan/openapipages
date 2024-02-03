@@ -1,7 +1,7 @@
 import json
 from dataclasses import dataclass
 
-from typing_extensions import Annotated, Any, Doc, Optional
+from typing_extensions import Annotated, Any, Dict, Doc, Optional
 
 from .base import Base
 
@@ -45,7 +45,7 @@ class ReDoc(Base):
 		),
 	] = True
 	ui_parameters: Annotated[
-		Optional[dict[str, Any]],
+		Optional[Dict[str, Any]],
 		Doc(
 			"""
             Configuration parameters for Redoc UI.
