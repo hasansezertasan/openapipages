@@ -7,33 +7,33 @@ from .base import Base
 
 @dataclass
 class RapiDoc(Base):
-	"""Alternative API docs using RapiDoc."""
+    """Alternative API docs using RapiDoc."""
 
-	js_url: Annotated[
-		str,
-		Doc(
-			"""
+    js_url: Annotated[
+        str,
+        Doc(
+            """
             The URL to use to load the RapiDoc JavaScript.
             It is normally set to a CDN URL.
             """
-		),
-	] = "https://unpkg.com/rapidoc/dist/rapidoc-min.js"
+        ),
+    ] = "https://unpkg.com/rapidoc/dist/rapidoc-min.js"
 
-	def render(self) -> str:
-		"""Generate and return the HTML response that loads RapiDoc for the alternative API docs"""
-		self.head_js_urls.insert(0, self.js_url)
-		html_template = self.get_html_template()
-		return html_template.format(
-			title=self.title,
-			favicon_url=self.favicon_url,
-			openapi_url=self.openapi_url,
-			head_css_str=self.get_head_css_str(),
-			head_js_str=self.get_head_js_str(),
-			tail_js_str=self.get_tail_js_str(),
-		)
+    def render(self) -> str:
+        """Generate and return the HTML response that loads RapiDoc for the alternative API docs"""
+        self.head_js_urls.insert(0, self.js_url)
+        html_template = self.get_html_template()
+        return html_template.format(
+            title=self.title,
+            favicon_url=self.favicon_url,
+            openapi_url=self.openapi_url,
+            head_css_str=self.get_head_css_str(),
+            head_js_str=self.get_head_js_str(),
+            tail_js_str=self.get_tail_js_str(),
+        )
 
-	def get_html_template(self) -> str:
-		html = """
+    def get_html_template(self) -> str:
+        html = """
         <!DOCTYPE html>
         <html>
             <head>
@@ -52,4 +52,4 @@ class RapiDoc(Base):
             </body>
         </html>
         """
-		return html
+        return html
