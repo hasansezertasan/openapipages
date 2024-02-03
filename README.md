@@ -75,7 +75,7 @@ pip install openapidoc
 
 ## Usage
 
-I know the it looks a bit boilerplate but it's all straight-forward. `.render()` method returns the HTML as a string. Thanks to this design, you can extend and configure the pages as you wish (e.g. add extra logic like authentication or authorization).
+I know it looks a bit boilerplate but it's all straight-forward. `.render()` method returns the HTML as a string. Thanks to this design, you can extend and configure the pages as you wish (e.g. add extra logic like authentication or authorization).
 
 ### FastAPI
 
