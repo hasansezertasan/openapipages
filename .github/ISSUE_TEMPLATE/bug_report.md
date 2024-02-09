@@ -11,7 +11,8 @@ assignees: ''
 A clear and concise description of what the bug is.
 
 **To Reproduce**
-Explain how to reproduce the bug.
+Please provide a minimal reproducible example that developers can run to investigate the problem.
+You can find help for creating such an example [here](https://stackoverflow.com/help/minimal-reproducible-example).
 
 **Environment (please complete the following information):**
 
