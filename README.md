@@ -9,7 +9,7 @@
 [![Downloads/Month](https://pepy.tech/badge/openapidoc/month)](https://pepy.tech/project/openapidoc)
 [![Downloads/Week](https://pepy.tech/badge/openapidoc/week)](https://pepy.tech/project/openapidoc)
 
-OpenAPI Spec-based pages ([SwaggerUI], [ReDoc], [RapiDoc], [Elements], [Scalar]) ready with configuration features.
+Totally Pythonic, OpenAPI Based customizable documentation pages for [SwaggerUI], [ReDoc], [RapiDoc], [Elements], [Scalar].
 
 > Keep in mind, that this package doesn't generate [OpenAPI] Spec, it just renders the pages with the given configuration.
 
