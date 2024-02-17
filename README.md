@@ -185,7 +185,7 @@ Also, the author's answer to this PR shows that we won't be seeing more alternat
 
 ### Alternatives
 
-Here is another pull request made to the [FastAPI] repo. It brings [Scalar] support, but it's not approved/merged yet and we think it will stay that way thanks to the previous PR.
+Here is another pull request made to the [FastAPI] repo. It brings [Scalar] support, but it's not approved/merged yet and I think it will stay that way thanks to the previous PR.
 
 - [feat: add scalar integration (additional alternative to Swagger UI/Redoc) by marclave · Pull Request #10674 · tiangolo/fastapi](https://github.com/tiangolo/fastapi/pull/10674)
 
