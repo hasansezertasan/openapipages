@@ -1,12 +1,13 @@
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 from openapidoc import Elements, RapiDoc, ReDoc, Scalar, SwaggerUI
+from typing_extensions import Dict
 
 app = FastAPI()
 
 
 @app.get("/")
-def root() -> dict[str, str]:
+def root() -> Dict[str, str]:
     return {"Hello": "World"}
 
 

@@ -57,7 +57,7 @@ class SwaggerUI(Base):
         Optional[str],
         Doc(
             """
-            The OAuth2 redirect URL, it is normally automatically handled by FastAPI.
+            The OAuth2 redirect URL.
             """
         ),
     ] = "/docs/oauth2-redirect"
@@ -89,7 +89,7 @@ class SwaggerUI(Base):
     ] = None
 
     def render(self) -> str:
-        """Generate and return the HTML that loads Swagger UI for the interactive API docs"""
+        """Generate and return the HTML that loads Swagger UI for the alternative API docs."""
         self.head_css_urls.insert(0, self.css_url)
         self.tail_js_urls.insert(0, self.js_url)
         current_swagger_ui_parameters = default_parameters.copy()
@@ -101,14 +101,19 @@ class SwaggerUI(Base):
             current_swagger_ui_presets.extend(self.swagger_ui_presets)
         presets = ", ".join(current_swagger_ui_presets)
         html_swagger_ui_parameters = "".join(
-            [f"{json.dumps(key)}: {json.dumps(value)}," for key, value in current_swagger_ui_parameters.items()]
+            [
+                f"{json.dumps(key)}: {json.dumps(value)},"
+                for key, value in current_swagger_ui_parameters.items()
+            ]
         )
         html_oauth2_redirect_url = (
             f"oauth2RedirectUrl: window.location.origin + '{self.oauth2_redirect_url}',"
             if self.oauth2_redirect_url
             else ""
         )
-        init_oauth_html = f"ui.initOAuth({json.dumps(self.init_oauth)})" if self.init_oauth else ""
+        init_oauth_html = (
+            f"ui.initOAuth({json.dumps(self.init_oauth)})" if self.init_oauth else ""
+        )
         html_template = self.get_html_template()
         return html_template.format(
             title=self.title,

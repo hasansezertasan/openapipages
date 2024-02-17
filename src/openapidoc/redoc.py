@@ -55,7 +55,7 @@ class ReDoc(Base):
     ] = None
 
     def render(self) -> str:
-        """Generate and return the HTML response that loads ReDoc for the alternative API docs"""
+        """Generate and return the HTML response that loads ReDoc for the alternative API docs."""
         self.tail_js_urls.insert(0, self.js_url)
         google_fonts_str = ""
         if self.with_google_fonts:

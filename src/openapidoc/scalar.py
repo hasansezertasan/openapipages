@@ -23,13 +23,13 @@ class Scalar(Base):
         Doc(
             """
             The URL to use to set the Scalar Proxy.
-            It is normally set to a Scalar API URL (https://api.scalar.com/request-proxy), but default is empty
+            It is normally set to a Scalar API URL (https://api.scalar.com/request-proxy), but default is empty.
             """
         ),
     ] = ""
 
     def render(self) -> str:
-        """Generate and return the HTML response that loads Scalar for the alternative API docs"""
+        """Generate and return the HTML response that loads Scalar for the alternative API docs."""
         self.tail_js_urls.insert(0, self.js_url)
         html_template = self.get_html_template()
         return html_template.format(

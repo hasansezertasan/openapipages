@@ -20,7 +20,7 @@ keywords = [
   "scalar",
   "elements",
   "redoc",
-  "radoc",
+  "rapidoc",
   "api",
   "documentation",
   "specification",
@@ -65,7 +65,7 @@ Source = "https://github.com/unknown/openapidoc"
 path = "src/openapidoc/__about__.py"
 
 [tool.hatch.envs.default]
-dependencies = ["coverage[toml]>=6.5", "pytest", "pre-commit >=2.20.0, <4.0.0"]
+dependencies = ["coverage[toml]>=6.5, <8.0", "pytest", "pre-commit >=2.20.0, <4.0.0", "fastapi[all]"]
 [tool.hatch.envs.default.scripts]
 test = "pytest {args:tests}"
 test-cov = "coverage run -m pytest {args:tests}"
@@ -79,7 +79,7 @@ python = ["3.8", "3.9", "3.10", "3.11", "3.12"]
 [tool.hatch.envs.lint]
 dependencies = ["mypy>=1.0.0", "ruff==0.2.0"]
 [tool.hatch.envs.lint.scripts]
-typing = "mypy --install-types --non-interactive {args:src/openapidoc tests}"
+typing = "mypy --install-types --non-interactive {args:src/openapidoc}"
 style = ["ruff {args:.}"]
 format = ["ruff format {args:.}"]
 all = ["typing", "style", "format"]
@@ -87,7 +87,6 @@ all = ["typing", "style", "format"]
 [tool.ruff]
 # Run `ruff linter` command to see all available linters and their descriptions
 target-version = "py38"
-line-length = 120
 show-fixes = true
 fix = true
 
