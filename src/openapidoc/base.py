@@ -97,13 +97,17 @@ class Base:
 
     def get_tail_js_str(self) -> str:
         """Return the string of JavaScript URLs that should be loaded at the end of the `<body>` tag."""
-        string = "\n".join([f'<script src="{url}"></script>' for url in self.tail_js_urls])
+        string = "\n".join(
+            [f'<script src="{url}"></script>' for url in self.tail_js_urls]
+        )
         return string
 
     def get_head_js_str(self) -> str:
         """Return the string of JavaScript URLs that should be loaded in the `<head>` tag."""
         if self.head_js_urls:
-            string = "\n".join([f'<script src="{url}"></script>' for url in self.head_js_urls])
+            string = "\n".join(
+                [f'<script src="{url}"></script>' for url in self.head_js_urls]
+            )
         else:
             string = ""
         return string
@@ -111,7 +115,12 @@ class Base:
     def get_head_css_str(self) -> str:
         """Return the string of CSS URLs that should be loaded in the `<head>` tag."""
         if self.head_css_urls:
-            string = "\n".join([f'<link type="text/css" rel="stylesheet"  href="{url}">' for url in self.head_css_urls])
+            string = "\n".join(
+                [
+                    f'<link type="text/css" rel="stylesheet"  href="{url}">'
+                    for url in self.head_css_urls
+                ]
+            )
         else:
             string = ""
         return string

@@ -37,5 +37,5 @@ jobs:
     - name: Run static analysis
       run: hatch run lint:all
 
-    # - name: Run tests
-    #   run: hatch run cov
+    - name: Run tests
+      run: hatch run cov

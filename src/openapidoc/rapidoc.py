@@ -20,7 +20,7 @@ class RapiDoc(Base):
     ] = "https://unpkg.com/rapidoc/dist/rapidoc-min.js"
 
     def render(self) -> str:
-        """Generate and return the HTML response that loads RapiDoc for the alternative API docs"""
+        """Generate and return the HTML response that loads RapiDoc for the alternative API docs."""
         self.head_js_urls.insert(0, self.js_url)
         html_template = self.get_html_template()
         return html_template.format(

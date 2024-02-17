@@ -29,7 +29,7 @@ class Elements(Base):
     ] = "https://unpkg.com/@stoplight/elements/styles.min.css"
 
     def render(self) -> str:
-        """Generate and return the HTML response that loads Stoplight Elements for the alternative API docs"""
+        """Generate and return the HTML response that loads Stoplight Elements for the alternative API docs."""
         self.head_css_urls.insert(0, self.css_url)
         self.head_js_urls.insert(0, self.js_url)
         html_template = self.get_html_template()
