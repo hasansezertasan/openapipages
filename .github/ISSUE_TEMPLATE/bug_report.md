@@ -16,7 +16,7 @@ You can find help for creating such an example [here](https://stackoverflow.com/
 
 **Environment (please complete the following information):**
 
-- openapidoc version: [e.g. 0.1.0]
+- openapipages version: [e.g. 0.1.0]
 - Backend: [FastAPI, Starlette, ...]
 
 **Additional context**

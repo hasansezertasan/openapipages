@@ -3,14 +3,14 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "openapidoc"
+name = "openapipages"
 dynamic = ["version"]
 description = 'OpenAPI Spec-based pages (SwaggerUI, ReDoc, RapiDoc, Elements, Scalar) ready with configuration features.'
 readme = "README.md"
 requires-python = ">=3.8"
 license = "MIT"
 keywords = [
-  "openapidoc",
+  "openapipages",
   "fastapi",
   "flask",
   "litestar",
@@ -57,12 +57,12 @@ classifiers = [
 dependencies = []
 
 [project.urls]
-Documentation = "https://github.com/unknown/openapidoc#readme"
-Issues = "https://github.com/unknown/openapidoc/issues"
-Source = "https://github.com/unknown/openapidoc"
+Documentation = "https://github.com/unknown/openapipages#readme"
+Issues = "https://github.com/unknown/openapipages/issues"
+Source = "https://github.com/unknown/openapipages"
 
 [tool.hatch.version]
-path = "src/openapidoc/__about__.py"
+path = "src/openapipages/__about__.py"
 
 [tool.hatch.envs.default]
 dependencies = ["coverage[toml]>=6.5, <8.0", "pytest", "pre-commit >=2.20.0, <4.0.0", "fastapi[all]"]
@@ -79,7 +79,7 @@ python = ["3.8", "3.9", "3.10", "3.11", "3.12"]
 [tool.hatch.envs.lint]
 dependencies = ["mypy>=1.0.0", "ruff==0.2.0"]
 [tool.hatch.envs.lint.scripts]
-typing = "mypy --install-types --non-interactive {args:src/openapidoc}"
+typing = "mypy --install-types --non-interactive {args:src/openapipages}"
 style = ["ruff {args:.}"]
 format = ["ruff format {args:.}"]
 all = ["typing", "style", "format"]
@@ -126,21 +126,21 @@ line-ending = "auto"
 convention = "google"
 
 [tool.ruff.lint.isort]
-known-third-party = ["openapidoc"]
+known-third-party = ["openapipages"]
 
 [tool.mypy]
 strict = true
 pretty = true
 
 [tool.coverage.run]
-source_pkgs = ["openapidoc", "tests"]
+source_pkgs = ["openapipages", "tests"]
 branch = true
 parallel = true
-omit = ["src/openapidoc/__about__.py"]
+omit = ["src/openapipages/__about__.py"]
 
 [tool.coverage.paths]
-openapidoc = ["src/openapidoc", "*/openapidoc/src/openapidoc"]
-tests = ["tests", "*/openapidoc/tests"]
+openapipages = ["src/openapipages", "*/openapipages/src/openapipages"]
+tests = ["tests", "*/openapipages/tests"]
 
 [tool.coverage.report]
 exclude_lines = ["no cov", "if __name__ == .__main__.:", "if TYPE_CHECKING:"]
