@@ -74,7 +74,7 @@ class SwaggerUI(Base):
         Doc(
             """
             Configuration parameters for Swagger UI.
-            It defaults to [default_parameters][openapidoc.swaggerui.default_parameters].
+            It defaults to [default_parameters][openapipages.swaggerui.default_parameters].
             """
         ),
     ] = None
@@ -83,7 +83,7 @@ class SwaggerUI(Base):
         Doc(
             """
             Configuration parameters for Swagger UI presets.
-            It defaults to [default_parameters][openapidoc.swaggerui.default_parameters].
+            It defaults to [default_parameters][openapipages.swaggerui.default_parameters].
             """
         ),
     ] = None

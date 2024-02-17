@@ -1,5 +1,5 @@
 from litestar import Litestar, MediaType, get
-from openapidoc import Elements, RapiDoc, ReDoc, Scalar, SwaggerUI
+from openapipages import Elements, RapiDoc, ReDoc, Scalar, SwaggerUI
 
 openapi_url = "/schema/openapi.json"
 

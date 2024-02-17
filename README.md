@@ -1,13 +1,13 @@
-# OpenAPIDoc
+# Open API Pages
 
-[![PyPI - Version](https://img.shields.io/pypi/v/openapidoc.svg)](https://pypi.org/project/openapidoc)
-[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/openapidoc.svg)](https://pypi.org/project/openapidoc)
-[![License](https://img.shields.io/github/license/hasansezertasan/openapidoc.svg)](https://github.com/hasansezertasan/openapidoc/blob/main/LICENSE)
-[![Latest Commit](https://img.shields.io/github/last-commit/hasansezertasan/openapidoc)](https://github.com/hasansezertasan/openapidoc)
+[![PyPI - Version](https://img.shields.io/pypi/v/openapipages.svg)](https://pypi.org/project/openapipages)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/openapipages.svg)](https://pypi.org/project/openapipages)
+[![License](https://img.shields.io/github/license/hasansezertasan/openapipages.svg)](https://github.com/hasansezertasan/openapipages/blob/main/LICENSE)
+[![Latest Commit](https://img.shields.io/github/last-commit/hasansezertasan/openapipages)](https://github.com/hasansezertasan/openapipages)
 
-[![Downloads](https://pepy.tech/badge/openapidoc)](https://pepy.tech/project/openapidoc)
-[![Downloads/Month](https://pepy.tech/badge/openapidoc/month)](https://pepy.tech/project/openapidoc)
-[![Downloads/Week](https://pepy.tech/badge/openapidoc/week)](https://pepy.tech/project/openapidoc)
+[![Downloads](https://pepy.tech/badge/openapipages)](https://pepy.tech/project/openapipages)
+[![Downloads/Month](https://pepy.tech/badge/openapipages/month)](https://pepy.tech/project/openapipages)
+[![Downloads/Week](https://pepy.tech/badge/openapipages/week)](https://pepy.tech/project/openapipages)
 
 Totally Pythonic, OpenAPI Based customizable documentation pages for [SwaggerUI], [ReDoc], [RapiDoc], [Elements], [Scalar].
 
@@ -17,7 +17,7 @@ Totally Pythonic, OpenAPI Based customizable documentation pages for [SwaggerUI]
 
 ## Table of Contents
 
-- [OpenAPIDoc](#openapidoc)
+- [Open API Pages](#open-api-pages)
   - [Table of Contents](#table-of-contents)
   - [Features](#features)
     - [Progress](#progress)
@@ -70,7 +70,7 @@ Emoji Key:
 ## Installation
 
 ```console
-pip install openapidoc
+pip install openapipages
 ```
 
 ## Usage
@@ -84,7 +84,7 @@ I know it looks a bit boilerplate but it's all straight-forward. The `.render()`
 ```python
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
-from openapidoc import Elements, RapiDoc, ReDoc, Scalar, SwaggerUI
+from openapipages import Elements, RapiDoc, ReDoc, Scalar, SwaggerUI
 
 app = FastAPI()
 
@@ -126,7 +126,7 @@ def get_rapidoc() -> str:
 
 ```python
 from litestar import Litestar, MediaType, get
-from openapidoc import Elements, RapiDoc, ReDoc, Scalar, SwaggerUI
+from openapipages import Elements, RapiDoc, ReDoc, Scalar, SwaggerUI
 
 openapi_url = "/schema/openapi.json"
 
@@ -201,7 +201,7 @@ They all have one thing in common, some HTML (as Python string or a file) templa
 
 Do you see where I am going?
 
-I want `openapidoc` to be SQLAlchemy of OpenAPI Spec-based Documentation tools.
+I want `openapipages` to be SQLAlchemy of OpenAPI Spec-based Documentation tools.
 
 One interface for many! And of course Framework agnostic... So you can use it in your [FastAPI], [Litestar] projects, or any other project that generates OpenAPI specifications.
 
@@ -233,7 +233,7 @@ One interface for many! And of course Framework agnostic... So you can use it in
 
 ## License
 
-`openapidoc` is distributed under the terms of the [MIT](https://spdx.org/licenses/MIT.html) license.
+`openapipages` is distributed under the terms of the [MIT](https://spdx.org/licenses/MIT.html) license.
 
 <!-- Links -->
 [OpenAPI]: https://github.com/OAI/OpenAPI-Specification
