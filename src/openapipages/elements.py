@@ -53,7 +53,7 @@ class Elements(Base):
                 {head_css_str}
                 {head_js_str}
             </head>
-            <body>
+            <body style="height: 100vh;">
                 <noscript>
                     Stoplight Elements requires Javascript to function. Please enable it to browse the documentation.
                 </noscript>
