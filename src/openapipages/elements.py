@@ -52,8 +52,13 @@ class Elements(Base):
                 <link rel="shortcut icon" href="{favicon_url}">
                 {head_css_str}
                 {head_js_str}
+                <style>
+                    body {{
+                        height: 100vh;
+                    }}
+                </style>
             </head>
-            <body style="height: 100vh;">
+            <body>
                 <noscript>
                     Stoplight Elements requires Javascript to function. Please enable it to browse the documentation.
                 </noscript>
