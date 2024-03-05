@@ -52,6 +52,11 @@ class Elements(Base):
                 <link rel="shortcut icon" href="{favicon_url}">
                 {head_css_str}
                 {head_js_str}
+                <style>
+                    body {{
+                        height: 100vh;
+                    }}
+                </style>
             </head>
             <body>
                 <noscript>
