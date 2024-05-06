@@ -77,7 +77,7 @@ pre = "pre-commit run --all-files --hook-stage manual --show-diff-on-failure"
 python = ["3.8", "3.9", "3.10", "3.11", "3.12"]
 
 [tool.hatch.envs.lint]
-dependencies = ["mypy>=1.0.0", "ruff==0.2.0"]
+dependencies = ["mypy>=1.0.0", "ruff==0.4.3"]
 [tool.hatch.envs.lint.scripts]
 typing = "mypy --install-types --non-interactive {args:src/openapipages}"
 style = ["ruff {args:.}"]
