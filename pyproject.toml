@@ -140,6 +140,8 @@ select = [
 ]
 ignore = [
   "E501", # line too long, handled by black
+  "RET504", # Unnecessary assignment before returns
+  "PLR2004", # Magic value used in comparison (.status_code == 200)
 ]
 # Allow fix for all enabled rules (when `--fix`) is provided.
 fixable = ["ALL"]
