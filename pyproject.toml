@@ -35,14 +35,16 @@ classifiers = [
   "Topic :: Internet :: WWW/HTTP :: HTTP Servers",
   "Topic :: Software Development",
   "Topic :: Software Development :: Libraries",
-  "Topic :: Software Development :: Libraries :: Application Frameworks",
   "Topic :: Software Development :: Libraries :: Python Modules",
+  "Topic :: Software Development :: Libraries :: Application Frameworks",
   "License :: OSI Approved :: MIT License",
   "Intended Audience :: Developers",
   "Intended Audience :: Information Technology",
   "Operating System :: OS Independent",
   "Typing :: Typed",
+  "Environment :: Web Environment",
   "Programming Language :: Python",
+  "Programming Language :: Python :: 3 :: Only",
   "Programming Language :: Python :: 3.8",
   "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
@@ -52,14 +54,13 @@ classifiers = [
   "Programming Language :: Python :: Implementation :: PyPy",
   "Framework :: FastAPI",
   "Framework :: Flask",
-  "Environment :: Web Environment",
 ]
 dependencies = []
 
 [project.urls]
-Documentation = "https://github.com/unknown/openapipages#readme"
-Issues = "https://github.com/unknown/openapipages/issues"
-Source = "https://github.com/unknown/openapipages"
+Documentation = "https://github.com/hasansezertasan/openapipages#readme"
+Issues = "https://github.com/hasansezertasan/openapipages/issues"
+Source = "https://github.com/hasansezertasan/openapipages"
 
 [tool.hatch.version]
 path = "src/openapipages/__about__.py"
