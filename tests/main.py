@@ -1,7 +1,8 @@
+from typing import Dict
+
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 from openapipages import Elements, RapiDoc, ReDoc, Scalar, SwaggerUI
-from typing_extensions import Dict
 
 app = FastAPI()
 
@@ -43,7 +44,8 @@ def get_redoc_plain() -> str:
 @app.get("/redoc-custom", response_class=HTMLResponse, include_in_schema=False)
 def get_redoc_custom() -> str:
     return ReDoc(
-        title="ReDoc", js_url="https://unpkg.com/redoc@next/bundles/redoc.standalone.js"
+        title="ReDoc",
+        js_url="https://unpkg.com/redoc@next/bundles/redoc.standalone.js",
     ).render()
 
 

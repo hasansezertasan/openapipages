@@ -1,7 +1,6 @@
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 from openapipages import Elements, RapiDoc, ReDoc, Scalar, SwaggerUI
-from typing_extensions import Dict
 
 app = FastAPI()
 
