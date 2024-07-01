@@ -27,7 +27,9 @@ keywords = [
   "spec",
 ]
 authors = [{ name = "Hasan Sezer Taşan", email = "hasansezertasan@gmail.com" }]
-maintainers = [{ name = "Hasan Sezer Taşan", email = "hasansezertasan@gmail.com" }]
+maintainers = [
+  { name = "Hasan Sezer Taşan", email = "hasansezertasan@gmail.com" },
+]
 classifiers = [
   "Development Status :: 4 - Beta",
   "Topic :: Internet",
@@ -66,53 +68,83 @@ Source = "https://github.com/hasansezertasan/openapipages"
 path = "src/openapipages/__about__.py"
 
 [tool.hatch.envs.default]
-dependencies = ["coverage[toml]>=6.5, <8.0", "pytest", "pre-commit >=2.20.0, <4.0.0", "fastapi[all]"]
+extra-dependencies = [
+  "fastapi>=0.63.0, <0.110.0",
+  "uvicorn>=0.20.0, <0.29.0",
+  "pre-commit>=3.0.0, <4.0.0",
+]
 [tool.hatch.envs.default.scripts]
-test = "pytest {args:tests}"
-test-cov = "coverage run -m pytest {args:tests}"
-cov-report = ["- coverage combine", "coverage report"]
-cov = ["test-cov", "cov-report"]
+start = "uvicorn example.main:app --reload"
 pre = "pre-commit run --all-files --hook-stage manual --show-diff-on-failure"
 
-[[tool.hatch.envs.all.matrix]]
-python = ["3.8", "3.9", "3.10", "3.11", "3.12"]
 
-[tool.hatch.envs.lint]
-dependencies = ["mypy>=1.0.0", "ruff==0.4.3"]
-[tool.hatch.envs.lint.scripts]
-typing = "mypy --install-types --non-interactive {args:src/openapipages}"
-style = ["ruff {args:.}"]
+[tool.hatch.envs.types]
+extra-dependencies = ["mypy>=1.0.0", "ruff==0.4.5", "codespell==2.3.0"]
+[tool.hatch.envs.types.scripts]
+typing = "mypy --install-types --non-interactive {args:src/openapipages tests}"
+style = ["ruff check {args:.}"]
 format = ["ruff format {args:.}"]
-all = ["typing", "style", "format"]
+spelling = "codespell ."
+all = ["spelling", "typing", "style", "format"]
+
+[tool.hatch.envs.hatch-test]
+extra-dependencies = [
+  "pytest>=6.0.0",
+  "pytest-asyncio>=0.14.0",
+  "httpx>=0.23.3, <0.27.0",
+  "fastapi>=0.63.0, <0.110.0",
+]
 
 [tool.ruff]
 # Run `ruff linter` command to see all available linters and their descriptions
 target-version = "py38"
 show-fixes = true
 fix = true
-
 [tool.ruff.lint]
-ignore-init-module-imports = true
 select = [
+  "A",
+  "ARG",
+  "B",   # flake8-bugbear
+  "B9",
+  "C",   # flake8-comprehensions
+  "C4",  # flake8-comprehensions
+  "C90", # mccabe
+  "DTZ",
+  "E",   # pycodestyle errors
   "E4",
   "E7",
   "E9",
-  "E",  # pycodestyle errors
-  "F",  # pyflakes
-  "W",  # pycodestyle warnings
-  "I",  # isort
-  "B9",
-  "B",  # flake8-bugbear
-  "C",  # flake8-comprehensions
+  "EM",
+  "ERA", # eradicate
+  "F",   # pyflakes
+  "I",   # isort
+  "INT", # flake8-gettext
+  "ICN",
+  "N",   # pep8-naming
+  "PIE", # flake8-pie,
+  # "PLC", # pylint - convention
+  "PLE", # pylint - error
+  "PLR",
+  "PLW", # pylint - warning
+  "Q",   # flake8-quotes
+  "RET", # flake8-return,
+  "RUF", # Ruff-specific rules
+  "SIM", # flake8-simplify
+  # "S",
+  "T",
+  "TID",
+  "T20", # flake8-print
+  # "UP",  # pyupgrade
+  "W",   # pycodestyle warnings
+  "YTT",
 ]
 ignore = [
   "E501", # line too long, handled by black
-  "E402", # module level import not at top of file
-  "W191", # indentation contains tabs
+  "RET504", # Unnecessary assignment before returns
+  "PLR2004", # Magic value used in comparison (.status_code == 200)
 ]
 # Allow fix for all enabled rules (when `--fix`) is provided.
 fixable = ["ALL"]
-
 [tool.ruff.format]
 # Like Black, use double quotes for strings.
 quote-style = "double"
@@ -122,16 +154,17 @@ indent-style = "space"
 skip-magic-trailing-comma = false
 # Like Black, automatically detect the appropriate line ending.
 line-ending = "auto"
-
 [tool.ruff.lint.pydocstyle]
 convention = "google"
-
 [tool.ruff.lint.isort]
 known-third-party = ["openapipages"]
 
 [tool.mypy]
-strict = true
-pretty = true
+disallow_untyped_defs = true
+ignore_missing_imports = true
+
+[tool.codespell]
+ignore-words-list = "Connexion, connexion"
 
 [tool.coverage.run]
 source_pkgs = ["openapipages", "tests"]
