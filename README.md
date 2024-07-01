@@ -86,7 +86,8 @@ from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 from openapipages import Elements, RapiDoc, ReDoc, Scalar, SwaggerUI
 
-app = FastAPI()
+# Disable the built-in /redoc page so we can make a custom one.
+app = FastAPI(redoc_url=None)
 
 
 @app.get("/")
