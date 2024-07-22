@@ -19,7 +19,7 @@ default_parameters: Annotated[
     "theme": {
         "typography": {"code": {"wrap": True}},
     },
-    "hide-download-button": False,
+    "hideDownloadButton": False,
 }
 
 
@@ -35,7 +35,7 @@ class ReDoc(Base):
             It is normally set to a CDN URL.
             """
         ),
-    ] = "https://cdn.jsdelivr.net/npm/redoc@next/bundles/redoc.standalone.js"
+    ] = "https://cdn.jsdelivr.net/npm/redoc@2/bundles/redoc.standalone.js"
     with_google_fonts: Annotated[
         bool,
         Doc(
@@ -64,15 +64,6 @@ class ReDoc(Base):
         current_redoc_ui_parameters = default_parameters.copy()
         current_redoc_ui_parameters.update(self.ui_parameters or {})
 
-        def add_redoc_ui_parameters() -> str:
-            _props = ""
-            for key, value in current_redoc_ui_parameters.items():
-                if value:
-                    _props += f"{key}='{json.dumps(value)}' "
-                else:
-                    _props += f"{key} "
-            return _props
-
         html_template = self.get_html_template()
         return html_template.format(
             title=self.title,
@@ -82,7 +73,7 @@ class ReDoc(Base):
             head_js_str=self.get_head_js_str(),
             tail_js_str=self.get_tail_js_str(),
             google_fonts_str=google_fonts_str,
-            redoc_ui_parameters=add_redoc_ui_parameters(),
+            redoc_ui_parameters=json.dumps(current_redoc_ui_parameters, indent=2),
         )
 
     def get_html_template(self) -> str:
@@ -109,8 +100,15 @@ class ReDoc(Base):
                 <noscript>
                     ReDoc requires Javascript to function. Please enable it to browse the documentation.
                 </noscript>
-                <redoc spec-url="{openapi_url}" {redoc_ui_parameters}></redoc>
+                <div id="redoc-container"></div>
                 {tail_js_str}
+                <script>
+                  Redoc.init(
+                    "{openapi_url}",
+                    {redoc_ui_parameters},
+                    document.getElementById("redoc-container")
+                  )
+                </script>
             </body>
         </html>
         """

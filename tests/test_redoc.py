@@ -11,7 +11,8 @@ async def test_redoc_plain() -> None:
         response = await client.get("/redoc-plain")
         assert response.status_code == 200, response.text
         assert response.headers["content-type"] == "text/html; charset=utf-8"
-        assert "redoc@next" in response.text
+        assert "redoc@2" in response.text
+        assert '"hideDownloadButton": false' in response.text
 
 
 @pytest.mark.asyncio()
