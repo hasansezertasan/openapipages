@@ -183,8 +183,9 @@ pretty = true
 python_version = "3.9"
 show_error_codes = true
 strict = true
-# disallow_untyped_defs = true
-# ignore_missing_imports = true
+disallow_untyped_defs = true
+ignore_missing_imports = true
+disallow_untyped_decorators = false
 
 
 [tool.codespell]
