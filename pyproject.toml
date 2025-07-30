@@ -108,8 +108,8 @@ dependencies = [
 
 
 [tool.hatch.envs.static-analysis.scripts]
-format = "ruff format {args:.}"
-lint = "ruff check {args:.}"
+format = "ruff format"
+lint = "ruff check"
 check = "mypy --install-types --non-interactive {args:src/openapipages tests}"
 spelling = "codespell ."
 all = ["spelling", "check", "lint", "format"]
