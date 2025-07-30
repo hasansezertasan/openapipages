@@ -37,34 +37,34 @@ async def test_swagger_ui_custom() -> None:
         assert "oauth2RedirectUrl" not in response.text
 
         # Copy of https://github.com/tiangolo/fastapi/blob/be876902554a0bd886167de144f0d593ed2e6ad7/tests/test_tutorial/test_configure_swagger_ui/test_tutorial001.py#L8-L35 and https://github.com/tiangolo/fastapi/blob/be876902554a0bd886167de144f0d593ed2e6ad7/tests/test_tutorial/test_configure_swagger_ui/test_tutorial002.py#L8-L38 and https://github.com/tiangolo/fastapi/blob/be876902554a0bd886167de144f0d593ed2e6ad7/tests/test_tutorial/test_configure_swagger_ui/test_tutorial003.py#L8-L38
-        assert (
-            '"deepLinking": false,' in response.text
-        ), "overridden configs should be preserved"
-        assert (
-            '"deepLinking": true' not in response.text
-        ), "overridden configs should not include the old value"
-        assert (
-            '"syntaxHighlight": false' in response.text
-        ), "syntaxHighlight should be included and converted to JSON"
-        assert (
-            '"syntaxHighlight.theme": "obsidian"' in response.text
-        ), "parameters with middle dots should be included in a JSON compatible way"
-        assert (
-            '"dom_id": "#swagger-ui"' in response.text
-        ), "default configs should be preserved"
+        assert '"deepLinking": false,' in response.text, (
+            "overridden configs should be preserved"
+        )
+        assert '"deepLinking": true' not in response.text, (
+            "overridden configs should not include the old value"
+        )
+        assert '"syntaxHighlight": false' in response.text, (
+            "syntaxHighlight should be included and converted to JSON"
+        )
+        assert '"syntaxHighlight.theme": "obsidian"' in response.text, (
+            "parameters with middle dots should be included in a JSON compatible way"
+        )
+        assert '"dom_id": "#swagger-ui"' in response.text, (
+            "default configs should be preserved"
+        )
         assert "presets: [" in response.text, "default configs should be preserved"
-        assert (
-            "SwaggerUIBundle.presets.apis," in response.text
-        ), "default configs should be preserved"
-        assert (
-            "SwaggerUIBundle.SwaggerUIStandalonePreset" in response.text
-        ), "default configs should be preserved"
-        assert (
-            '"layout": "BaseLayout",' in response.text
-        ), "default configs should be preserved"
-        assert (
-            '"showExtensions": true,' in response.text
-        ), "default configs should be preserved"
-        assert (
-            '"showCommonExtensions": true,' in response.text
-        ), "default configs should be preserved"
+        assert "SwaggerUIBundle.presets.apis," in response.text, (
+            "default configs should be preserved"
+        )
+        assert "SwaggerUIBundle.SwaggerUIStandalonePreset" in response.text, (
+            "default configs should be preserved"
+        )
+        assert '"layout": "BaseLayout",' in response.text, (
+            "default configs should be preserved"
+        )
+        assert '"showExtensions": true,' in response.text, (
+            "default configs should be preserved"
+        )
+        assert '"showCommonExtensions": true,' in response.text, (
+            "default configs should be preserved"
+        )
