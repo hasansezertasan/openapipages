@@ -2,6 +2,7 @@
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
+
 [project]
 name = "openapipages"
 dynamic = ["version"]
@@ -32,49 +33,66 @@ maintainers = [
 ]
 classifiers = [
   "Development Status :: 4 - Beta",
-  "Topic :: Internet",
-  "Topic :: Internet :: WWW/HTTP",
-  "Topic :: Internet :: WWW/HTTP :: HTTP Servers",
-  "Topic :: Software Development",
-  "Topic :: Software Development :: Libraries",
-  "Topic :: Software Development :: Libraries :: Python Modules",
-  "Topic :: Software Development :: Libraries :: Application Frameworks",
-  "License :: OSI Approved :: MIT License",
+  "Environment :: Web Environment",
+  "Framework :: FastAPI",
+  "Framework :: Flask",
   "Intended Audience :: Developers",
   "Intended Audience :: Information Technology",
+  "License :: OSI Approved :: MIT License",
   "Operating System :: OS Independent",
-  "Typing :: Typed",
-  "Environment :: Web Environment",
-  "Programming Language :: Python",
   "Programming Language :: Python :: 3 :: Only",
-  "Programming Language :: Python :: 3.8",
-  "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: Implementation :: CPython",
   "Programming Language :: Python :: Implementation :: PyPy",
-  "Framework :: FastAPI",
-  "Framework :: Flask",
+  "Programming Language :: Python",
+  "Topic :: Internet :: WWW/HTTP :: HTTP Servers",
+  "Topic :: Internet :: WWW/HTTP",
+  "Topic :: Internet",
+  "Topic :: Software Development :: Libraries :: Application Frameworks",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+  "Topic :: Software Development :: Libraries",
+  "Topic :: Software Development",
+  "Typing :: Typed",
 ]
 dependencies = []
 
+
 [project.urls]
-Documentation = "https://github.com/hasansezertasan/openapipages#readme"
-Issues = "https://github.com/hasansezertasan/openapipages/issues"
-Source = "https://github.com/hasansezertasan/openapipages"
+changelog = "https://github.com/hasansezertasan/openapipages/blob/main/CHANGELOG.md"
+documentation = "https://github.com/hasansezertasan/openapipages#readme"
+homepage = "https://github.com/hasansezertasan/openapipages"
+issues = "https://github.com/hasansezertasan/openapipages/issues"
+releasenotes = "https://github.com/hasansezertasan/openapipages/releases"
+source = "https://github.com/hasansezertasan/openapipages.git"
+
+
+[tool.uv]
+cache-keys = [
+  { file = "pyproject.toml" },
+  { git = { commit = true, tags = true } },
+]
+
 
 [tool.hatch.version]
 path = "src/openapipages/__about__.py"
 
+
 [tool.hatch.envs.default]
+installer = "uv"
 extra-dependencies = [
   "fastapi>=0.63.0, <0.110.0",
   "uvicorn>=0.20.0, <0.29.0",
   "pre-commit>=3.0.0, <4.0.0",
 ]
+
+
 [tool.hatch.envs.default.scripts]
-start = "uvicorn example.main:app --reload"
+start = "uvicorn examples.fastapi.main:app --reload"
 pre = "pre-commit run --all-files --hook-stage manual --show-diff-on-failure"
 
 
@@ -160,21 +178,36 @@ convention = "google"
 known-third-party = ["openapipages"]
 
 [tool.mypy]
-disallow_untyped_defs = true
-ignore_missing_imports = true
+files = ["src"]
+pretty = true
+python_version = "3.9"
+show_error_codes = true
+strict = true
+# disallow_untyped_defs = true
+# ignore_missing_imports = true
+
 
 [tool.codespell]
 ignore-words-list = "Connexion, connexion"
+
 
 [tool.coverage.run]
 source_pkgs = ["openapipages", "tests"]
 branch = true
 parallel = true
-omit = ["src/openapipages/__about__.py"]
+omit = [
+  "src/openapipages/__about__.py",
+]
+
 
 [tool.coverage.paths]
 openapipages = ["src/openapipages", "*/openapipages/src/openapipages"]
 tests = ["tests", "*/openapipages/tests"]
 
+
 [tool.coverage.report]
-exclude_lines = ["no cov", "if __name__ == .__main__.:", "if TYPE_CHECKING:"]
+exclude_lines = [
+  "no cov",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+]

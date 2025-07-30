@@ -1,17 +1,13 @@
 name: Publish
 on:
-  workflow_dispatch:
   release:
     types: [published]
-
 permissions:
   contents: read
-
 jobs:
   publish:
     name: "Publish release"
     runs-on: "ubuntu-latest"
-
     steps:
       - uses: "actions/checkout@v4"
       - uses: "actions/setup-python@v5"
