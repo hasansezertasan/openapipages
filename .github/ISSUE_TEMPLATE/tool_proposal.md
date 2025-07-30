@@ -3,7 +3,7 @@ name: Alternative API Documentation Tool Proposal
 about: Suggest a new API documentation tool for this project
 title: 'Proposal: '
 labels: 'tool-proposal'
-assignees: ''
+assignees: 'hasansezertasan'
 
 ---
 
