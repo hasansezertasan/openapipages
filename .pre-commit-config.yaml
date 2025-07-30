@@ -7,7 +7,7 @@ default_stages: [pre-commit, pre-push]
 repos:
   # https://github.com/pre-commit/pre-commit-hooks#pre-commit-hooks
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.6.0
+    rev: v5.0.0
     hooks:
       - id: check-added-large-files
       - id: check-toml
@@ -18,7 +18,7 @@ repos:
       - id: trailing-whitespace
   # Check compliance with Ruff.
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.5.4
+    rev: v0.12.5
     hooks:
       - id: ruff
         name: ruff (python)
