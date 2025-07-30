@@ -1,15 +1,16 @@
 import pytest
+from fastapi import status
 from httpx import AsyncClient
 
-from .main import app
+from tests.main import app
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_swagger_ui_plain() -> None:
     # Copy of https://github.com/tiangolo/fastapi/blob/be876902554a0bd886167de144f0d593ed2e6ad7/tests/test_application.py#L24-L32
     async with AsyncClient(app=app, base_url="http://testserver/") as client:
         response = await client.get("/swaggerui-plain")
-        assert response.status_code == 200, response.text
+        assert response.status_code == status.HTTP_200_OK, response.text
         assert response.headers["content-type"] == "text/html; charset=utf-8"
         assert "swagger-ui-dist" in response.text
         assert (
@@ -18,12 +19,12 @@ async def test_swagger_ui_plain() -> None:
         )
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_swagger_ui_custom() -> None:
     # Copy of https://github.com/tiangolo/fastapi/blob/be876902554a0bd886167de144f0d593ed2e6ad7/tests/test_tutorial/test_custom_docs_ui/test_tutorial001.py#L20-L26
     async with AsyncClient(app=app, base_url="http://testserver/") as client:
         response = await client.get("/swaggerui-custom")
-        assert response.status_code == 200, response.text
+        assert response.status_code == status.HTTP_200_OK, response.text
         assert (
             "https://unpkg.com/swagger-ui-dist@5.9.0/swagger-ui-bundle.js"
             in response.text

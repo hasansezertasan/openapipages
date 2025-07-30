@@ -1,8 +1,8 @@
-# SPDX-FileCopyrightText: 2024-present hasansezertasan <hasansezertasan@gmail.com>
+# SPDX-FileCopyrightText: 2024-present Hasan Sezer Taşan <hasansezertasan@gmail.com>
 #
 # SPDX-License-Identifier: MIT
-from .elements import Elements as Elements
-from .rapidoc import RapiDoc as RapiDoc
-from .redoc import ReDoc as ReDoc
-from .scalar import Scalar as Scalar
-from .swaggerui import SwaggerUI as SwaggerUI
+from openapipages.elements import Elements as Elements
+from openapipages.rapidoc import RapiDoc as RapiDoc
+from openapipages.redoc import ReDoc as ReDoc
+from openapipages.scalar import Scalar as Scalar
+from openapipages.swaggerui import SwaggerUI as SwaggerUI

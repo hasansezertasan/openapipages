@@ -58,6 +58,7 @@ classifiers = [
   "Topic :: Software Development :: Libraries",
   "Topic :: Software Development",
   "Typing :: Typed",
+  # TODO @hasansezertasan: Fill in classifiers
 ]
 dependencies = []
 
@@ -85,9 +86,7 @@ path = "src/openapipages/__about__.py"
 [tool.hatch.envs.default]
 installer = "uv"
 extra-dependencies = [
-  "fastapi>=0.63.0, <0.110.0",
-  "uvicorn>=0.20.0, <0.29.0",
-  "pre-commit>=3.0.0, <4.0.0",
+  "pre-commit>=3.0.0,<4.0.0",
 ]
 
 
@@ -96,86 +95,104 @@ start = "uvicorn examples.fastapi.main:app --reload"
 pre = "pre-commit run --all-files --hook-stage manual --show-diff-on-failure"
 
 
-[tool.hatch.envs.types]
-extra-dependencies = ["mypy>=1.0.0", "ruff==0.4.5", "codespell==2.3.0"]
-[tool.hatch.envs.types.scripts]
-typing = "mypy --install-types --non-interactive {args:src/openapipages tests}"
-style = ["ruff check {args:.}"]
-format = ["ruff format {args:.}"]
+[tool.hatch.envs.static-analysis]
+dependencies = [
+  "ruff==0.12.7",
+  "mypy>=1.0.0",
+  "codespell==2.3.0",
+  "validate-pyproject[toml]>=0.24.1",
+  "vulture>=2.14",
+  "typos>=1.34.0",
+  "taplo>=0.9.3",
+]
+
+
+[tool.hatch.envs.static-analysis.scripts]
+format = "ruff format"
+lint = "ruff check"
+check = "mypy --install-types --non-interactive {args:src/openapipages tests}"
 spelling = "codespell ."
-all = ["spelling", "typing", "style", "format"]
+all = ["spelling", "check", "lint", "format"]
+
 
 [tool.hatch.envs.hatch-test]
 extra-dependencies = [
-  "pytest>=6.0.0",
   "pytest-asyncio>=0.14.0",
-  "httpx>=0.23.3, <0.27.0",
-  "fastapi>=0.63.0, <0.110.0",
+  "httpx>=0.23.3,<0.27.0",
+  "fastapi>=0.63.0,<0.110.0",
 ]
 
+
 [tool.ruff]
-# Run `ruff linter` command to see all available linters and their descriptions
-target-version = "py38"
-show-fixes = true
 fix = true
-[tool.ruff.lint]
-select = [
-  "A",
-  "ARG",
-  "B",   # flake8-bugbear
-  "B9",
-  "C",   # flake8-comprehensions
-  "C4",  # flake8-comprehensions
-  "C90", # mccabe
-  "DTZ",
-  "E",   # pycodestyle errors
-  "E4",
-  "E7",
-  "E9",
-  "EM",
-  "ERA", # eradicate
-  "F",   # pyflakes
-  "I",   # isort
-  "INT", # flake8-gettext
-  "ICN",
-  "N",   # pep8-naming
-  "PIE", # flake8-pie,
-  # "PLC", # pylint - convention
-  "PLE", # pylint - error
-  "PLR",
-  "PLW", # pylint - warning
-  "Q",   # flake8-quotes
-  "RET", # flake8-return,
-  "RUF", # Ruff-specific rules
-  "SIM", # flake8-simplify
-  # "S",
-  "T",
-  "TID",
-  "T20", # flake8-print
-  # "UP",  # pyupgrade
-  "W",   # pycodestyle warnings
-  "YTT",
-]
-ignore = [
-  "E501", # line too long, handled by black
-  "RET504", # Unnecessary assignment before returns
-  "PLR2004", # Magic value used in comparison (.status_code == 200)
-]
-# Allow fix for all enabled rules (when `--fix`) is provided.
-fixable = ["ALL"]
+preview = true
+show-fixes = true
+src = ["src", "tests"]
+target-version = "py38"
+unsafe-fixes = true
+
+
+[tool.ruff.analyze]
+detect-string-imports = true
+preview = true
+
+
 [tool.ruff.format]
-# Like Black, use double quotes for strings.
-quote-style = "double"
-# Like Black, indent with spaces, rather than tabs.
-indent-style = "space"
-# Like Black, respect magic trailing commas.
-skip-magic-trailing-comma = false
-# Like Black, automatically detect the appropriate line ending.
-line-ending = "auto"
-[tool.ruff.lint.pydocstyle]
-convention = "google"
+docstring-code-format = true
+line-ending = "lf"
+preview = true
+
+
+[tool.ruff.lint]
+ignore = [
+  "E501",
+  "PLR6301",
+  "PLC0414",
+  "D",
+  "CPY",
+  "COM"
+]
+fixable = ["ALL"]
+logger-objects = ["logging_setup.logger"]
+preview = true
+select = ["ALL"]
+
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*.py" = ['S101']
+
+
+[tool.ruff.lint.pyupgrade]
+keep-runtime-typing = true
+
+
+[tool.ruff.lint.pycodestyle]
+ignore-overlong-task-comments = true
+
+
+[tool.ruff.lint.flake8-copyright]
+author = "Hasan Sezer Taşan <hasansezertasan@gmail.com>"
+
+
+[tool.ruff.lint.flake8-tidy-imports]
+ban-relative-imports = "all"
+
+
 [tool.ruff.lint.isort]
 known-third-party = ["openapipages"]
+
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+
+[tool.ruff.lint.ruff]
+parenthesize-tuple-in-subscript = true
+
+
+[tool.ruff.lint.mccabe]
+max-complexity = 5
+
 
 [tool.mypy]
 files = ["src"]
