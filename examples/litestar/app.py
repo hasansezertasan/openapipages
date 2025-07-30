@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from litestar import Litestar, MediaType, get
 from openapipages import Elements, RapiDoc, ReDoc, Scalar, SwaggerUI
 
