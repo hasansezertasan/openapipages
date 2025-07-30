@@ -1,8 +1,7 @@
 from dataclasses import dataclass
 
+from openapipages.base import Base
 from typing_extensions import Annotated, Doc
-
-from .base import Base
 
 
 @dataclass
@@ -15,12 +14,16 @@ class RapiDoc(Base):
             """
             The URL to use to load the RapiDoc JavaScript.
             It is normally set to a CDN URL.
-            """
+            """,
         ),
     ] = "https://unpkg.com/rapidoc/dist/rapidoc-min.js"
 
     def render(self) -> str:
-        """Generate and return the HTML response that loads RapiDoc for the alternative API docs."""
+        """Generate and return the HTML response that loads RapiDoc for the alternative API docs.
+
+        Returns:
+            str: The HTML response as a string that loads RapiDoc for the alternative API docs.
+        """
         self.head_js_urls.insert(0, self.js_url)
         html_template = self.get_html_template()
         return html_template.format(
@@ -33,7 +36,7 @@ class RapiDoc(Base):
         )
 
     def get_html_template(self) -> str:
-        html = """
+        return """
         <!DOCTYPE html>
         <html>
             <head>
@@ -52,4 +55,3 @@ class RapiDoc(Base):
             </body>
         </html>
         """
-        return html

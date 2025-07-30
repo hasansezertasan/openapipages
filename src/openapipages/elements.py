@@ -1,8 +1,7 @@
 from dataclasses import dataclass
 
+from openapipages.base import Base
 from typing_extensions import Annotated, Doc
-
-from .base import Base
 
 
 @dataclass
@@ -15,7 +14,7 @@ class Elements(Base):
             """
             The URL to use to load the Stoplight Elements JavaScript.
             It is normally set to a CDN URL.
-            """
+            """,
         ),
     ] = "https://unpkg.com/@stoplight/elements/web-components.min.js"
     css_url: Annotated[
@@ -24,12 +23,16 @@ class Elements(Base):
             """
             The URL to use to load the Stoplight Elements CSS.
             It is normally set to a CDN URL.
-            """
+            """,
         ),
     ] = "https://unpkg.com/@stoplight/elements/styles.min.css"
 
     def render(self) -> str:
-        """Generate and return the HTML response that loads Stoplight Elements for the alternative API docs."""
+        """Generate and return the HTML response that loads Stoplight Elements for the alternative API docs.
+
+        Returns:
+            str: The generated HTML response as a string.
+        """
         self.head_css_urls.insert(0, self.css_url)
         self.head_js_urls.insert(0, self.js_url)
         html_template = self.get_html_template()
@@ -43,7 +46,7 @@ class Elements(Base):
         )
 
     def get_html_template(self) -> str:
-        html = """<!doctype html>
+        return """<!doctype html>
         <html lang="en">
             <head>
                 <meta charset="utf-8"/>
@@ -66,4 +69,3 @@ class Elements(Base):
                 {tail_js_str}
             </body>
         </html>"""
-        return html

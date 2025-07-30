@@ -1,9 +1,9 @@
 import json
 from dataclasses import dataclass
+from typing import Dict, List, Optional
 
-from typing_extensions import Annotated, Any, Dict, Doc, List, Optional
-
-from .base import Base
+from openapipages.base import Base
+from typing_extensions import Annotated, Any, Doc
 
 default_parameters: Annotated[
     Dict[str, Any],
@@ -11,7 +11,7 @@ default_parameters: Annotated[
         """
         Default configurations for Swagger UI.
         You can use it as a template to add any other configurations needed.
-        """
+        """,
     ),
 ] = {
     "dom_id": "#swagger-ui",
@@ -26,7 +26,7 @@ default_parameters_presets: Annotated[
         """
         Default configurations for Swagger UI presets.
         You can use it as a template to add any other configurations needed.
-        """
+        """,
     ),
 ] = ["SwaggerUIBundle.presets.apis", "SwaggerUIBundle.SwaggerUIStandalonePreset"]
 
@@ -41,7 +41,7 @@ class SwaggerUI(Base):
             """
             The URL to use to load the Swagger UI JavaScript.
             It is normally set to a CDN URL.
-            """
+            """,
         ),
     ] = "https://cdn.jsdelivr.net/npm/swagger-ui-dist@5.9.0/swagger-ui-bundle.js"
     css_url: Annotated[
@@ -50,7 +50,7 @@ class SwaggerUI(Base):
             """
             The URL to use to load the Swagger UI CSS.
             It is normally set to a CDN URL.
-            """
+            """,
         ),
     ] = "https://cdn.jsdelivr.net/npm/swagger-ui-dist@5.9.0/swagger-ui.css"
     oauth2_redirect_url: Annotated[
@@ -58,7 +58,7 @@ class SwaggerUI(Base):
         Doc(
             """
             The OAuth2 redirect URL.
-            """
+            """,
         ),
     ] = "/docs/oauth2-redirect"
     init_oauth: Annotated[
@@ -66,7 +66,7 @@ class SwaggerUI(Base):
         Doc(
             """
             A dictionary with Swagger UI OAuth2 initialization configurations.
-            """
+            """,
         ),
     ] = None
     swagger_ui_parameters: Annotated[
@@ -75,7 +75,7 @@ class SwaggerUI(Base):
             """
             Configuration parameters for Swagger UI.
             It defaults to [default_parameters][openapipages.swaggerui.default_parameters].
-            """
+            """,
         ),
     ] = None
     swagger_ui_presets: Annotated[
@@ -84,12 +84,16 @@ class SwaggerUI(Base):
             """
             Configuration parameters for Swagger UI presets.
             It defaults to [default_parameters][openapipages.swaggerui.default_parameters].
-            """
+            """,
         ),
     ] = None
 
     def render(self) -> str:
-        """Generate and return the HTML that loads Swagger UI for the alternative API docs."""
+        """Generate and return the HTML that loads Swagger UI for the alternative API docs.
+
+        Returns:
+            str: The HTML string that loads Swagger UI for the alternative API docs.
+        """
         self.head_css_urls.insert(0, self.css_url)
         self.tail_js_urls.insert(0, self.js_url)
         current_swagger_ui_parameters = default_parameters.copy()
@@ -100,12 +104,10 @@ class SwaggerUI(Base):
         if self.swagger_ui_presets:
             current_swagger_ui_presets.extend(self.swagger_ui_presets)
         presets = ", ".join(current_swagger_ui_presets)
-        html_swagger_ui_parameters = "".join(
-            [
-                f"{json.dumps(key)}: {json.dumps(value)},"
-                for key, value in current_swagger_ui_parameters.items()
-            ]
-        )
+        html_swagger_ui_parameters = "".join([
+            f"{json.dumps(key)}: {json.dumps(value)},"
+            for key, value in current_swagger_ui_parameters.items()
+        ])
         html_oauth2_redirect_url = (
             f"oauth2RedirectUrl: window.location.origin + '{self.oauth2_redirect_url}',"
             if self.oauth2_redirect_url
@@ -128,7 +130,7 @@ class SwaggerUI(Base):
         )
 
     def get_html_template(self) -> str:
-        html = """
+        return """
         <!DOCTYPE html>
         <html>
             <head>
@@ -152,4 +154,3 @@ class SwaggerUI(Base):
             </body>
         </html>
         """
-        return html

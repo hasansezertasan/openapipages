@@ -1,8 +1,7 @@
 from dataclasses import dataclass
 
+from openapipages.base import Base
 from typing_extensions import Annotated, Doc
-
-from .base import Base
 
 
 @dataclass
@@ -15,7 +14,7 @@ class Scalar(Base):
             """
             The URL to use to load the Scalar JavaScript.
             It is normally set to a CDN URL.
-            """
+            """,
         ),
     ] = "https://cdn.jsdelivr.net/npm/@scalar/api-reference"
     proxy_url: Annotated[
@@ -24,12 +23,16 @@ class Scalar(Base):
             """
             The URL to use to set the Scalar Proxy.
             It is normally set to a Scalar API URL (https://api.scalar.com/request-proxy), but default is empty.
-            """
+            """,
         ),
     ] = ""
 
     def render(self) -> str:
-        """Generate and return the HTML response that loads Scalar for the alternative API docs."""
+        """Generate and return the HTML response that loads Scalar for the alternative API docs.
+
+        Returns:
+            str: The generated HTML response as a string.
+        """
         self.tail_js_urls.insert(0, self.js_url)
         html_template = self.get_html_template()
         return html_template.format(
@@ -43,7 +46,7 @@ class Scalar(Base):
         )
 
     def get_html_template(self) -> str:
-        html = """
+        return """
         <!DOCTYPE html>
         <html>
             <head>
@@ -69,4 +72,3 @@ class Scalar(Base):
             </body>
         </html>
         """
-        return html

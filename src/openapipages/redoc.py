@@ -1,9 +1,9 @@
 import json
 from dataclasses import dataclass
+from typing import Dict, Optional
 
-from typing_extensions import Annotated, Any, Dict, Doc, Optional
-
-from .base import Base
+from openapipages.base import Base
+from typing_extensions import Annotated, Any, Doc
 
 default_parameters: Annotated[
     Dict[str, Any],
@@ -13,7 +13,7 @@ default_parameters: Annotated[
         You can use it as a template to add any other configurations needed.
         Available options can be found here:
         https://github.com/Redocly/redoc/blob/main/docs/config.md#theme-settings
-        """
+        """,
     ),
 ] = {
     "theme": {
@@ -33,7 +33,7 @@ class ReDoc(Base):
             """
             The URL to use to load the ReDoc JavaScript.
             It is normally set to a CDN URL.
-            """
+            """,
         ),
     ] = "https://cdn.jsdelivr.net/npm/redoc@2/bundles/redoc.standalone.js"
     with_google_fonts: Annotated[
@@ -41,7 +41,7 @@ class ReDoc(Base):
         Doc(
             """
             Load and use Google Fonts.
-            """
+            """,
         ),
     ] = True
     ui_parameters: Annotated[
@@ -50,12 +50,16 @@ class ReDoc(Base):
             """
             Configuration parameters for Redoc UI.
             It defaults to [redoc_ui_default_parameters][fastapi.openapi.docs.redoc_ui_default_parameters].
-            """
+            """,
         ),
     ] = None
 
     def render(self) -> str:
-        """Generate and return the HTML response that loads ReDoc for the alternative API docs."""
+        """Generate and return the HTML response that loads ReDoc for the alternative API docs.
+
+        Returns:
+            str: The HTML content as a string that loads the ReDoc UI.
+        """
         self.tail_js_urls.insert(0, self.js_url)
         google_fonts_str = ""
         if self.with_google_fonts:
@@ -77,7 +81,7 @@ class ReDoc(Base):
         )
 
     def get_html_template(self) -> str:
-        html = """
+        return """
         <!DOCTYPE html>
         <html>
             <head>
@@ -112,4 +116,3 @@ class ReDoc(Base):
             </body>
         </html>
         """
-        return html
