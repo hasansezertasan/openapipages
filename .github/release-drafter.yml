@@ -9,10 +9,13 @@ template: |
   **Full Changelog**: https://github.com/$OWNER/$REPOSITORY/compare/$PREVIOUS_TAG...v$RESOLVED_VERSION
 
 change-template: '- $TITLE by @$AUTHOR in #$NUMBER'
+no-changes-template: '- No changes'
 change-title-escapes: '\<*_&' # You can add # and @ to disable mentions, and add ` to disable code blocks.
+prerelease-identifier: 'rc'
 exclude-contributors:
   - 'dependabot'
   - 'pre-commit-ci'
+  - 'renovate'
 
 categories:
   - title: '💥 Breaking'
@@ -36,8 +39,28 @@ categories:
     collapse-after: 3
     labels:
       - 'dependencies'
-
-
+autolabeler:
+  - label: 'chore'
+    files:
+      - '*.md'
+    branch:
+      - '/docs{0,1}\/.+/'
+  - label: 'bug'
+    branch:
+      - '/fix\/.+/'
+    title:
+      - '/fix/i'
+  - label: 'enhancement'
+    branch:
+      - '/feature\/.+/'
+    body:
+      - '/JIRA-[0-9]{1,4}/'
+  - label: 'dependencies'
+    title:
+      - '/chore\(deps\)/i'
+  - label: 'github_actions'
+    files:
+      - '.github/workflows/*.yml'
 version-resolver:
   major:
     labels:
@@ -56,7 +79,5 @@ version-resolver:
       - 'dependencies'
       - 'security'
   default: patch
-
-
 exclude-labels:
   - 'skip-changelog'
