@@ -99,7 +99,7 @@ pre = "pre-commit run --all-files --hook-stage manual --show-diff-on-failure"
 dependencies = [
   "ruff==0.12.7",
   "mypy>=1.0.0",
-  "codespell==2.3.0",
+  "codespell==2.4.1",
   "validate-pyproject[toml]>=0.24.1",
   "vulture>=2.14",
   "typos>=1.34.0",
