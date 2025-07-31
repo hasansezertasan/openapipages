@@ -7,6 +7,8 @@ import uvicorn
 from litestar import Litestar, MediaType, get
 from openapipages import Elements, RapiDoc, ReDoc, Scalar, SwaggerUI
 
+from litestar import Litestar, MediaType, get
+
 openapi_url = "/schema/openapi.json"
 
 
