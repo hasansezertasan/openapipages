@@ -91,7 +91,6 @@ extra-dependencies = [
 
 
 [tool.hatch.envs.default.scripts]
-start = "uvicorn examples.fastapi.main:app --reload"
 pre = "pre-commit run --all-files --hook-stage manual --show-diff-on-failure"
 
 
