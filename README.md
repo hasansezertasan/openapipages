@@ -1,9 +1,14 @@
 # Open API Pages
 
+[![CI](https://github.com/hasansezertasan/openapipages/actions/workflows/test.yml/badge.svg)](https://github.com/hasansezertasan/openapipages/actions/workflows/test.yml)
 [![PyPI - Version](https://img.shields.io/pypi/v/openapipages.svg)](https://pypi.org/project/openapipages)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/openapipages.svg)](https://pypi.org/project/openapipages)
-[![License](https://img.shields.io/github/license/hasansezertasan/openapipages.svg)](https://github.com/hasansezertasan/openapipages/blob/main/LICENSE)
+[![License - MIT](https://img.shields.io/github/license/hasansezertasan/openapipages.svg)](https://opensource.org/licenses/MIT)
 [![Latest Commit](https://img.shields.io/github/last-commit/hasansezertasan/openapipages)](https://github.com/hasansezertasan/openapipages)
+
+[![Checked with mypy](https://www.mypy-lang.org/static/mypy_badge.svg)](https://mypy-lang.org/)
+[![linting - Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/charliermarsh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+[![GitHub Tag](https://img.shields.io/github/tag/hasansezertasan/openapipages?include_prereleases=&sort=semver&color=black)](https://github.com/hasansezertasan/openapipages/releases/)
 
 [![Downloads](https://pepy.tech/badge/openapipages)](https://pepy.tech/project/openapipages)
 [![Downloads/Month](https://pepy.tech/badge/openapipages/month)](https://pepy.tech/project/openapipages)
