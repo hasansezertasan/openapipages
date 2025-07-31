@@ -117,7 +117,7 @@ all = ["spelling", "check", "lint", "format"]
 [tool.hatch.envs.hatch-test]
 extra-dependencies = [
   "pytest-asyncio>=0.14.0",
-  "httpx>=0.23.3,<0.27.0",
+  "httpx>=0.28.1,<0.29.0",
   "fastapi>=0.63.0,<0.110.0",
 ]
 
