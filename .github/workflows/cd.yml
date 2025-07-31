@@ -34,7 +34,7 @@ jobs:
       - name: Build the Package
         run: uv build --no-sources --quiet
       - name: Publish to PyPI
-        run: uv publish --quite --trusted-publishing always
+        run: uv publish --quiet --trusted-publishing always
       - name: Attach Build Artifacts to GitHub Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
