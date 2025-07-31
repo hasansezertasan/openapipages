@@ -1,83 +1,29 @@
 ---
-name-template: '$RESOLVED_VERSION 🌈'
-tag-template: '$RESOLVED_VERSION'
+# Configuration for Release Drafter: https://github.com/release-drafter/release-drafter
+name-template: '$NEXT_PATCH_VERSION 🌈'
+tag-template: '$NEXT_PATCH_VERSION'
 template: |
-  # What's Changed
+  # :mega: openapipages $NEXT_PATCH_VERSION released!
+
+  We are pleased to announce the release of openapipages $NEXT_PATCH_VERSION.
+
+  ## :green_book: What’s Changed
 
   $CHANGES
 
-  **Full Changelog**: https://github.com/$OWNER/$REPOSITORY/compare/$PREVIOUS_TAG...v$RESOLVED_VERSION
+  ## :bow: Credits
 
-change-template: '- $TITLE by @$AUTHOR in #$NUMBER'
+  Special thanks to the following contributors who helped with this release: $CONTRIBUTORS
+
+  **Full Changelog**: https://github.com/$OWNER/$REPOSITORY/compare/$PREVIOUS_TAG...v$NEXT_PATCH_VERSION
+
+change-template: '- $TITLE (#$NUMBER) @$AUTHOR'
 no-changes-template: '- No changes'
-change-title-escapes: '\<*_&' # You can add # and @ to disable mentions, and add ` to disable code blocks.
 prerelease-identifier: 'rc'
 exclude-contributors:
   - 'dependabot'
   - 'pre-commit-ci'
   - 'renovate'
-
-categories:
-  - title: '💥 Breaking'
-    label: 'breaking'
-  - title: '🚀 Features'
-    labels:
-      - 'feature'
-      - 'enhancement'
-  - title: '🐛 Bug Fixes'
-    labels:
-      - 'fix'
-      - 'bugfix'
-      - 'bug'
-  - title: '🧰 Maintenance'
-    label: 'maintenance'
-  - title: '📜 Documentation'
-    label: 'docs'
-  - title: '🔧 Other changes'
-    label: 'other'
-  - title: '⬆️ Dependencies'
-    collapse-after: 3
-    labels:
-      - 'dependencies'
-autolabeler:
-  - label: 'chore'
-    files:
-      - '*.md'
-    branch:
-      - '/docs{0,1}\/.+/'
-  - label: 'bug'
-    branch:
-      - '/fix\/.+/'
-    title:
-      - '/fix/i'
-  - label: 'enhancement'
-    branch:
-      - '/feature\/.+/'
-    body:
-      - '/JIRA-[0-9]{1,4}/'
-  - label: 'dependencies'
-    title:
-      - '/chore\(deps\)/i'
-  - label: 'github_actions'
-    files:
-      - '.github/workflows/*.yml'
-version-resolver:
-  major:
-    labels:
-      - 'major'
-      - 'breaking'
-  minor:
-    labels:
-      - 'minor'
-      - 'feature'
-  patch:
-    labels:
-      - 'patch'
-      - 'bug'
-      - 'maintenance'
-      - 'docs'
-      - 'dependencies'
-      - 'security'
-  default: patch
 exclude-labels:
   - 'skip-changelog'
+  - 'invalid'
