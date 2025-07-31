@@ -10,6 +10,7 @@ jobs:
     name: Publish on PyPI
     permissions:
       id-token: write  # IMPORTANT: Mandatory for Trusted Publishing (gh-action-pypi-publish)
+      contents: write  # IMPORTANT: Mandatory for GitHub Release
     # Specifying a GitHub environment is optional, but strongly encouraged
     environment:
       name: publish
