@@ -1,6 +1,6 @@
 # FastAPI Example
 
-This example shows how to integrate [FastAPI](https://github.com/fastapi/fastapi/) with [openapipages](https://github.com/hasansezertasan/openapipages)
+This example shows how to integrate [FastAPI](https://github.com/fastapi/fastapi/) with [openapipages](https://github.com/hasansezertasan/openapipages).
 
 ## How to run this example
 
