@@ -27,3 +27,7 @@ exclude-contributors:
 exclude-labels:
   - 'skip-changelog'
   - 'invalid'
+replacers:
+  # https://github.com/release-drafter/release-drafter/issues/569#issuecomment-645942909
+  - search: '/(?:and )?@(pre-commit-ci|dependabot|renovate)(?:\[bot\])?,?/g'
+    replace: ''
