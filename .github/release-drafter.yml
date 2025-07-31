@@ -1,7 +1,7 @@
 ---
 # Configuration for Release Drafter: https://github.com/release-drafter/release-drafter
-name-template: '$NEXT_PATCH_VERSION 🌈'
-tag-template: '$NEXT_PATCH_VERSION'
+name-template: '$RESOLVED_VERSION 🌈'
+tag-template: '$RESOLVED_VERSION'
 template: |
   # :mega: openapipages $NEXT_PATCH_VERSION released!
 
