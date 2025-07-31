@@ -4,8 +4,9 @@ from __future__ import annotations
 from typing import Any, Dict
 
 import uvicorn
-from litestar import Litestar, MediaType, get
 from openapipages import Elements, RapiDoc, ReDoc, Scalar, SwaggerUI
+
+from litestar import Litestar, MediaType, get
 
 openapi_url = "/schema/openapi.json"
 
