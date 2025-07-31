@@ -3,11 +3,11 @@
 name-template: '$RESOLVED_VERSION 🌈'
 tag-template: '$RESOLVED_VERSION'
 template: |
-  # :mega: openapipages $NEXT_PATCH_VERSION released!
+  # :mega: openapipages $RESOLVED_VERSION released!
 
-  We are pleased to announce the release of openapipages $NEXT_PATCH_VERSION.
+  We are pleased to announce the release of openapipages $RESOLVED_VERSION.
 
-  ## :green_book: What’s Changed
+  ## :green_book: What's Changed
 
   $CHANGES
 
@@ -15,11 +15,10 @@ template: |
 
   Special thanks to the following contributors who helped with this release: $CONTRIBUTORS
 
-  **Full Changelog**: https://github.com/$OWNER/$REPOSITORY/compare/$PREVIOUS_TAG...v$NEXT_PATCH_VERSION
+  **Full Changelog**: https://github.com/$OWNER/$REPOSITORY/compare/$PREVIOUS_TAG...v$RESOLVED_VERSION
 
 change-template: '- $TITLE (#$NUMBER) @$AUTHOR'
 no-changes-template: '- No changes'
-prerelease-identifier: 'rc'
 exclude-contributors:
   - 'dependabot'
   - 'pre-commit-ci'
