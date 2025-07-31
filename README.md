@@ -1,6 +1,6 @@
 # Open API Pages
 
-[![CI](https://github.com/hasansezertasan/openapipages/actions/workflows/ci.yml/badge.svg)](https://github.com/hasansezertasan/openapipages/actions/workflows/ci.yml)
+[![CI](https://github.com/hasansezertasan/openapipages/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/hasansezertasan/openapipages/actions/workflows/ci.yml)
 [![PyPI - Version](https://img.shields.io/pypi/v/openapipages.svg)](https://pypi.org/project/openapipages)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/openapipages.svg)](https://pypi.org/project/openapipages)
 [![License - MIT](https://img.shields.io/github/license/hasansezertasan/openapipages.svg)](https://opensource.org/licenses/MIT)
