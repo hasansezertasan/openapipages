@@ -8,7 +8,8 @@ from tests.main import app
 @pytest.mark.asyncio
 async def test_rapidoc() -> None:
     async with AsyncClient(
-        transport=ASGITransport(app), base_url="http://testserver/"
+        transport=ASGITransport(app),  # type: ignore[arg-type]
+        base_url="http://testserver/",
     ) as client:
         response = await client.get("/rapidoc")
         assert response.status_code == status.HTTP_200_OK, response.text

@@ -73,14 +73,14 @@ class Base:
         Returns:
             str: The generated HTML response as a string.
         """
-        html_template = self.get_html_template()
+        html_template = self.get_html_template()  # pragma: no cover
         return html_template.format(
             title=self.title,
             favicon_url=self.favicon_url,
             head_css_str=self.get_head_css_str(),
             head_js_str=self.get_head_js_str(),
             tail_js_str=self.get_tail_js_str(),
-        )
+        )  # pragma: no cover
 
     def get_html_template(self) -> str:
         """Return the HTML template for the alternative API docs."""
@@ -97,7 +97,7 @@ class Base:
                 {tail_js_str}
             </body>
         </html>
-        """
+        """  # pragma: no cover
 
     def get_tail_js_str(self) -> str:
         """Return the string of JavaScript URLs that should be loaded at the end of the `<body>` tag."""

@@ -1,4 +1,5 @@
 ---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/release-drafter/release-drafter/refs/heads/master/schema.json
 # Configuration for Release Drafter: https://github.com/release-drafter/release-drafter
 name-template: '$RESOLVED_VERSION 🌈'
 tag-template: '$RESOLVED_VERSION'
@@ -30,3 +31,35 @@ replacers:
   # https://github.com/release-drafter/release-drafter/issues/569#issuecomment-645942909
   - search: '/(?:and )?@(pre-commit-ci|dependabot|renovate)(?:\[bot\])?,?/g'
     replace: ''
+autolabeler:
+  - label: 'documentation'
+    files:
+      - '*.md'
+      - 'docs/**'
+    branch:
+      - '/docs{0,1}\/.+/'
+  - label: 'bug'
+    branch:
+      - '/fix\/.+/'
+    title:
+      - '/^fix/i'
+  - label: 'enhancement'
+    branch:
+      - '/feature\/.+/'
+    body:
+      - '/JIRA-[0-9]{1,4}/'
+    title:
+      - '/^feat/i'
+  - label: 'dependencies'
+    title:
+      - '/^chore\(deps\)/i'
+      - '/^fix\(deps\)/i'
+      - '/^chore:\s*bump/i'
+  - label: 'github_actions'
+    files:
+      - '.github/workflows/*.yml'
+  - label: 'chore'
+    branch:
+      - '/docs{0,1}\/.+/'
+    title:
+      - '/^chore/i'

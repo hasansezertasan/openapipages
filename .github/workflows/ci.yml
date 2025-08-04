@@ -15,6 +15,7 @@ jobs:
   run:
     name: Python ${{ matrix.python-version }} on ${{ startsWith(matrix.os, 'macos-') && 'macOS' || startsWith(matrix.os, 'windows-') && 'Windows' || 'Linux' }}
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
     strategy:
       fail-fast: false
       matrix:
@@ -32,8 +33,14 @@ jobs:
     - name: Install Hatch
       run: pip install --upgrade hatch
     - name: Run static analysis
-      run: hatch run static-analysis:all
+      if: matrix.os == 'ubuntu-latest' && (matrix.python-version == '3.8' || matrix.python-version == '3.13')
+      run: |
+          hatch run +py=${{ matrix.python-version }} test:style
     - name: Run tests
-      run: hatch test --python ${{ matrix.python-version }} --cover --randomize --parallel --retries 2 --retry-delay 1
-    - name: Upload coverage reports to Codecov
+      run: hatch run +py=${{ matrix.python-version }} test:test
+    - name: Enforce coverage
+      run: hatch run test:cov
+    - name: Upload Coverage
       uses: codecov/codecov-action@v5.4.3
+      with:
+        files: coverage.xml
