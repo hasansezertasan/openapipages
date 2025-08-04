@@ -9,7 +9,8 @@ from tests.main import app
 async def test_swagger_ui_plain() -> None:
     # Copy of https://github.com/tiangolo/fastapi/blob/be876902554a0bd886167de144f0d593ed2e6ad7/tests/test_application.py#L24-L32
     async with AsyncClient(
-        transport=ASGITransport(app), base_url="http://testserver/"
+        transport=ASGITransport(app),  # type: ignore[arg-type]
+        base_url="http://testserver/",
     ) as client:
         response = await client.get("/swaggerui-plain")
         assert response.status_code == status.HTTP_200_OK, response.text
@@ -25,7 +26,8 @@ async def test_swagger_ui_plain() -> None:
 async def test_swagger_ui_custom() -> None:
     # Copy of https://github.com/tiangolo/fastapi/blob/be876902554a0bd886167de144f0d593ed2e6ad7/tests/test_tutorial/test_custom_docs_ui/test_tutorial001.py#L20-L26
     async with AsyncClient(
-        transport=ASGITransport(app), base_url="http://testserver/"
+        transport=ASGITransport(app),  # type: ignore[arg-type]
+        base_url="http://testserver/",
     ) as client:
         response = await client.get("/swaggerui-custom")
         assert response.status_code == status.HTTP_200_OK, response.text

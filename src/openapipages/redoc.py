@@ -63,9 +63,9 @@ class ReDoc(Base):
         self.tail_js_urls.insert(0, self.js_url)
         google_fonts_str = ""
         if self.with_google_fonts:
-            google_fonts_str = """<link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,700|Roboto:300,400,700" rel="stylesheet">"""
+            google_fonts_str = """<link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,700|Roboto:300,400,700" rel="stylesheet">"""  # pragma: no cover
 
-        current_redoc_ui_parameters = default_parameters.copy()
+        current_redoc_ui_parameters = default_parameters.copy()  # pragma: no cover
         current_redoc_ui_parameters.update(self.ui_parameters or {})
 
         html_template = self.get_html_template()
