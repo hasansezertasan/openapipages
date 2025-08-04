@@ -39,10 +39,12 @@ jobs:
     - name: Run tests
       run: hatch run +py=${{ matrix.python-version }} test:test
     - name: Let's see what's going on
+      shell: bash
       run: ls -la .
     - name: Enforce coverage
       run: hatch run +py=${{ matrix.python-version }} test:cov
     - name: Let's see what's going on
+      shell: bash
       run: ls -la .
     - name: Upload Coverage
       uses: codecov/codecov-action@v5.4.3
