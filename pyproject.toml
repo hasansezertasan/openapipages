@@ -103,7 +103,7 @@ dependencies = [
     "pytest~=8.1",
     "pytest-mock~=3.12",
     "pytest-randomly~=3.15",
-    "pytest-rerunfailures~=14.0",
+    "pytest-rerunfailures~=15.1",
     "pytest-xdist[psutil]~=3.5",
     # Custom for testing
     "pytest-asyncio>=0.14.0",
