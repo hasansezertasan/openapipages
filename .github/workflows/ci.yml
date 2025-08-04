@@ -41,11 +41,6 @@ jobs:
     - name: Let's see what's going on
       shell: bash
       run: ls -la .
-    - name: Enforce coverage
-      run: hatch run +py=${{ matrix.python-version }} test:cov
-    - name: Let's see what's going on
-      shell: bash
-      run: ls -la .
     - name: Upload coverage files
       uses: actions/upload-artifact@v4.6.2
       with:
