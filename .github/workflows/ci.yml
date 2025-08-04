@@ -12,7 +12,7 @@ env:
   PYTHONUNBUFFERED: "1"
   FORCE_COLOR: "1"
 jobs:
-  run:
+  tests:
     name: Python ${{ matrix.python-version }} on ${{ startsWith(matrix.os, 'macos-') && 'macOS' || startsWith(matrix.os, 'windows-') && 'Windows' || 'Linux' }}
     runs-on: ${{ matrix.os }}
     timeout-minutes: 10
@@ -46,7 +46,45 @@ jobs:
     - name: Let's see what's going on
       shell: bash
       run: ls -la .
-    - name: Upload Coverage
-      uses: codecov/codecov-action@v5.4.3
+    - name: Upload coverage files
+      uses: actions/upload-artifact@v4.6.2
       with:
-        files: coverage.xml
+        name: coverage-${{ matrix.python-version }}
+        path: .coverage*
+        retention-days: 1
+        include-hidden-files: true
+  coverage:
+    needs:
+      - tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: '.python-version'
+      - name: Setup uv
+        id: setup-uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+      - name: Restore cache
+        if: steps.setup-uv.outputs.cache-hit == 'true'
+        run: echo "Cache was restored"
+      - name: Download coverage files
+        uses: actions/download-artifact@v4
+        with:
+          pattern: coverage*
+          merge-multiple: true
+      - name: Coverage Report
+        run: |
+          uvx coverage combine
+          uvx coverage report
+          uvx coverage xml
+      - name: Upload Coverage
+        uses: codecov/codecov-action@v5.4.3
+        with:
+          files: coverage.xml
