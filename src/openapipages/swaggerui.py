@@ -102,7 +102,9 @@ class SwaggerUI(Base):
             current_swagger_ui_parameters.update(self.swagger_ui_parameters)
         current_swagger_ui_presets = default_parameters_presets.copy()
         if self.swagger_ui_presets:
-            current_swagger_ui_presets.extend(self.swagger_ui_presets)
+            current_swagger_ui_presets.extend(
+                self.swagger_ui_presets
+            )  # pragma: no cover
         presets = ", ".join(current_swagger_ui_presets)
         html_swagger_ui_parameters = "".join([
             f"{json.dumps(key)}: {json.dumps(value)},"

@@ -1,27 +1,42 @@
+---
 name: CD
 on:
+  workflow_dispatch:
   release:
     types: [published]
 jobs:
-  publish:
-    name: Publish release
+  publish-pypi:
     runs-on: ubuntu-latest
+    name: Publish on PyPI
     permissions:
-      contents: read
+      id-token: write  # IMPORTANT: Mandatory for Trusted Publishing (gh-action-pypi-publish)
+      contents: write  # IMPORTANT: Mandatory for GitHub Release
+    # Specifying a GitHub environment is optional, but strongly encouraged
+    environment:
+      name: publish
+      url: https://pypi.org/project/openapipages/${{ github.ref_name }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version-file: '.python-version'
-          cache: "pip"
-      - name: Install Dependencies
-        run: pip install hatch
-      - name: Build
-        run: hatch build
-      - name: Publish
+      - name: Setup uv
+        id: setup-uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+      - name: Restore cache
+        if: steps.setup-uv.outputs.cache-hit == 'true'
+        run: echo "Cache was restored"
+      - name: Build the Package
+        run: uv build --no-sources --quiet
+      - name: Publish to PyPI
+        run: uv publish --quiet --trusted-publishing always
+      - name: Attach Build Artifacts to GitHub Release
         env:
-          HATCH_INDEX_USER: __token__
-          HATCH_INDEX_AUTH: ${{ secrets.PYPI_TOKEN }}
-        run: hatch publish
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release upload ${{ github.ref_name }} ./dist/*

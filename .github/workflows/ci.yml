@@ -1,3 +1,4 @@
+---
 name: CI
 on:
   push:
@@ -11,9 +12,10 @@ env:
   PYTHONUNBUFFERED: "1"
   FORCE_COLOR: "1"
 jobs:
-  run:
+  tests:
     name: Python ${{ matrix.python-version }} on ${{ startsWith(matrix.os, 'macos-') && 'macOS' || startsWith(matrix.os, 'windows-') && 'Windows' || 'Linux' }}
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
     strategy:
       fail-fast: false
       matrix:
@@ -31,11 +33,56 @@ jobs:
     - name: Install Hatch
       run: pip install --upgrade hatch
     - name: Run static analysis
-      run: hatch run static-analysis:all
+      if: matrix.os == 'ubuntu-latest' && (matrix.python-version == '3.8' || matrix.python-version == '3.13')
+      run: |
+          hatch run +py=${{ matrix.python-version }} test:style
     - name: Run tests
-      run: hatch test --python ${{ matrix.python-version }} --cover --randomize --parallel --retries 2 --retry-delay 1
-    - name: Upload coverage reports to Codecov
-      uses: codecov/codecov-action@v5.4.3
+      run: hatch run +py=${{ matrix.python-version }} test:test
+    - name: Let's see what's going on
+      shell: bash
+      run: ls -la .
+    - name: Upload coverage files
+      uses: actions/upload-artifact@v4.6.2
       with:
-        token: ${{ secrets.CODECOV_TOKEN }}
-        slug: hasansezertasan/openapipages
+        name: coverage-${{ matrix.os }}-${{ matrix.python-version }}
+        path: .coverage*
+        retention-days: 1
+        include-hidden-files: true
+  coverage:
+    name: Coverage Report
+    needs:
+      - tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: '.python-version'
+      - name: Setup uv
+        id: setup-uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+      - name: Restore cache
+        if: steps.setup-uv.outputs.cache-hit == 'true'
+        run: echo "Cache was restored"
+      - name: Download coverage files
+        uses: actions/download-artifact@v5
+        with:
+          pattern: coverage*
+          merge-multiple: true
+      - name: Install coverage
+        run: uv tool install coverage[toml]
+      - name: Coverage Report
+        run: |
+          uv tool run coverage combine
+          uv tool run coverage report
+          uv tool run coverage xml
+      - name: Upload Coverage
+        uses: codecov/codecov-action@v5.4.3
+        with:
+          files: coverage.xml

@@ -9,7 +9,7 @@ app = FastAPI()
 
 @app.get("/")
 def root() -> Dict[str, str]:
-    return {"Hello": "World"}
+    return {"Hello": "World"}  # pragma: no cover
 
 
 @app.get("/swaggerui-plain", response_class=HTMLResponse, include_in_schema=False)
