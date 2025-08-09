@@ -54,7 +54,7 @@ def root() -> Dict[str, str]:
 @app.get("/redoc", response_class=HTMLResponse, include_in_schema=False)
 def get_redoc() -> str:
     """Redoc."""
-    0 / 0
+    0/0  # This will raise a ZeroDivisionError
     return ReDoc(title="ReDoc").render()
 
 

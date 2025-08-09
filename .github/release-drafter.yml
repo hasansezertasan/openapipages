@@ -1,62 +1,65 @@
 ---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/release-drafter/release-drafter/refs/heads/master/schema.json
+# Configuration for Release Drafter: https://github.com/release-drafter/release-drafter
 name-template: '$RESOLVED_VERSION 🌈'
 tag-template: '$RESOLVED_VERSION'
 template: |
-  # What's Changed
+  # :mega: openapipages $RESOLVED_VERSION released!
+
+  We are pleased to announce the release of openapipages $RESOLVED_VERSION.
+
+  ## :green_book: What's Changed
 
   $CHANGES
 
-  **Full Changelog**: https://github.com/$OWNER/$REPOSITORY/compare/$PREVIOUS_TAG...v$RESOLVED_VERSION
+  ## :bow: Credits
 
-change-template: '- $TITLE by @$AUTHOR in #$NUMBER'
-change-title-escapes: '\<*_&' # You can add # and @ to disable mentions, and add ` to disable code blocks.
+  Special thanks to the following contributors who helped with this release: $CONTRIBUTORS
+
+  **Full Changelog**: https://github.com/$OWNER/$REPOSITORY/compare/$PREVIOUS_TAG...$RESOLVED_VERSION
+
+change-template: '- $TITLE (#$NUMBER) @$AUTHOR'
+no-changes-template: '- No changes'
 exclude-contributors:
   - 'dependabot'
   - 'pre-commit-ci'
-
-categories:
-  - title: '💥 Breaking'
-    label: 'breaking'
-  - title: '🚀 Features'
-    labels:
-      - 'feature'
-      - 'enhancement'
-  - title: '🐛 Bug Fixes'
-    labels:
-      - 'fix'
-      - 'bugfix'
-      - 'bug'
-  - title: '🧰 Maintenance'
-    label: 'maintenance'
-  - title: '📜 Documentation'
-    label: 'docs'
-  - title: '🔧 Other changes'
-    label: 'other'
-  - title: '⬆️ Dependencies'
-    collapse-after: 3
-    labels:
-      - 'dependencies'
-
-
-version-resolver:
-  major:
-    labels:
-      - 'major'
-      - 'breaking'
-  minor:
-    labels:
-      - 'minor'
-      - 'feature'
-  patch:
-    labels:
-      - 'patch'
-      - 'bug'
-      - 'maintenance'
-      - 'docs'
-      - 'dependencies'
-      - 'security'
-  default: patch
-
-
+  - 'renovate'
 exclude-labels:
   - 'skip-changelog'
+  - 'invalid'
+replacers:
+  # https://github.com/release-drafter/release-drafter/issues/569#issuecomment-645942909
+  - search: '/(?:and )?@(pre-commit-ci|dependabot|renovate)(?:\[bot\])?,?/g'
+    replace: ''
+autolabeler:
+  - label: 'documentation'
+    files:
+      - '*.md'
+      - 'docs/**'
+    branch:
+      - '/docs{0,1}\/.+/'
+  - label: 'bug'
+    branch:
+      - '/fix\/.+/'
+    title:
+      - '/^fix/i'
+  - label: 'enhancement'
+    branch:
+      - '/feature\/.+/'
+    body:
+      - '/JIRA-[0-9]{1,4}/'
+    title:
+      - '/^feat/i'
+  - label: 'dependencies'
+    title:
+      - '/^chore\(deps\)/i'
+      - '/^fix\(deps\)/i'
+      - '/^chore:\s*bump/i'
+  - label: 'github_actions'
+    files:
+      - '.github/workflows/*.yml'
+  - label: 'chore'
+    branch:
+      - '/docs{0,1}\/.+/'
+    title:
+      - '/^chore/i'
