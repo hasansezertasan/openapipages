@@ -86,7 +86,7 @@ path = "src/openapipages/__about__.py"
 [tool.hatch.envs.default]
 installer = "uv"
 extra-dependencies = [
-  "pre-commit>=4.2.0,<4.3.0",
+  "pre-commit>=4.5.1,<4.6.0",
 ]
 
 
