@@ -110,7 +110,7 @@ dependencies = [
     "httpx>=0.28.1,<0.29.0",
     "fastapi>=0.63.0,<0.110.0",
     # Custom for Style and Static Analysis
-    "ruff==0.12.10",
+    "ruff==0.15.2",
     "mypy>=1.0.0",
     "codespell==2.4.1",
     "validate-pyproject[toml]>=0.24.1",
