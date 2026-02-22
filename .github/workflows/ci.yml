@@ -83,6 +83,6 @@ jobs:
           uv tool run coverage report
           uv tool run coverage xml
       - name: Upload Coverage
-        uses: codecov/codecov-action@v5.5.0
+        uses: codecov/codecov-action@v5.5.2
         with:
           files: coverage.xml
