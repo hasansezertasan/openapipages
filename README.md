@@ -197,6 +197,58 @@ One interface for many! And of course Framework agnostic... So you can use it in
 
 [FastAPI] and [Litestar] projects and the two pull requests mentioned above inspired me to create this package.
 
+## Tasks
+
+### Development Tasks
+
+This project includes comprehensive Visual Studio Code configurations for enhanced development experience:
+
+#### Debugging Configurations (`.vscode/launch.json`)
+
+- **Python: Run Tests** - Run all tests with pytest
+- **Python: Run Tests with Coverage** - Run tests with coverage reporting
+- **Python: Debug Test File** - Debug the currently open test file
+- **Python: FastAPI Example Server** - Debug the FastAPI example server
+- **Python: Litestar Example Server** - Debug the Litestar example server
+- **Python: Test Server** - Debug the test server
+- **Python: Current File** - Debug the currently open Python file
+- **Python: Debug with uvicorn (FastAPI)** - Debug FastAPI server with uvicorn
+- **Python: Debug with uvicorn (Litestar)** - Debug Litestar server with uvicorn
+- **Python: Debug with uvicorn (Test Server)** - Debug test server with uvicorn
+
+#### Build Tasks (`.vscode/tasks.json`)
+
+- **Install Dependencies** - Install project dependencies using uv
+- **Run Tests** - Run tests with pytest
+- **Run Tests with Coverage** - Run tests with coverage reporting
+- **Lint Code** - Run ruff linter
+- **Format Code** - Format code with ruff
+- **Type Check** - Run mypy type checking
+- **Run All Checks** - Run linting, type checking, and tests
+- **Start FastAPI Example Server** - Start the FastAPI example server
+- **Start Litestar Example Server** - Start the Litestar example server
+- **Start Test Server** - Start the test server
+- **Build Package** - Build the package using uv
+- **Clean Build Artifacts** - Clean build artifacts using hatch
+
+#### Workspace Settings (`.vscode/settings.json`)
+
+- Configured Python interpreter path
+- Enabled ruff for linting and formatting
+- Configured pytest for testing
+- Set up file exclusions for cache and build artifacts
+- Enabled format on save and code actions
+- Configured Python analysis settings
+
+### Usage
+
+To use these configurations:
+
+1. Open the project in Visual Studio Code
+2. Press `F5` or go to Run and Debug panel to access debugging configurations
+3. Use `Ctrl+Shift+P` (or `Cmd+Shift+P` on macOS) and type "Tasks: Run Task" to access build tasks
+4. The workspace settings will be automatically applied
+
 ## License
 
 `openapipages` is distributed under the terms of the [MIT](https://spdx.org/licenses/MIT.html) license.
