@@ -108,7 +108,7 @@ dependencies = [
     # Custom for testing
     "pytest-asyncio>=0.14.0",
     "httpx>=0.28.1,<0.29.0",
-    "fastapi>=0.63.0,<0.110.0",
+    "fastapi>=0.135.2,<0.136.0",
     # Custom for Style and Static Analysis
     "ruff==0.15.8",
     "mypy>=1.0.0",
