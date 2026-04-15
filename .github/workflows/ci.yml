@@ -42,7 +42,7 @@ jobs:
       shell: bash
       run: ls -la .
     - name: Upload coverage files
-      uses: actions/upload-artifact@v7.0.0
+      uses: actions/upload-artifact@v7.0.1
       with:
         name: coverage-${{ matrix.os }}-${{ matrix.python-version }}
         path: .coverage*
