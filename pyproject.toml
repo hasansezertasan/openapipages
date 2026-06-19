@@ -248,6 +248,10 @@ reportAny = false
 reportExplicitAny = false
 # Subclasses overriding Base methods without @override are intentional.
 reportImplicitOverride = false
+# basedpyright runs in the prek hook env without project deps installed;
+# real type-checking against deps happens via mypy in `hatch run test:style`.
+reportMissingImports = false
+reportMissingModuleSource = false
 
 [tool.vulture]
 # Default 60% flags FastAPI route handlers as unused since they're only
