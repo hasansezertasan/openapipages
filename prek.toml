@@ -77,7 +77,7 @@ hooks = [{ id = "ruff-check" }, { id = "ruff-format" }]
 [[repos]]
 repo = "https://github.com/jendrikseipp/vulture"
 rev = "v2.16"
-hooks = [{ id = "vulture", pass_filenames = false }]
+hooks = [{ id = "vulture", pass_filenames = false, args = ["src", "tests"] }]
 [[repos]]
 repo = "https://github.com/gitleaks/gitleaks"
 rev = "v8.21.2"
@@ -89,12 +89,21 @@ hooks = [{ id = "commitizen", stages = ["commit-msg"] }]
 [[repos]]
 repo = "https://github.com/DetachHead/basedpyright-prek-mirror"
 rev = "1.39.3"
-hooks = [{ id = "basedpyright", files = "^((src|tests)/.*\\.py)$" }]
+hooks = [
+  { id = "basedpyright", files = "^((src|tests)/.*\\.py)$", additional_dependencies = [
+    "typing_extensions",
+    "fastapi",
+    "httpx",
+    "pytest",
+  ] },
+]
 [[repos]]
 repo = "https://github.com/PyCQA/bandit"
 rev = "1.9.4"
 hooks = [
-  { id = "bandit", args = [
+  { id = "bandit", pass_filenames = false, additional_dependencies = [
+    "bandit[toml]",
+  ], args = [
     "-c",
     "pyproject.toml",
     "-r",

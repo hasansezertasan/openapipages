@@ -237,3 +237,20 @@ exclude_lines = [
   "if __name__ == .__main__.:",
   "if TYPE_CHECKING:",
 ]
+
+[tool.bandit]
+# B101 (assert_used) is expected in test code.
+skips = ["B101"]
+
+[tool.basedpyright]
+# Any is intentional: OpenAPI UI parameter dicts are heterogeneous.
+reportAny = false
+reportExplicitAny = false
+# Subclasses overriding Base methods without @override are intentional.
+reportImplicitOverride = false
+
+[tool.vulture]
+# Default 60% flags FastAPI route handlers as unused since they're only
+# referenced via decorators. Raise threshold to skip those false positives.
+min_confidence = 80
+paths = ["src", "tests"]
