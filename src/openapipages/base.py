@@ -68,7 +68,7 @@ class Base:
         ),
     ] = "/favicon.ico"
 
-    def render(self) -> str:
+    def render(self) -> str:  # pragma: no cover
         """Generate and return the HTML response that loads the alternative API docs.
 
         Subclasses typically override this to inject UI-specific config; the default
@@ -85,7 +85,7 @@ class Base:
             tail_js_str=self.get_tail_js_str(),
         )
 
-    def get_html_template(self) -> str:
+    def get_html_template(self) -> str:  # pragma: no cover
         """Return the HTML template for the alternative API docs.
 
         Subclasses override this to provide a UI-specific template.
