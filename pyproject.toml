@@ -250,8 +250,14 @@ reportExplicitAny = false
 reportImplicitOverride = false
 # basedpyright runs in the prek hook env without project deps installed;
 # real type-checking against deps happens via mypy in `hatch run test:style`.
+# All Unknown* and dep-related diagnostics are noise without installed deps.
 reportMissingImports = false
 reportMissingModuleSource = false
+reportUnknownVariableType = false
+reportUnknownMemberType = false
+reportUnknownArgumentType = false
+reportUnknownParameterType = false
+reportUntypedFunctionDecorator = false
 
 [tool.vulture]
 # Default 60% flags FastAPI route handlers as unused since they're only
