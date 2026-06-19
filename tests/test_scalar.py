@@ -8,7 +8,7 @@ from tests.main import app
 @pytest.mark.asyncio
 async def test_scalar_plain() -> None:
     async with AsyncClient(
-        transport=ASGITransport(app),  # type: ignore[arg-type]
+        transport=ASGITransport(app),
         base_url="http://testserver/",
     ) as client:
         response = await client.get("/scalar-plain")
@@ -20,7 +20,7 @@ async def test_scalar_plain() -> None:
 @pytest.mark.asyncio
 async def test_scalar_custom() -> None:
     async with AsyncClient(
-        transport=ASGITransport(app),  # type: ignore[arg-type]
+        transport=ASGITransport(app),
         base_url="http://testserver/",
     ) as client:
         response = await client.get("/scalar-custom")

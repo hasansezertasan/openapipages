@@ -1,7 +1,9 @@
 from dataclasses import dataclass
 
+from typing import Annotated
+
 from openapipages.base import Base
-from typing_extensions import Annotated, Doc
+from typing_extensions import Doc
 
 
 @dataclass
@@ -33,15 +35,15 @@ class Elements(Base):
         Returns:
             str: The generated HTML response as a string.
         """
-        self.head_css_urls.insert(0, self.css_url)
-        self.head_js_urls.insert(0, self.js_url)
+        head_css_urls = [self.css_url, *self.head_css_urls]
+        head_js_urls = [self.js_url, *self.head_js_urls]
         html_template = self.get_html_template()
         return html_template.format(
             title=self.title,
             favicon_url=self.favicon_url,
             openapi_url=self.openapi_url,
-            head_css_str=self.get_head_css_str(),
-            head_js_str=self.get_head_js_str(),
+            head_css_str=self.get_head_css_str(head_css_urls),
+            head_js_str=self.get_head_js_str(head_js_urls),
             tail_js_str=self.get_tail_js_str(),
         )
 
@@ -65,7 +67,7 @@ class Elements(Base):
                 <noscript>
                     Stoplight Elements requires Javascript to function. Please enable it to browse the documentation.
                 </noscript>
-                <elements-api apiDescriptionUrl="{openapi_url}" router="hash" layout="sidebar"/>
+                <elements-api apiDescriptionUrl="{openapi_url}" router="hash" layout="sidebar"></elements-api>
                 {tail_js_str}
             </body>
         </html>"""

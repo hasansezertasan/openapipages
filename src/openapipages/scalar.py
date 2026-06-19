@@ -1,7 +1,9 @@
 from dataclasses import dataclass
 
+from typing import Annotated
+
 from openapipages.base import Base
-from typing_extensions import Annotated, Doc
+from typing_extensions import Doc
 
 
 @dataclass
@@ -33,16 +35,17 @@ class Scalar(Base):
         Returns:
             str: The generated HTML response as a string.
         """
-        self.tail_js_urls.insert(0, self.js_url)
+        tail_js_urls = [self.js_url, *self.tail_js_urls]
+        proxy_attr = f' data-proxy-url="{self.proxy_url}"' if self.proxy_url else ""
         html_template = self.get_html_template()
         return html_template.format(
             title=self.title,
             favicon_url=self.favicon_url,
             openapi_url=self.openapi_url,
-            proxy_url=self.proxy_url,
+            proxy_attr=proxy_attr,
             head_css_str=self.get_head_css_str(),
             head_js_str=self.get_head_js_str(),
-            tail_js_str=self.get_tail_js_str(),
+            tail_js_str=self.get_tail_js_str(tail_js_urls),
         )
 
     def get_html_template(self) -> str:
@@ -67,7 +70,7 @@ class Scalar(Base):
                 <noscript>
                     Scalar requires Javascript to function. Please enable it to browse the documentation.
                 </noscript>
-                <script id="api-reference" data-url="{openapi_url}" data-proxy-url="{proxy_url}"></script>
+                <script id="api-reference" data-url="{openapi_url}"{proxy_attr}></script>
                 {tail_js_str}
             </body>
         </html>

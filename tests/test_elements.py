@@ -8,7 +8,7 @@ from tests.main import app
 @pytest.mark.asyncio
 async def test_elements() -> None:
     async with AsyncClient(
-        transport=ASGITransport(app),  # type: ignore[arg-type]
+        transport=ASGITransport(app),
         base_url="http://testserver/",
     ) as client:
         response = await client.get("/elements")

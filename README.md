@@ -124,7 +124,6 @@ def get_elements() -> str:
 @app.get("/rapidoc", response_class=HTMLResponse, include_in_schema=False)
 def get_rapidoc() -> str:
     return RapiDoc(title="RapiDoc").render()
-
 ```
 
 ### Litestar

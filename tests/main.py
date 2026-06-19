@@ -33,6 +33,7 @@ def get_swaggerui_custom() -> str:
             "syntaxHighlight.theme": "obsidian",
             "deepLinking": False,
         },
+        swagger_ui_presets=["SwaggerUIBundle.SwaggerUIStandalonePreset"],
     ).render()
 
 
@@ -46,6 +47,8 @@ def get_redoc_custom() -> str:
     return ReDoc(
         title="ReDoc",
         js_url="https://unpkg.com/redoc@next/bundles/redoc.standalone.js",
+        with_google_fonts=False,
+        ui_parameters={"hideDownloadButton": True},
     ).render()
 
 

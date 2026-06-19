@@ -3,7 +3,7 @@ name = "litestar-example"
 version = "0.1.0"
 description = "This example shows how to integrate [Litestar](https://github.com/litestar-org/litestar/) with [openapipages](https://github.com/hasansezertasan/openapipages)"
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.10"
 dependencies = ["openapipages", "litestar", "uvicorn"]
 
 

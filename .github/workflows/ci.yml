@@ -20,34 +20,34 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12', '3.13']
+        python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
     permissions:
       contents: read
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v6
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v6
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Install Hatch
-      run: pip install --upgrade hatch
-    - name: Run static analysis
-      if: matrix.os == 'ubuntu-latest' && (matrix.python-version == '3.8' || matrix.python-version == '3.13')
-      run: |
+      - name: Checkout repository
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install Hatch
+        run: pip install --upgrade hatch
+      - name: Run static analysis
+        if: matrix.os == 'ubuntu-latest' && (matrix.python-version == '3.10' || matrix.python-version == '3.14')
+        run: |
           hatch run +py=${{ matrix.python-version }} test:style
-    - name: Run tests
-      run: hatch run +py=${{ matrix.python-version }} test:test
-    - name: Let's see what's going on
-      shell: bash
-      run: ls -la .
-    - name: Upload coverage files
-      uses: actions/upload-artifact@v7.0.1
-      with:
-        name: coverage-${{ matrix.os }}-${{ matrix.python-version }}
-        path: .coverage*
-        retention-days: 1
-        include-hidden-files: true
+      - name: Run tests
+        run: hatch run +py=${{ matrix.python-version }} test:test
+      - name: Let's see what's going on
+        shell: bash
+        run: ls -la .
+      - name: Upload coverage files
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: coverage-${{ matrix.os }}-${{ matrix.python-version }}
+          path: .coverage*
+          retention-days: 1
+          include-hidden-files: true
   coverage:
     name: Coverage Report
     needs:
@@ -55,23 +55,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
           fetch-depth: 0
       - name: Set up Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
         with:
-          python-version-file: '.python-version'
+          python-version-file: ".python-version"
       - name: Setup uv
         id: setup-uv
-        uses: astral-sh/setup-uv@v8
+        uses: astral-sh/setup-uv@fac544c07dec837d0ccb6301d7b5580bf5edae39 # v8.2.0
         with:
           enable-cache: true
       - name: Restore cache
         if: steps.setup-uv.outputs.cache-hit == 'true'
         run: echo "Cache was restored"
       - name: Download coverage files
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           pattern: coverage*
           merge-multiple: true
@@ -83,6 +83,6 @@ jobs:
           uv tool run coverage report
           uv tool run coverage xml
       - name: Upload Coverage
-        uses: codecov/codecov-action@v6.0.1
+        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7.0.0
         with:
           files: coverage.xml

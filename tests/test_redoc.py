@@ -9,7 +9,7 @@ from tests.main import app
 async def test_redoc_plain() -> None:
     # Copy of  https://github.com/tiangolo/fastapi/blob/be876902554a0bd886167de144f0d593ed2e6ad7/tests/test_application.py#L42-L46
     async with AsyncClient(
-        transport=ASGITransport(app),  # type: ignore[arg-type]
+        transport=ASGITransport(app),
         base_url="http://testserver/",
     ) as client:
         response = await client.get("/redoc-plain")
@@ -23,7 +23,7 @@ async def test_redoc_plain() -> None:
 async def test_redoc_custom() -> None:
     # Copy of  https://github.com/tiangolo/fastapi/blob/be876902554a0bd886167de144f0d593ed2e6ad7/tests/test_tutorial/test_custom_docs_ui/test_tutorial001.py#L35-L38
     async with AsyncClient(
-        transport=ASGITransport(app),  # type: ignore[arg-type]
+        transport=ASGITransport(app),
         base_url="http://testserver/",
     ) as client:
         response = await client.get("/redoc-custom")
