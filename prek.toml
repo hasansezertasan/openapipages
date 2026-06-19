@@ -21,9 +21,9 @@ hooks = [
   { id = "detect-private-key" },
   { id = "end-of-file-fixer" },
   { id = "fix-byte-order-marker" },
-  { id = "mixed-line-ending" },
+  { id = "mixed-line-ending", exclude = "^\\.gitignore$" },
   { id = "no-commit-to-branch" },
-  { id = "trailing-whitespace" },
+  { id = "trailing-whitespace", exclude = "^\\.gitignore$" },
 ]
 [[repos]]
 repo = "https://github.com/crate-ci/typos"
@@ -119,7 +119,7 @@ hooks = [{ id = "pip-audit", stages = ["pre-push"] }]
 [[repos]]
 repo = "https://github.com/asottile/pyupgrade"
 rev = "v3.21.2"
-hooks = [{ id = "pyupgrade", args = ["--py314-plus"] }]
+hooks = [{ id = "pyupgrade", args = ["--py310-plus"] }]
 [[repos]]
 repo = "https://github.com/djlint/djLint"
 rev = "v1.36.4"
