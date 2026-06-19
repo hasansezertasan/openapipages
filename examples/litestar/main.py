@@ -1,7 +1,6 @@
 # ruff: noqa: RUF029, S104
-from __future__ import annotations
 
-from typing import Any, Dict
+from typing import Any
 
 import uvicorn
 from openapipages import Elements, RapiDoc, ReDoc, Scalar, SwaggerUI
@@ -12,7 +11,7 @@ openapi_url = "/schema/openapi.json"
 
 
 @get("/")
-async def root() -> Dict[str, Any]:
+async def root() -> dict[str, Any]:
     return {"Hello": "World"}
 
 

@@ -1,10 +1,14 @@
 {
-  // Take a look at: https://github.com/astral-sh/ruff/blob/main/.github/renovate.json5
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "dependencyDashboard": true,
   "extends": [
     "config:recommended"
   ],
-  "labels": ["internal"],
+  "labels": [
+    "internal"
+  ],
+  "lockFileMaintenance": {
+    "enabled": true
+  },
   "semanticCommits": "enabled"
 }

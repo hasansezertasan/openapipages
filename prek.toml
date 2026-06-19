@@ -1,0 +1,133 @@
+#:schema: https://www.schemastore.org/prek.json
+# Configuration file for `prek`, a git hook framework written in Rust.
+# See https://prek.j178.dev for more information.
+default_language_version.python = "3.14"
+exclude.glob = [".devcontainer/**", ".vscode/**"]
+[[repos]]
+repo = "builtin"
+hooks = [
+  { id = "check-added-large-files", args = [
+    "--maxkb=1000",
+  ] },
+  { id = "check-case-conflict" },
+  { id = "check-executables-have-shebangs" },
+  { id = "check-json" },
+  { id = "check-json5" },
+  { id = "check-merge-conflict" },
+  { id = "check-symlinks" },
+  { id = "check-toml" },
+  { id = "check-xml" },
+  { id = "check-yaml" },
+  { id = "detect-private-key" },
+  { id = "end-of-file-fixer" },
+  { id = "fix-byte-order-marker" },
+  { id = "mixed-line-ending", exclude = "^\\.gitignore$" },
+  { id = "no-commit-to-branch" },
+  { id = "trailing-whitespace", exclude = "^\\.gitignore$" },
+]
+[[repos]]
+repo = "https://github.com/crate-ci/typos"
+rev = "v1.46.1"
+hooks = [{ id = "typos" }]
+[[repos]]
+repo = "https://github.com/python-jsonschema/check-jsonschema"
+rev = "0.37.2"
+hooks = [
+  { id = "check-dependabot" },
+  { id = "check-github-actions" },
+  { id = "check-github-issue-forms" },
+  { id = "check-github-workflows" },
+  { id = "check-renovate" },
+]
+[[repos]]
+repo = "https://github.com/rhysd/actionlint"
+rev = "v1.7.12"
+hooks = [{ id = "actionlint" }]
+[[repos]]
+repo = "https://github.com/adrienverge/yamllint"
+rev = "v1.38.0"
+hooks = [{ id = "yamllint" }]
+[[repos]]
+repo = "https://github.com/google/yamlfmt"
+rev = "v0.21.0"
+hooks = [{ id = "yamlfmt" }]
+[[repos]]
+repo = "https://github.com/ComPWA/taplo-pre-commit"
+rev = "v0.9.3"
+# taplo-lint requires fetching a schema catalog over the network on every
+# run, which flakes in CI (schema catalog API drifts). Format-only is
+# enough — pyproject.toml schema is enforced via validate-pyproject.
+hooks = [{ id = "taplo-format" }]
+[[repos]]
+repo = "https://github.com/sqlfluff/sqlfluff"
+rev = "4.1.0"
+hooks = [{ id = "sqlfluff-lint" }, { id = "sqlfluff-fix" }]
+[[repos]]
+repo = "https://github.com/astral-sh/uv-pre-commit"
+rev = "0.11.12"
+hooks = [{ id = "uv-lock" }]
+[[repos]]
+repo = "https://github.com/abravalheri/validate-pyproject"
+rev = "v0.25"
+hooks = [{ id = "validate-pyproject" }]
+[[repos]]
+repo = "https://github.com/astral-sh/ruff-pre-commit"
+rev = "v0.15.12"
+hooks = [{ id = "ruff-check" }, { id = "ruff-format" }]
+[[repos]]
+repo = "https://github.com/jendrikseipp/vulture"
+rev = "v2.16"
+hooks = [{ id = "vulture", pass_filenames = false, args = ["src", "tests"] }]
+[[repos]]
+repo = "https://github.com/gitleaks/gitleaks"
+rev = "v8.21.2"
+hooks = [{ id = "gitleaks" }]
+[[repos]]
+repo = "https://github.com/commitizen-tools/commitizen"
+rev = "v4.1.0"
+hooks = [{ id = "commitizen", stages = ["commit-msg"] }]
+[[repos]]
+repo = "https://github.com/DetachHead/basedpyright-prek-mirror"
+rev = "1.39.3"
+hooks = [{ id = "basedpyright", files = "^((src|tests)/.*\\.py)$" }]
+[[repos]]
+repo = "https://github.com/PyCQA/bandit"
+rev = "1.9.4"
+hooks = [
+  { id = "bandit", pass_filenames = false, additional_dependencies = [
+    "bandit[toml]",
+  ], args = [
+    "-c",
+    "pyproject.toml",
+    "-r",
+    "./src",
+    "./tests",
+  ] },
+]
+[[repos]]
+repo = "https://github.com/ariebovenberg/slotscheck"
+rev = "v0.19.1"
+hooks = [
+  { id = "slotscheck", args = [
+    "--no-strict-imports",
+  ], files = "^((src|tests)/.*\\.py)$" },
+]
+[[repos]]
+repo = "https://github.com/pypa/pip-audit"
+rev = "v2.10.0"
+hooks = [{ id = "pip-audit", stages = ["pre-push"] }]
+[[repos]]
+repo = "https://github.com/asottile/pyupgrade"
+rev = "v3.21.2"
+hooks = [{ id = "pyupgrade", args = ["--py310-plus"] }]
+[[repos]]
+repo = "https://github.com/djlint/djLint"
+rev = "v1.36.4"
+hooks = [
+  { id = "djlint-reformat-jinja", args = [
+    "--configuration=pyproject.toml",
+  ] },
+  { id = "djlint-jinja", args = [
+    "--configuration=pyproject.toml",
+  ] },
+]

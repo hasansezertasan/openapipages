@@ -1,11 +1,10 @@
 # /// script
-# requires-python = ">=3.8"
+# requires-python = ">=3.10"
 # dependencies = ["openapipages", "fastapi", "uvicorn"]
 # [tool.uv.sources]
 # openapipages = { path = "../../", editable = true }
 # ///
 # ruff: noqa: S104
-from typing import Dict
 
 import uvicorn
 from fastapi import FastAPI
@@ -17,7 +16,7 @@ app = FastAPI(redoc_url=None)
 
 
 @app.get("/")
-def root() -> Dict[str, str]:
+def root() -> dict[str, str]:
     """Root of the application.
 
     Returns:

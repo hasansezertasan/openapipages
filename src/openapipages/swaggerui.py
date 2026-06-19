@@ -1,12 +1,12 @@
 import json
 from dataclasses import dataclass
-from typing import Dict, List, Optional
+from typing import Annotated, Any
 
 from openapipages.base import Base
-from typing_extensions import Annotated, Any, Doc
+from typing_extensions import Doc
 
 default_parameters: Annotated[
-    Dict[str, Any],
+    dict[str, Any],
     Doc(
         """
         Default configurations for Swagger UI.
@@ -21,7 +21,7 @@ default_parameters: Annotated[
     "showCommonExtensions": True,
 }
 default_parameters_presets: Annotated[
-    List[str],
+    list[str],
     Doc(
         """
         Default configurations for Swagger UI presets.
@@ -54,7 +54,7 @@ class SwaggerUI(Base):
         ),
     ] = "https://cdn.jsdelivr.net/npm/swagger-ui-dist@5.9.0/swagger-ui.css"
     oauth2_redirect_url: Annotated[
-        Optional[str],
+        str | None,
         Doc(
             """
             The OAuth2 redirect URL.
@@ -62,7 +62,7 @@ class SwaggerUI(Base):
         ),
     ] = "/docs/oauth2-redirect"
     init_oauth: Annotated[
-        Optional[Dict[str, Any]],
+        dict[str, Any] | None,
         Doc(
             """
             A dictionary with Swagger UI OAuth2 initialization configurations.
@@ -70,7 +70,7 @@ class SwaggerUI(Base):
         ),
     ] = None
     swagger_ui_parameters: Annotated[
-        Optional[Dict[str, Any]],
+        dict[str, Any] | None,
         Doc(
             """
             Configuration parameters for Swagger UI.
@@ -79,11 +79,11 @@ class SwaggerUI(Base):
         ),
     ] = None
     swagger_ui_presets: Annotated[
-        Optional[List[str]],
+        list[str] | None,
         Doc(
             """
             Configuration parameters for Swagger UI presets.
-            It defaults to [default_parameters][openapipages.swaggerui.default_parameters].
+            It defaults to [default_parameters_presets][openapipages.swaggerui.default_parameters_presets].
             """,
         ),
     ] = None
@@ -94,24 +94,22 @@ class SwaggerUI(Base):
         Returns:
             str: The HTML string that loads Swagger UI for the alternative API docs.
         """
-        self.head_css_urls.insert(0, self.css_url)
-        self.tail_js_urls.insert(0, self.js_url)
+        head_css_urls = [self.css_url, *self.head_css_urls]
+        tail_js_urls = [self.js_url, *self.tail_js_urls]
         current_swagger_ui_parameters = default_parameters.copy()
-        current_swagger_ui_parameters.update({"url": self.openapi_url})
+        current_swagger_ui_parameters["url"] = self.openapi_url
         if self.swagger_ui_parameters:
             current_swagger_ui_parameters.update(self.swagger_ui_parameters)
-        current_swagger_ui_presets = default_parameters_presets.copy()
+        current_swagger_ui_presets = list(default_parameters_presets)
         if self.swagger_ui_presets:
-            current_swagger_ui_presets.extend(
-                self.swagger_ui_presets
-            )  # pragma: no cover
+            current_swagger_ui_presets.extend(self.swagger_ui_presets)
         presets = ", ".join(current_swagger_ui_presets)
-        html_swagger_ui_parameters = "".join([
+        html_swagger_ui_parameters = "".join(
             f"{json.dumps(key)}: {json.dumps(value)},"
             for key, value in current_swagger_ui_parameters.items()
-        ])
+        )
         html_oauth2_redirect_url = (
-            f"oauth2RedirectUrl: window.location.origin + '{self.oauth2_redirect_url}',"
+            f"oauth2RedirectUrl: window.location.origin + {json.dumps(self.oauth2_redirect_url)},"
             if self.oauth2_redirect_url
             else ""
         )
@@ -122,9 +120,9 @@ class SwaggerUI(Base):
         return html_template.format(
             title=self.title,
             favicon_url=self.favicon_url,
-            head_css_str=self.get_head_css_str(),
+            head_css_str=self.get_head_css_str(head_css_urls),
             head_js_str=self.get_head_js_str(),
-            tail_js_str=self.get_tail_js_str(),
+            tail_js_str=self.get_tail_js_str(tail_js_urls),
             html_swagger_ui_parameters=html_swagger_ui_parameters,
             html_oauth2_redirect_url=html_oauth2_redirect_url,
             presets=presets,
