@@ -1,5 +1,3 @@
-from typing import Dict
-
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 from openapipages import Elements, RapiDoc, ReDoc, Scalar, SwaggerUI
@@ -8,7 +6,7 @@ app = FastAPI()
 
 
 @app.get("/")
-def root() -> Dict[str, str]:
+def root() -> dict[str, str]:
     return {"Hello": "World"}  # pragma: no cover
 
 
@@ -62,6 +60,7 @@ def get_scalar_custom() -> str:
     return Scalar(
         title="Scalar",
         js_url="https://cdn.jsdelivr.net/npm/@scalar/api-reference",
+        proxy_url="https://api.scalar.com/request-proxy",
     ).render()
 
 

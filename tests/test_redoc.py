@@ -17,6 +17,8 @@ async def test_redoc_plain() -> None:
         assert response.headers["content-type"] == "text/html; charset=utf-8"
         assert "redoc@2" in response.text
         assert '"hideDownloadButton": false' in response.text
+        assert "https://fonts.googleapis.com/css?family=Montserrat" in response.text
+        assert '"/openapi.json"' in response.text
 
 
 @pytest.mark.asyncio
@@ -31,3 +33,5 @@ async def test_redoc_custom() -> None:
         assert (
             "https://unpkg.com/redoc@next/bundles/redoc.standalone.js" in response.text
         )
+        assert "fonts.googleapis.com" not in response.text
+        assert '"hideDownloadButton": true' in response.text

@@ -15,6 +15,8 @@ async def test_scalar_plain() -> None:
         assert response.status_code == status.HTTP_200_OK, response.text
         assert response.headers["content-type"] == "text/html; charset=utf-8"
         assert "@scalar/api-reference" in response.text
+        assert 'id="api-reference"' in response.text
+        assert "data-proxy-url" not in response.text
 
 
 @pytest.mark.asyncio
@@ -26,3 +28,4 @@ async def test_scalar_custom() -> None:
         response = await client.get("/scalar-custom")
         assert response.status_code == status.HTTP_200_OK, response.text
         assert "https://cdn.jsdelivr.net/npm/@scalar/api-reference" in response.text
+        assert 'data-proxy-url="https://api.scalar.com/request-proxy"' in response.text

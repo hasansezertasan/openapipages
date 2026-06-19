@@ -1,12 +1,12 @@
 import json
 from dataclasses import dataclass
-from typing import Annotated, Any, Dict, Optional
+from typing import Annotated, Any
 
 from openapipages.base import Base
 from typing_extensions import Doc
 
 default_parameters: Annotated[
-    Dict[str, Any],
+    dict[str, Any],
     Doc(
         """
         Default configurations for Redoc UI.
@@ -45,7 +45,7 @@ class ReDoc(Base):
         ),
     ] = True
     ui_parameters: Annotated[
-        Optional[Dict[str, Any]],
+        dict[str, Any] | None,
         Doc(
             """
             Configuration parameters for Redoc UI.

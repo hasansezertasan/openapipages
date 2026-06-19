@@ -1,12 +1,12 @@
 import json
 from dataclasses import dataclass
-from typing import Annotated, Any, Dict, List, Optional
+from typing import Annotated, Any
 
 from openapipages.base import Base
 from typing_extensions import Doc
 
 default_parameters: Annotated[
-    Dict[str, Any],
+    dict[str, Any],
     Doc(
         """
         Default configurations for Swagger UI.
@@ -21,7 +21,7 @@ default_parameters: Annotated[
     "showCommonExtensions": True,
 }
 default_parameters_presets: Annotated[
-    List[str],
+    list[str],
     Doc(
         """
         Default configurations for Swagger UI presets.
@@ -54,7 +54,7 @@ class SwaggerUI(Base):
         ),
     ] = "https://cdn.jsdelivr.net/npm/swagger-ui-dist@5.9.0/swagger-ui.css"
     oauth2_redirect_url: Annotated[
-        Optional[str],
+        str | None,
         Doc(
             """
             The OAuth2 redirect URL.
@@ -62,7 +62,7 @@ class SwaggerUI(Base):
         ),
     ] = "/docs/oauth2-redirect"
     init_oauth: Annotated[
-        Optional[Dict[str, Any]],
+        dict[str, Any] | None,
         Doc(
             """
             A dictionary with Swagger UI OAuth2 initialization configurations.
@@ -70,7 +70,7 @@ class SwaggerUI(Base):
         ),
     ] = None
     swagger_ui_parameters: Annotated[
-        Optional[Dict[str, Any]],
+        dict[str, Any] | None,
         Doc(
             """
             Configuration parameters for Swagger UI.
@@ -79,7 +79,7 @@ class SwaggerUI(Base):
         ),
     ] = None
     swagger_ui_presets: Annotated[
-        Optional[List[str]],
+        list[str] | None,
         Doc(
             """
             Configuration parameters for Swagger UI presets.

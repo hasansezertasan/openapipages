@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-
 from typing import Annotated
 
 from openapipages.base import Base
