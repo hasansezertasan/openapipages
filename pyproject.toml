@@ -184,6 +184,8 @@ select = ["ALL"]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/*.py" = ['S101']
+"tests/unit/*.py" = ['S101']
+"tests/integration/*.py" = ['S101']
 "tests/e2e/*.py" = ['S101']
 # The uvicorn subprocess fixture is inherently branchy (startup polling +
 # graceful/forced teardown), and S404/S603 cover the subprocess use (also
