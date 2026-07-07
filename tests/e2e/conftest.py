@@ -23,6 +23,9 @@ from tests.e2e.app import E2E_SENTINEL
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
+    from typing import Any
+
+    from playwright.sync_api import Browser, Page
 
 SERVER_READY_TIMEOUT_S = 30.0
 SERVER_POLL_INTERVAL_S = 0.2
@@ -159,3 +162,37 @@ def base_url(uvicorn_server: str) -> str:
         str: The base URL of the running server.
     """
     return uvicorn_server
+
+
+@pytest.fixture(scope="session")
+def browser_type_launch_args(
+    browser_type_launch_args: dict[str, Any],
+) -> dict[str, Any]:
+    """Override pytest-playwright's launch args to stabilise Chromium in CI.
+
+    ``--disable-dev-shm-usage`` avoids crashes on containers with a tiny
+    ``/dev/shm`` (common on CI runners and in Docker). Idea borrowed from
+    ``xgovuk-flask-admin``.
+
+    Returns:
+        dict[str, Any]: The launch args with the extra flag appended.
+    """
+    return {**browser_type_launch_args, "args": ["--disable-dev-shm-usage"]}
+
+
+@pytest.fixture
+def no_js_page(browser: Browser) -> Iterator[Page]:
+    """Yield a page in a context with JavaScript disabled.
+
+    Used to verify the ``<noscript>`` fallbacks — a browser only renders
+    ``<noscript>`` contents when scripting is off.
+
+    Yields:
+        Page: A Playwright page that will not execute page scripts.
+    """
+    context = browser.new_context(java_script_enabled=False)
+    page = context.new_page()
+    try:
+        yield page
+    finally:
+        context.close()
