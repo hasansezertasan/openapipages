@@ -198,6 +198,33 @@ One interface for many! And of course Framework agnostic... So you can use it in
 
 ## Tasks
 
+### Testing
+
+The suite is organised in layers under `tests/`:
+
+- `tests/unit/` — renderer/`Base` logic tested directly (no HTTP).
+- `tests/integration/` — each renderer rendered through a FastAPI app over an in-process ASGI client.
+- `tests/e2e/` — real-browser (Playwright/Chromium) tests that boot each UI, load its JS from the CDN, and verify the spec renders.
+
+Run the fast suites (unit + integration) and static analysis with [Hatch](https://hatch.pypa.io):
+
+```bash
+hatch run test:test    # unit + integration (e2e is excluded)
+hatch run test:cov     # coverage report
+hatch run test:style   # ruff + mypy + codespell
+```
+
+The end-to-end tests live in their own environment so the browser/uvicorn extras
+never touch the zero-dependency package. They load each UI's JavaScript from its
+real CDN, so they need network access and run Chromium only:
+
+```bash
+hatch run e2e:install-browser   # one-time: playwright install chromium
+hatch run e2e:test              # run the browser tests
+```
+
+In CI they run as a separate `E2E (Chromium)` job, gated behind the cross-platform test matrix.
+
 ### Development Tasks
 
 This project includes comprehensive Visual Studio Code configurations for enhanced development experience:
