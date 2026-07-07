@@ -10,7 +10,7 @@ from __future__ import annotations
 import contextlib
 import pathlib
 import socket
-import subprocess
+import subprocess  # nosec B404
 import sys
 import time
 import warnings
@@ -38,10 +38,7 @@ E2E_DIR = pathlib.Path(__file__).parent.resolve()
 _ACCEPTABLE_RETURNCODES = {0, -15, -9}
 
 
-def pytest_collection_modifyitems(
-    config: pytest.Config,
-    items: list[pytest.Item],
-) -> None:
+def pytest_collection_modifyitems(items: list[pytest.Item]) -> None:
     """Auto-mark every test under ``tests/e2e/`` with ``@pytest.mark.e2e``."""
     e2e_marker = pytest.mark.e2e
     for item in items:
@@ -74,7 +71,7 @@ def uvicorn_server(free_port: int) -> Iterator[str]:
     Raises:
         RuntimeError: If the server exits early or never becomes ready in time.
     """
-    proc = subprocess.Popen(  # noqa: S603
+    proc = subprocess.Popen(  # nosec B603
         [
             sys.executable,
             "-m",
@@ -90,12 +87,16 @@ def uvicorn_server(free_port: int) -> Iterator[str]:
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
     )
+    # PIPE is set above, so stdout is guaranteed present; bind a narrowed local
+    # so both mypy and basedpyright accept the .read() calls below.
+    proc_stdout = proc.stdout
+    assert proc_stdout is not None
 
     base_url = f"http://127.0.0.1:{free_port}"
     deadline = time.monotonic() + SERVER_READY_TIMEOUT_S
     while time.monotonic() < deadline:
         if proc.poll() is not None:
-            output = proc.stdout.read().decode(errors="replace")  # type: ignore[union-attr]
+            output = proc_stdout.read().decode(errors="replace")
             msg = (
                 f"uvicorn exited prematurely (returncode={proc.returncode}) "
                 f"at {base_url}.\noutput: {output}"
@@ -110,7 +111,7 @@ def uvicorn_server(free_port: int) -> Iterator[str]:
         except (httpx.ReadError, httpx.WriteError, httpx.RemoteProtocolError):
             # Connection accepted but then dropped — check if the process died.
             if proc.poll() is not None:
-                output = proc.stdout.read().decode(errors="replace")  # type: ignore[union-attr]
+                output = proc_stdout.read().decode(errors="replace")
                 msg = (
                     f"uvicorn died mid-request (returncode={proc.returncode}) "
                     f"at {base_url}.\noutput: {output}"

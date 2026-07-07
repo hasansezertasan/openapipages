@@ -142,7 +142,7 @@ python = ["3.14", "3.13", "3.12", "3.11", "3.10"]
 installer = "uv"
 dependencies = [
   "pytest~=9.0",
-  "pytest-asyncio>=0.14.0",  # only to recognize the shared asyncio_* ini options
+  "pytest-asyncio>=0.14.0",    # only to recognize the shared asyncio_* ini options
   "pytest-playwright>=0.5.0",
   "fastapi>=0.139.0,<0.140.0",
   "uvicorn>=0.30",
@@ -186,8 +186,9 @@ select = ["ALL"]
 "tests/*.py" = ['S101']
 "tests/e2e/*.py" = ['S101']
 # The uvicorn subprocess fixture is inherently branchy (startup polling +
-# graceful/forced teardown); `config` is an unused-but-required pytest hook arg.
-"tests/e2e/conftest.py" = ['S101', 'S404', 'C901', 'PLR0912', 'ARG001']
+# graceful/forced teardown), and S404/S603 cover the subprocess use (also
+# annotated with `# nosec` for Bandit).
+"tests/e2e/conftest.py" = ['S101', 'S404', 'S603', 'C901', 'PLR0912']
 
 
 [tool.ruff.lint.pyupgrade]
@@ -243,9 +244,7 @@ asyncio_default_fixture_loop_scope = "function"
 # --strict-markers turns any undeclared @pytest.mark.<x> into an error, so every
 # custom marker must be declared here before use.
 addopts = "--strict-markers"
-markers = [
-  "e2e: end-to-end browser tests (Playwright + subprocess uvicorn)",
-]
+markers = ["e2e: end-to-end browser tests (Playwright + subprocess uvicorn)"]
 
 
 [tool.coverage.run]
@@ -295,6 +294,9 @@ reportUnknownMemberType = false
 reportUnknownArgumentType = false
 reportUnknownParameterType = false
 reportUntypedFunctionDecorator = false
+# `class Widget(BaseModel)` in the e2e app reads as an untyped base when
+# pydantic is absent in the prek env — same dep-not-installed noise as above.
+reportUntypedBaseClass = false
 
 [tool.vulture]
 # Default 60% flags FastAPI route handlers as unused since they're only
