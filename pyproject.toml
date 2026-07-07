@@ -118,7 +118,9 @@ dependencies = [
 
 
 [tool.hatch.envs.test.scripts]
-test = "coverage run -m pytest tests"
+# `tests/e2e` needs a browser + subprocess server and lives in its own env
+# (see `[tool.hatch.envs.e2e]`); keep it out of the default cross-platform run.
+test = "coverage run -m pytest tests --ignore=tests/e2e"
 cov = ["coverage combine", "coverage report", "coverage xml"]
 style = [
   "codespell .",
@@ -130,6 +132,26 @@ style = [
 
 [[tool.hatch.envs.test.matrix]]
 python = ["3.14", "3.13", "3.12", "3.11", "3.10"]
+
+
+# End-to-end browser tests (Playwright). Kept in a dedicated env so the browser,
+# uvicorn, and FastAPI extras never touch the zero-dependency package or the
+# default test matrix. Run `hatch run e2e:install-browser` once, then
+# `hatch run e2e:test`.
+[tool.hatch.envs.e2e]
+installer = "uv"
+dependencies = [
+  "pytest~=9.0",
+  "pytest-asyncio>=0.14.0",  # only to recognize the shared asyncio_* ini options
+  "pytest-playwright>=0.5.0",
+  "fastapi>=0.139.0,<0.140.0",
+  "uvicorn>=0.30",
+  "httpx>=0.28.1,<0.29.0",
+]
+
+[tool.hatch.envs.e2e.scripts]
+install-browser = "playwright install chromium"
+test = "pytest tests/e2e -m e2e {args}"
 
 
 [tool.ruff]
@@ -162,6 +184,10 @@ select = ["ALL"]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/*.py" = ['S101']
+"tests/e2e/*.py" = ['S101']
+# The uvicorn subprocess fixture is inherently branchy (startup polling +
+# graceful/forced teardown); `config` is an unused-but-required pytest hook arg.
+"tests/e2e/conftest.py" = ['S101', 'S404', 'C901', 'PLR0912', 'ARG001']
 
 
 [tool.ruff.lint.pyupgrade]
@@ -214,13 +240,24 @@ ignore-words-list = "Connexion, connexion"
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "function"
+# --strict-markers turns any undeclared @pytest.mark.<x> into an error, so every
+# custom marker must be declared here before use.
+addopts = "--strict-markers"
+markers = [
+  "e2e: end-to-end browser tests (Playwright + subprocess uvicorn)",
+]
 
 
 [tool.coverage.run]
 source_pkgs = ["openapipages", "tests"]
 branch = true
 parallel = true
-omit = ["src/openapipages/__about__.py"]
+omit = [
+  "src/openapipages/__about__.py",
+  # e2e tests run in their own env (no coverage); exclude them from the gate.
+  "tests/e2e/*",
+  "*/tests/e2e/*",
+]
 
 
 [tool.coverage.paths]
