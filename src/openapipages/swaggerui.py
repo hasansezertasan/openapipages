@@ -140,6 +140,9 @@ class SwaggerUI(Base):
                 {head_js_str}
             </head>
             <body>
+                <noscript>
+                    Swagger UI requires Javascript to function. Please enable it to browse the documentation.
+                </noscript>
                 <div id="swagger-ui"></div>
                 {tail_js_str}
                 <!-- `SwaggerUIBundle` is now available on the page -->

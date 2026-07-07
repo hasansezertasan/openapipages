@@ -1,9 +1,7 @@
 """Progressive-enhancement e2e: the ``<noscript>`` fallback shows without JS.
 
-Inspired by the no-JavaScript tests in ``xgovuk-flask-admin``. Four of the five
-renderers emit a ``<noscript>`` fallback telling the user to enable JavaScript;
-**SwaggerUI currently does not**, so it is intentionally excluded here (see the
-note in the PR — this is a genuine inconsistency the e2e work surfaced).
+Inspired by the no-JavaScript tests in ``xgovuk-flask-admin``. Every renderer
+emits a ``<noscript>`` fallback telling the user to enable JavaScript.
 
 A browser only renders ``<noscript>`` contents when scripting is disabled, so a
 ``java_script_enabled=False`` context is exactly what proves the fallback works.
@@ -20,15 +18,12 @@ from tests.e2e.app import RENDERER_PATHS
 if TYPE_CHECKING:
     from playwright.sync_api import Page
 
-# Renderers whose template includes a <noscript> fallback. SwaggerUI has none.
-NOSCRIPT_RENDERERS = ["redoc", "rapidoc", "elements", "scalar"]
-
 # Substring common to every fallback message
 # (e.g. "ReDoc requires Javascript to function. Please enable it ...").
 NOSCRIPT_TEXT = "requires Javascript to function"
 
 
-@pytest.mark.parametrize("renderer", NOSCRIPT_RENDERERS)
+@pytest.mark.parametrize("renderer", list(RENDERER_PATHS))
 def test_noscript_fallback_visible_without_js(
     no_js_page: Page,
     base_url: str,
