@@ -29,8 +29,8 @@ hatch run test:style
 hatch run pre
 
 # A single test file or test
-hatch run test:python -m pytest tests/test_swaggerui.py
-hatch run test:python -m pytest tests/test_swaggerui.py::test_name -v
+hatch run test:python -m pytest tests/integration/test_swaggerui.py
+hatch run test:python -m pytest tests/integration/test_swaggerui.py::test_name -v
 ```
 
 The test matrix (`[[tool.hatch.envs.test.matrix]]`) covers Python 3.10–3.14; CI runs across these.

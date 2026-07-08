@@ -355,6 +355,9 @@ coverage.xml
 .pytest_cache/
 cover/
 
+# Playwright (e2e) output: traces, screenshots, videos
+test-results/
+
 # Translations
 *.mo
 *.pot
