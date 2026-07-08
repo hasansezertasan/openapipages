@@ -33,8 +33,9 @@ def test_noscript_fallback_visible_without_js(
 
     ``inner_text`` returns *rendered* text, and a browser only renders
     ``<noscript>`` contents when scripting is off — so this passing proves the
-    fallback reaches the user. (Playwright's ``get_by_text`` engine skips
-    ``<noscript>`` on purpose, hence the inner-text assertion.)
+    fallback reaches the user. (``get_by_text`` matches rendered text, which
+    ``<noscript>`` content is not while JS is enabled, so ``inner_text`` on a
+    JS-disabled page is used here instead.)
     """
     no_js_page.goto(
         f"{base_url}{RENDERER_PATHS[renderer]}",

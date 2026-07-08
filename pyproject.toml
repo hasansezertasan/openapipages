@@ -187,10 +187,10 @@ select = ["ALL"]
 "tests/unit/*.py" = ['S101']
 "tests/integration/*.py" = ['S101']
 "tests/e2e/*.py" = ['S101']
-# The uvicorn subprocess fixture is inherently branchy (startup polling +
-# graceful/forced teardown), and S404/S603 cover the subprocess use (also
-# annotated with `# nosec` for Bandit).
-"tests/e2e/conftest.py" = ['S101', 'S404', 'S603', 'C901', 'PLR0912']
+# The uvicorn subprocess fixture is inherently branchy and statement-heavy
+# (startup polling + graceful/forced teardown), and S404/S603 cover the
+# subprocess use (also annotated with `# nosec` for Bandit).
+"tests/e2e/conftest.py" = ['S101', 'S404', 'S603', 'C901', 'PLR0912', 'PLR0915']
 
 
 [tool.ruff.lint.pyupgrade]

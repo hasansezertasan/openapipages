@@ -5,9 +5,10 @@ spec's ``info.title`` becomes visible in the DOM. Because that title is distinct
 from the page's HTML ``<title>``, it can only appear once the UI's JavaScript has
 loaded from its CDN, executed, fetched ``/openapi.json``, and rendered it.
 
-Playwright's text/CSS engines pierce *open* shadow DOM, so the same assertion
-works for light-DOM UIs (SwaggerUI, ReDoc, Scalar) and web-component UIs that
-render into open shadow roots (RapiDoc, Stoplight Elements).
+Playwright's text engine pierces *open* shadow DOM, so the same assertion works
+for the light-DOM UIs (SwaggerUI, ReDoc, Scalar, and Stoplight Elements, whose
+``<elements-api>`` renders into the light DOM) and for RapiDoc, whose
+``<rapi-doc>`` renders into an open shadow root the text engine pierces.
 """
 
 from __future__ import annotations

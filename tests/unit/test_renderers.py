@@ -6,6 +6,7 @@ parameter merging, ``proxy_url``, google-fonts toggling — that the integration
 tests only cover through a full HTTP round-trip.
 """
 
+import pytest
 from openapipages import Elements, RapiDoc, ReDoc, Scalar, SwaggerUI
 
 
@@ -34,13 +35,21 @@ class TestSwaggerUI:
     def test_parameters_override_defaults(self) -> None:
         # default_parameters sets deepLinking True; an override must win.
         html = SwaggerUI(
-            title="X", swagger_ui_parameters={"deepLinking": False}
+            title="X",
+            swagger_ui_parameters={"deepLinking": False},
         ).render()
         assert '"deepLinking": false' in html
 
     def test_extra_presets_are_appended(self) -> None:
         html = SwaggerUI(title="X", swagger_ui_presets=["My.Preset"]).render()
         assert "My.Preset" in html
+
+    def test_noscript_fallback_present(self) -> None:
+        # The <noscript> fallback is this PR's behavior change; pin it in the
+        # always-run suite rather than relying only on the (CDN-dependent) e2e.
+        html = SwaggerUI(title="X").render()
+        assert "<noscript>" in html
+        assert "requires Javascript to function" in html
 
 
 class TestReDoc:
@@ -59,9 +68,11 @@ class TestReDoc:
         )
 
     def test_ui_parameters_merge(self) -> None:
+        # hideDownloadButton is not in default_parameters, and asserting the
+        # rendered key/value proves the user dict actually merged in (rather
+        # than a "true" that a default like "wrap": true would satisfy anyway).
         html = ReDoc(title="X", ui_parameters={"hideDownloadButton": True}).render()
-        assert "hideDownloadButton" in html
-        assert "true" in html
+        assert '"hideDownloadButton": true' in html
 
 
 class TestScalar:
@@ -88,3 +99,27 @@ class TestElements:
         assert 'apiDescriptionUrl="/openapi.json"' in html
         assert "web-components.min.js" in html
         assert "styles.min.css" in html
+
+
+@pytest.mark.parametrize("renderer_cls", [SwaggerUI, ReDoc, RapiDoc, Elements, Scalar])
+def test_user_supplied_url_lists_are_rendered(
+    renderer_cls: type[SwaggerUI | ReDoc | RapiDoc | Elements | Scalar],
+) -> None:
+    """User-provided head/tail JS and head CSS URLs reach the rendered HTML.
+
+    These ``Base`` list fields are a documented public feature but were only
+    exercised with empty lists, so a regression dropping the user list would
+    have gone unnoticed. Each renderer's template emits all three slots.
+    """
+    html = renderer_cls(
+        title="X",
+        head_js_urls=["https://cdn.example/head.js"],
+        tail_js_urls=["https://cdn.example/tail.js"],
+        head_css_urls=["https://cdn.example/head.css"],
+    ).render()
+    assert '<script src="https://cdn.example/head.js"></script>' in html
+    assert '<script src="https://cdn.example/tail.js"></script>' in html
+    assert (
+        '<link type="text/css" rel="stylesheet" href="https://cdn.example/head.css">'
+        in html
+    )

@@ -33,9 +33,10 @@ SERVER_SHUTDOWN_TIMEOUT_S = 5.0
 
 E2E_DIR = pathlib.Path(__file__).parent.resolve()
 
-# 0 = clean exit; SIGTERM (-15) = normal shutdown; SIGKILL (-9) = forced kill
-# when the graceful shutdown timeout expires in teardown.
-_ACCEPTABLE_RETURNCODES = {0, -15, -9}
+# 0 = clean exit; SIGTERM (-15) = normal graceful shutdown. A SIGKILL (-9) is
+# handled separately in teardown: it only happens when the server ignored
+# SIGTERM, which is a real defect worth surfacing rather than accepting.
+_ACCEPTABLE_RETURNCODES = {0, -15}
 
 
 def pytest_collection_modifyitems(items: list[pytest.Item]) -> None:
@@ -138,21 +139,29 @@ def uvicorn_server(free_port: int) -> Iterator[str]:
         yield base_url
     finally:
         proc.terminate()
+        forced_kill = False
         try:
             output_bytes, _ = proc.communicate(timeout=SERVER_SHUTDOWN_TIMEOUT_S)
         except subprocess.TimeoutExpired:
+            forced_kill = True
             proc.kill()
             output_bytes, _ = proc.communicate()
-        if proc.returncode not in _ACCEPTABLE_RETURNCODES:
-            output_tail = output_bytes.decode(errors="replace")[-2000:]
+        output_tail = output_bytes.decode(errors="replace")[-2000:]
+        # Always warn (never `pytest.fail`) from this session finalizer: it runs
+        # after test outcomes are recorded, so failing here would mask a genuine
+        # test failure with teardown noise. A warning surfaces the problem
+        # without hijacking the run's exit status.
+        if forced_kill:
+            msg = (
+                f"uvicorn ignored SIGTERM and was force-killed after "
+                f"{SERVER_SHUTDOWN_TIMEOUT_S}s (possible hung shutdown):\n{output_tail}"
+            )
+            warnings.warn(msg, stacklevel=1)
+        elif proc.returncode not in _ACCEPTABLE_RETURNCODES:
             msg = (
                 f"uvicorn exited with unexpected code {proc.returncode}:\n{output_tail}"
             )
-            # If a test already failed, warn instead of masking that exception.
-            if sys.exc_info()[1] is None:
-                pytest.fail(msg)
-            else:
-                warnings.warn(msg, stacklevel=1)
+            warnings.warn(msg, stacklevel=1)
 
 
 @pytest.fixture(scope="session")
