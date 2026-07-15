@@ -109,7 +109,7 @@ dependencies = [
   # Custom for Style and Static Analysis
   "ruff==0.15.21",
   "mypy>=1.0.0",
-  "codespell==2.4.2",
+  "codespell==2.4.3",
   "validate-pyproject[toml]>=0.24.1",
   "vulture>=2.14",
   "typos>=1.34.0",
