@@ -72,7 +72,7 @@ rev = "v0.25"
 hooks = [{ id = "validate-pyproject" }]
 [[repos]]
 repo = "https://github.com/astral-sh/ruff-pre-commit"
-rev = "v0.15.12"
+rev = "v0.15.22"
 hooks = [{ id = "ruff-check" }, { id = "ruff-format" }]
 [[repos]]
 repo = "https://github.com/jendrikseipp/vulture"
