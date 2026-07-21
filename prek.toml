@@ -88,7 +88,7 @@ rev = "v4.1.0"
 hooks = [{ id = "commitizen", stages = ["commit-msg"] }]
 [[repos]]
 repo = "https://github.com/DetachHead/basedpyright-prek-mirror"
-rev = "1.39.3"
+rev = "1.39.9"
 hooks = [{ id = "basedpyright", files = "^((src|tests)/.*\\.py)$" }]
 [[repos]]
 repo = "https://github.com/PyCQA/bandit"
