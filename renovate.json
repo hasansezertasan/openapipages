@@ -1,14 +1,4 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "dependencyDashboard": true,
-  "extends": [
-    "config:recommended"
-  ],
-  "labels": [
-    "internal"
-  ],
-  "lockFileMaintenance": {
-    "enabled": true
-  },
-  "semanticCommits": "enabled"
+  "extends": ["github>hasansezertasan/renovate-config:python"]
 }
