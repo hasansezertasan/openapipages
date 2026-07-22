@@ -64,7 +64,7 @@ rev = "4.1.0"
 hooks = [{ id = "sqlfluff-lint" }, { id = "sqlfluff-fix" }]
 [[repos]]
 repo = "https://github.com/astral-sh/uv-pre-commit"
-rev = "0.11.30"
+rev = "0.11.31"
 hooks = [{ id = "uv-lock" }]
 [[repos]]
 repo = "https://github.com/abravalheri/validate-pyproject"
