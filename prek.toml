@@ -60,7 +60,7 @@ rev = "v0.9.3"
 hooks = [{ id = "taplo-format" }]
 [[repos]]
 repo = "https://github.com/sqlfluff/sqlfluff"
-rev = "4.1.0"
+rev = "4.2.2"
 hooks = [{ id = "sqlfluff-lint" }, { id = "sqlfluff-fix" }]
 [[repos]]
 repo = "https://github.com/astral-sh/uv-pre-commit"
