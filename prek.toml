@@ -84,7 +84,7 @@ rev = "v8.30.1"
 hooks = [{ id = "gitleaks" }]
 [[repos]]
 repo = "https://github.com/commitizen-tools/commitizen"
-rev = "v4.1.0"
+rev = "v4.16.5"
 hooks = [{ id = "commitizen", stages = ["commit-msg"] }]
 [[repos]]
 repo = "https://github.com/DetachHead/basedpyright-prek-mirror"
