@@ -122,7 +122,7 @@ rev = "v3.21.2"
 hooks = [{ id = "pyupgrade", args = ["--py310-plus"] }]
 [[repos]]
 repo = "https://github.com/djlint/djLint"
-rev = "v1.42.1"
+rev = "v1.42.2"
 hooks = [
   { id = "djlint-reformat-jinja", args = [
     "--configuration=pyproject.toml",
