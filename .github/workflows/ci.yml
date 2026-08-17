@@ -36,18 +36,22 @@ jobs:
       if: matrix.os == 'ubuntu-latest' && (matrix.python-version == '3.8' || matrix.python-version == '3.13')
       run: |
           hatch run +py=${{ matrix.python-version }} test:style
-    - name: Run tests
+    - name: Run tests with coverage
       run: hatch run +py=${{ matrix.python-version }} test:test
-    - name: Let's see what's going on
+    - name: List coverage files
       shell: bash
-      run: ls -la .
+      run: |
+        echo "Current directory: $(pwd)"
+        echo "Coverage files:"
+        find . -name ".coverage*" -type f
+        ls -la .coverage* 2>/dev/null || echo "No .coverage files found"
     - name: Upload coverage files
       uses: actions/upload-artifact@v4.6.2
       with:
         name: coverage-${{ matrix.os }}-${{ matrix.python-version }}
         path: .coverage*
         retention-days: 1
-        include-hidden-files: true
+        if-no-files-found: warn
   coverage:
     name: Coverage Report
     needs:
@@ -62,27 +66,26 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version-file: '.python-version'
-      - name: Setup uv
-        id: setup-uv
-        uses: astral-sh/setup-uv@v6
-        with:
-          enable-cache: true
-      - name: Restore cache
-        if: steps.setup-uv.outputs.cache-hit == 'true'
-        run: echo "Cache was restored"
+      - name: Install Hatch
+        run: pip install --upgrade hatch
       - name: Download coverage files
         uses: actions/download-artifact@v5
         with:
           pattern: coverage*
           merge-multiple: true
-      - name: Install coverage
-        run: uv tool install coverage[toml]
-      - name: Coverage Report
+      - name: List downloaded files
         run: |
-          uv tool run coverage combine
-          uv tool run coverage report
-          uv tool run coverage xml
+          echo "Downloaded files:"
+          find . -name "coverage*" -type f
+          ls -la coverage* 2>/dev/null || echo "No coverage files found"
+      - name: Generate coverage report
+        run: |
+          # Move coverage files to expected location
+          find . -name ".coverage*" -exec mv {} . \;
+          # Generate coverage report using hatch
+          hatch run test:cov
       - name: Upload Coverage
         uses: codecov/codecov-action@v5.4.3
         with:
           files: coverage.xml
+          fail_ci_if_error: false
