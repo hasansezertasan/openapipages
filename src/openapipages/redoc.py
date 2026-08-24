@@ -1,12 +1,12 @@
 import json
 from dataclasses import dataclass
-from typing import Dict, Optional
+from typing import Annotated, Any
 
 from openapipages.base import Base
-from typing_extensions import Annotated, Any, Doc
+from typing_extensions import Doc
 
 default_parameters: Annotated[
-    Dict[str, Any],
+    dict[str, Any],
     Doc(
         """
         Default configurations for Redoc UI.
@@ -45,11 +45,11 @@ class ReDoc(Base):
         ),
     ] = True
     ui_parameters: Annotated[
-        Optional[Dict[str, Any]],
+        dict[str, Any] | None,
         Doc(
             """
             Configuration parameters for Redoc UI.
-            It defaults to [redoc_ui_default_parameters][fastapi.openapi.docs.redoc_ui_default_parameters].
+            It defaults to [default_parameters][openapipages.redoc.default_parameters].
             """,
         ),
     ] = None
@@ -60,22 +60,25 @@ class ReDoc(Base):
         Returns:
             str: The HTML content as a string that loads the ReDoc UI.
         """
-        self.tail_js_urls.insert(0, self.js_url)
-        google_fonts_str = ""
-        if self.with_google_fonts:
-            google_fonts_str = """<link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,700|Roboto:300,400,700" rel="stylesheet">"""  # pragma: no cover
+        tail_js_urls = [self.js_url, *self.tail_js_urls]
+        google_fonts_str = (
+            '<link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,700|Roboto:300,400,700" rel="stylesheet">'
+            if self.with_google_fonts
+            else ""
+        )
 
-        current_redoc_ui_parameters = default_parameters.copy()  # pragma: no cover
-        current_redoc_ui_parameters.update(self.ui_parameters or {})
+        current_redoc_ui_parameters = default_parameters.copy()
+        if self.ui_parameters:
+            current_redoc_ui_parameters.update(self.ui_parameters)
 
         html_template = self.get_html_template()
         return html_template.format(
             title=self.title,
             favicon_url=self.favicon_url,
-            openapi_url=self.openapi_url,
+            openapi_url=json.dumps(self.openapi_url),
             head_css_str=self.get_head_css_str(),
             head_js_str=self.get_head_js_str(),
-            tail_js_str=self.get_tail_js_str(),
+            tail_js_str=self.get_tail_js_str(tail_js_urls),
             google_fonts_str=google_fonts_str,
             redoc_ui_parameters=json.dumps(current_redoc_ui_parameters, indent=2),
         )
@@ -108,7 +111,7 @@ class ReDoc(Base):
                 {tail_js_str}
                 <script>
                   Redoc.init(
-                    "{openapi_url}",
+                    {openapi_url},
                     {redoc_ui_parameters},
                     document.getElementById("redoc-container")
                   )

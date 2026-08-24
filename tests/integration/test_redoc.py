@@ -9,7 +9,7 @@ from tests.main import app
 async def test_redoc_plain() -> None:
     # Copy of  https://github.com/tiangolo/fastapi/blob/be876902554a0bd886167de144f0d593ed2e6ad7/tests/test_application.py#L42-L46
     async with AsyncClient(
-        transport=ASGITransport(app),  # type: ignore[arg-type]
+        transport=ASGITransport(app),
         base_url="http://testserver/",
     ) as client:
         response = await client.get("/redoc-plain")
@@ -17,13 +17,15 @@ async def test_redoc_plain() -> None:
         assert response.headers["content-type"] == "text/html; charset=utf-8"
         assert "redoc@2" in response.text
         assert '"hideDownloadButton": false' in response.text
+        assert "https://fonts.googleapis.com/css?family=Montserrat" in response.text
+        assert '"/openapi.json"' in response.text
 
 
 @pytest.mark.asyncio
 async def test_redoc_custom() -> None:
     # Copy of  https://github.com/tiangolo/fastapi/blob/be876902554a0bd886167de144f0d593ed2e6ad7/tests/test_tutorial/test_custom_docs_ui/test_tutorial001.py#L35-L38
     async with AsyncClient(
-        transport=ASGITransport(app),  # type: ignore[arg-type]
+        transport=ASGITransport(app),
         base_url="http://testserver/",
     ) as client:
         response = await client.get("/redoc-custom")
@@ -31,3 +33,5 @@ async def test_redoc_custom() -> None:
         assert (
             "https://unpkg.com/redoc@next/bundles/redoc.standalone.js" in response.text
         )
+        assert "fonts.googleapis.com" not in response.text
+        assert '"hideDownloadButton": true' in response.text

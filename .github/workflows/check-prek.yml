@@ -1,0 +1,24 @@
+---
+name: Prek Checks
+on:
+  pull_request:
+  push:
+    branches: [main]
+jobs:
+  prek:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+      - uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d  # v10.0.1
+        with:
+          enable-cache: true
+      # basedpyright needs project deps importable to resolve third-party
+      # symbols. Run prek inside the uv-managed venv so site-packages is
+      # populated; the wrapped prek-action runs in an isolated env that
+      # cannot see uv's venv.
+      - name: Sync dependencies
+        # --all-extras pulls the optional `otel` group so basedpyright can
+        # resolve the soft-imported OpenTelemetry symbols in factory.py.
+        run: uv sync --all-groups --all-extras --frozen
+      - name: Run prek
+        run: uv run --with prek prek run --all-files --show-diff-on-failure

@@ -6,13 +6,12 @@ from tests.main import app
 
 
 @pytest.mark.asyncio
-async def test_elements() -> None:
+async def test_rapidoc() -> None:
     async with AsyncClient(
-        transport=ASGITransport(app),  # type: ignore[arg-type]
+        transport=ASGITransport(app),
         base_url="http://testserver/",
     ) as client:
-        response = await client.get("/elements")
+        response = await client.get("/rapidoc")
         assert response.status_code == status.HTTP_200_OK, response.text
         assert response.headers["content-type"] == "text/html; charset=utf-8"
-        assert "@stoplight/elements/web-components.min.js" in response.text
-        assert "@stoplight/elements/styles.min.css" in response.text
+        assert "rapidoc/dist/rapidoc-min.js" in response.text

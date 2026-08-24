@@ -20,38 +20,38 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12', '3.13']
+        python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
     permissions:
       contents: read
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v5
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Install Hatch
-      run: pip install --upgrade hatch
-    - name: Run static analysis
-      if: matrix.os == 'ubuntu-latest' && (matrix.python-version == '3.8' || matrix.python-version == '3.13')
-      run: |
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v7.0.0
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install Hatch
+        run: pip install --upgrade hatch
+      - name: Run static analysis
+        if: matrix.os == 'ubuntu-latest' && (matrix.python-version == '3.10' || matrix.python-version == '3.14')
+        run: |
           hatch run +py=${{ matrix.python-version }} test:style
-    - name: Run tests with coverage
-      run: hatch run +py=${{ matrix.python-version }} test:test
-    - name: List coverage files
-      shell: bash
-      run: |
-        echo "Current directory: $(pwd)"
-        echo "Coverage files:"
-        find . -name ".coverage*" -type f
-        ls -la .coverage* 2>/dev/null || echo "No .coverage files found"
-    - name: Upload coverage files
-      uses: actions/upload-artifact@v4.6.2
-      with:
-        name: coverage-${{ matrix.os }}-${{ matrix.python-version }}
-        path: .coverage*
-        retention-days: 1
-        if-no-files-found: warn
+      - name: Run tests with coverage
+        run: hatch run +py=${{ matrix.python-version }} test:test
+      - name: List coverage files
+        shell: bash
+        run: |
+          echo "Current directory: $(pwd)"
+          echo "Coverage files:"
+          find . -name ".coverage*" -type f
+          ls -la .coverage* 2>/dev/null || echo "No .coverage files found"
+      - name: Upload coverage files
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
+        with:
+          name: coverage-${{ matrix.os }}-${{ matrix.python-version }}
+          path: .coverage*
+          retention-days: 1
+          include-hidden-files: true
   coverage:
     name: Coverage Report
     needs:
@@ -59,17 +59,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
         with:
           fetch-depth: 0
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v7.0.0
         with:
-          python-version-file: '.python-version'
+          python-version-file: ".python-version"
       - name: Install Hatch
         run: pip install --upgrade hatch
       - name: Download coverage files
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8.0.1
         with:
           pattern: coverage*
           merge-multiple: true
@@ -85,7 +85,34 @@ jobs:
           # Generate coverage report using hatch
           hatch run test:cov
       - name: Upload Coverage
-        uses: codecov/codecov-action@v5.4.3
+        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f  # v7.0.0
         with:
           files: coverage.xml
           fail_ci_if_error: false
+  e2e:
+    name: E2E (Chromium)
+    needs:
+      - tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v7.0.0
+        with:
+          python-version: "3.14"
+      - name: Install Hatch
+        run: pip install --upgrade hatch
+      - name: Install Chromium
+        run: hatch run e2e:playwright install --with-deps chromium
+      - name: Run e2e tests
+        run: hatch run e2e:test -v --tracing retain-on-failure --screenshot only-on-failure --video retain-on-failure --output test-results
+      - name: Upload Playwright artifacts on failure
+        if: failure() || cancelled()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
+        with:
+          name: playwright-output-${{ github.run_id }}-${{ github.run_attempt }}
+          path: test-results/
