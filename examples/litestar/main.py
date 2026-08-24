@@ -1,4 +1,4 @@
-# ruff: noqa: RUF029, S104
+# ruff: file-ignore[unused-async, hardcoded-bind-all-interfaces]
 
 from typing import Any
 

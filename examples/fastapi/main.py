@@ -4,7 +4,7 @@
 # [tool.uv.sources]
 # openapipages = { path = "../../", editable = true }
 # ///
-# ruff: noqa: S104
+# ruff: file-ignore[hardcoded-bind-all-interfaces]
 
 import uvicorn
 from fastapi import FastAPI
