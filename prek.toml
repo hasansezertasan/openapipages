@@ -68,7 +68,7 @@ rev = "0.12.5"
 hooks = [{ id = "uv-lock" }]
 [[repos]]
 repo = "https://github.com/abravalheri/validate-pyproject"
-rev = "v0.25"
+rev = "0.26"
 hooks = [{ id = "validate-pyproject" }]
 [[repos]]
 repo = "https://github.com/astral-sh/ruff-pre-commit"
