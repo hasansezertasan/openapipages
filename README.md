@@ -75,7 +75,11 @@ Emoji Key:
 
 ## Installation
 
-```console
+```sh
+# Using uv (recommended)
+uv add openapipages
+
+# Using pip
 pip install openapipages
 ```
 
@@ -187,6 +191,42 @@ One interface for many! And of course Framework agnostic... So you can use it in
 - [[Question] Is it possible to load the Swagger UI offline? · Issue #261 · 0b01001001/spectree](https://github.com/0b01001001/spectree/issues/261)
 - [Swagger with hosted files does not work after upgrade · tiangolo/fastapi · Discussion #10426](https://github.com/tiangolo/fastapi/discussions/10426)
 - [♻️ Generate cleaner Swagger HTML by s-rigaud · Pull Request #11072 · tiangolo/fastapi](https://github.com/tiangolo/fastapi/pull/11072)
+
+## Tasks
+
+### Development Commands
+
+The following commands are available for development and testing:
+
+```bash
+# Run tests with coverage
+hatch run test:test
+
+# Generate coverage report
+hatch run test:cov
+
+# Run static analysis and style checks
+hatch run test:style
+
+# Install development dependencies
+hatch env create test
+```
+
+### CI/CD Pipeline
+
+The project uses GitHub Actions for continuous integration:
+
+- **Tests**: Runs on multiple Python versions (3.8-3.13) and operating systems
+- **Coverage**: Generates and uploads coverage reports to Codecov
+- **Static Analysis**: Runs style checks and type checking
+- **Artifacts**: Coverage files are uploaded as artifacts for debugging
+
+### Coverage Configuration
+
+- Coverage is configured to target 99% minimum coverage
+- Source packages: `openapipages` (excludes test files)
+- Excluded files: `__about__.py` and pragma-marked lines
+- Parallel coverage collection enabled for CI
 
 ## Author
 
