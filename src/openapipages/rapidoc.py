@@ -42,6 +42,7 @@ class RapiDoc(Base):
         )
 
     def get_html_template(self) -> str:
+        """Return the RapiDoc page template with its module script."""
         return """
         <!DOCTYPE html>
         <html>

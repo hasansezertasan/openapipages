@@ -127,6 +127,7 @@ def test_user_supplied_url_lists_are_rendered(
 
 
 def test_rapidoc_bundle_is_loaded_as_module() -> None:
+    """Load custom RapiDoc bundles as modules and defer extension scripts."""
     page = RapiDoc(
         title="RapiDoc",
         js_url="https://cdn.example/rapidoc.js",

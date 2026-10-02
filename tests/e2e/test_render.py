@@ -85,9 +85,11 @@ def test_rapidoc_extensions_execute_after_bundle(page: Page) -> None:
     ).render()
 
     def serve_page(route: Route) -> None:
+        """Serve the renderer HTML without an external server."""
         route.fulfill(body=html, content_type="text/html")
 
     def serve_bundle(route: Route) -> None:
+        """Register the component from a minimal ES module."""
         route.fulfill(
             content_type="text/javascript",
             body="""export class RapiDoc extends HTMLElement {};
@@ -95,6 +97,7 @@ customElements.define('rapi-doc', RapiDoc); window.executionOrder = [];""",
         )
 
     def serve_extension(route: Route) -> None:
+        """Record script order and fail if the module has not initialized."""
         route.fulfill(
             content_type="text/javascript",
             body="""if (!customElements.get('rapi-doc')) throw Error('RapiDoc not ready');
