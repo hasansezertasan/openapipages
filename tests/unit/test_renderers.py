@@ -123,3 +123,16 @@ def test_user_supplied_url_lists_are_rendered(
         '<link type="text/css" rel="stylesheet" href="https://cdn.example/head.css">'
         in html
     )
+
+
+def test_rapidoc_bundle_is_loaded_as_module() -> None:
+    page = RapiDoc(
+        title="RapiDoc",
+        js_url="https://cdn.example/rapidoc.js",
+        head_js_urls=["https://cdn.example/head.js"],
+    )
+    html = page.render()
+    assert (
+        '<script type="module" src="https://cdn.example/rapidoc.js"></script>' in html
+    )
+    assert '<script src="https://cdn.example/head.js"></script>' in html
