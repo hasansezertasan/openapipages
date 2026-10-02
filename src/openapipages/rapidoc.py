@@ -31,9 +31,14 @@ class RapiDoc(Base):
             favicon_url=self.favicon_url,
             openapi_url=self.openapi_url,
             head_css_str=self.get_head_css_str(),
-            head_js_str=self.get_head_js_str(),
+            # Modules and deferred classic scripts execute in document order.
+            head_js_str="\n".join(
+                f'<script defer src="{url}"></script>' for url in self.head_js_urls
+            ),
             js_url=self.js_url,
-            tail_js_str=self.get_tail_js_str(),
+            tail_js_str="\n".join(
+                f'<script defer src="{url}"></script>' for url in self.tail_js_urls
+            ),
         )
 
     def get_html_template(self) -> str:
