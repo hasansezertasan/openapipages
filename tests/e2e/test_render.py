@@ -16,12 +16,13 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import pytest
+from openapipages import RapiDoc
 from playwright.sync_api import expect
 
 from tests.e2e.app import API_TITLE, RENDERER_PATHS
 
 if TYPE_CHECKING:
-    from playwright.sync_api import Page
+    from playwright.sync_api import Page, Route
 
 # UI bundles are fetched from public CDNs, so allow a generous budget for the
 # first paint (Elements and Scalar bundles are sizeable).
@@ -71,3 +72,41 @@ def test_page_tab_title_is_renderer_name(
     assert page.title() == expected, (
         f"{renderer}: expected tab title {expected!r}, got {page.title()!r}"
     )
+
+
+def test_rapidoc_extensions_execute_after_bundle(page: Page) -> None:
+    """Head and tail extensions see the component registered by the module."""
+    origin = "https://rapidoc.example"
+    html = RapiDoc(
+        title="RapiDoc",
+        js_url=f"{origin}/bundle.js",
+        head_js_urls=[f"{origin}/head.js"],
+        tail_js_urls=[f"{origin}/tail.js"],
+    ).render()
+
+    def serve_page(route: Route) -> None:
+        """Serve the renderer HTML without an external server."""
+        route.fulfill(body=html, content_type="text/html")
+
+    def serve_bundle(route: Route) -> None:
+        """Register the component from a minimal ES module."""
+        route.fulfill(
+            content_type="text/javascript",
+            body="""export class RapiDoc extends HTMLElement {};
+customElements.define('rapi-doc', RapiDoc); window.executionOrder = [];""",
+        )
+
+    def serve_extension(route: Route) -> None:
+        """Record script order and fail if the module has not initialized."""
+        route.fulfill(
+            content_type="text/javascript",
+            body="""if (!customElements.get('rapi-doc')) throw Error('RapiDoc not ready');
+window.executionOrder.push(document.currentScript.src.split('/').pop());""",
+        )
+
+    page.route(f"{origin}/", serve_page)
+    page.route(f"{origin}/bundle.js", serve_bundle)
+    for location in ("head", "tail"):
+        page.route(f"{origin}/{location}.js", serve_extension)
+    page.goto(f"{origin}/", wait_until="load")
+    assert page.evaluate("window.executionOrder") == ["head.js", "tail.js"]

@@ -117,9 +117,24 @@ def test_user_supplied_url_lists_are_rendered(
         tail_js_urls=["https://cdn.example/tail.js"],
         head_css_urls=["https://cdn.example/head.css"],
     ).render()
-    assert '<script src="https://cdn.example/head.js"></script>' in html
-    assert '<script src="https://cdn.example/tail.js"></script>' in html
+    script_tag = "<script defer" if renderer_cls is RapiDoc else "<script"
+    assert f'{script_tag} src="https://cdn.example/head.js"></script>' in html
+    assert f'{script_tag} src="https://cdn.example/tail.js"></script>' in html
     assert (
         '<link type="text/css" rel="stylesheet" href="https://cdn.example/head.css">'
         in html
     )
+
+
+def test_rapidoc_bundle_is_loaded_as_module() -> None:
+    """Load custom RapiDoc bundles as modules and defer extension scripts."""
+    page = RapiDoc(
+        title="RapiDoc",
+        js_url="https://cdn.example/rapidoc.js",
+        head_js_urls=["https://cdn.example/head.js"],
+    )
+    html = page.render()
+    assert (
+        '<script type="module" src="https://cdn.example/rapidoc.js"></script>' in html
+    )
+    assert '<script defer src="https://cdn.example/head.js"></script>' in html
