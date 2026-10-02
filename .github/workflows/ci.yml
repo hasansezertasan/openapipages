@@ -57,6 +57,8 @@ jobs:
     needs:
       - tests
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
@@ -76,18 +78,15 @@ jobs:
       - name: List downloaded files
         run: |
           echo "Downloaded files:"
-          find . -name "coverage*" -type f
-          ls -la coverage* 2>/dev/null || echo "No coverage files found"
+          find . -name ".coverage*" -type f
+          ls -la .coverage* 2>/dev/null || echo "No .coverage files found"
       - name: Generate coverage report
-        run: |
-          # Move coverage files to expected location
-          find . -name ".coverage*" -exec mv {} . \;
-          # Generate coverage report using hatch
-          hatch run test:cov
+        run: hatch run +py=3.14 test:cov
       - name: Upload Coverage
         uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5  # v7.1.1
         with:
           files: coverage.xml
+          flags: unit
           fail_ci_if_error: false
   e2e:
     name: E2E (Chromium)
