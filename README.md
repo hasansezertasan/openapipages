@@ -39,6 +39,11 @@ Totally Pythonic, OpenAPI Based customizable documentation pages for [SwaggerUI]
   - [See Also](#see-also)
     - [Projects](#projects)
     - [Issues, PRs, and Discussions](#issues-prs-and-discussions)
+  - [Tasks](#tasks)
+    - [Testing](#testing)
+    - [CI/CD Pipeline](#cicd-pipeline)
+    - [Coverage Configuration](#coverage-configuration)
+    - [Development Tasks](#development-tasks)
   - [Author](#author)
   - [Disclaimer](#disclaimer)
   - [License](#license)
@@ -75,7 +80,11 @@ Emoji Key:
 
 ## Installation
 
-```console
+```sh
+# Using uv (recommended)
+uv add openapipages
+
+# Using pip
 pip install openapipages
 ```
 
@@ -210,8 +219,9 @@ Run the fast suites (unit + integration) and static analysis with [Hatch](https:
 
 ```bash
 hatch run test:test    # unit + integration (e2e is excluded)
-hatch run test:cov     # coverage report
+hatch run +py=3.14 test:cov # combine coverage once and generate reports
 hatch run test:style   # ruff + mypy + codespell
+hatch env create test  # install development dependencies
 ```
 
 The end-to-end tests live in their own environment so the browser/uvicorn extras
@@ -224,6 +234,22 @@ hatch run e2e:test              # run the browser tests
 ```
 
 In CI they run as a separate `E2E (Chromium)` job, gated behind the cross-platform test matrix.
+
+### CI/CD Pipeline
+
+The project uses GitHub Actions for continuous integration:
+
+- **Tests**: Runs on multiple Python versions (3.10-3.14) and operating systems
+- **Coverage**: Generates and uploads coverage reports to Codecov
+- **Static Analysis**: Runs style checks and type checking
+- **Artifacts**: Coverage files are uploaded as artifacts for debugging
+
+### Coverage Configuration
+
+- Coverage is configured to target 99% minimum coverage
+- Coverage collection includes `openapipages` and the unit and integration tests; the Codecov project status targets `src`
+- Excluded files: `__about__.py`, end-to-end tests, and pragma-marked lines
+- Parallel coverage collection enabled for CI
 
 ### Development Tasks
 

@@ -25,18 +25,24 @@ class RapiDoc(Base):
         Returns:
             str: The HTML response as a string that loads RapiDoc for the alternative API docs.
         """
-        head_js_urls = [self.js_url, *self.head_js_urls]
         html_template = self.get_html_template()
         return html_template.format(
             title=self.title,
             favicon_url=self.favicon_url,
             openapi_url=self.openapi_url,
             head_css_str=self.get_head_css_str(),
-            head_js_str=self.get_head_js_str(head_js_urls),
-            tail_js_str=self.get_tail_js_str(),
+            # Modules and deferred classic scripts execute in document order.
+            head_js_str="\n".join(
+                f'<script defer src="{url}"></script>' for url in self.head_js_urls
+            ),
+            js_url=self.js_url,
+            tail_js_str="\n".join(
+                f'<script defer src="{url}"></script>' for url in self.tail_js_urls
+            ),
         )
 
     def get_html_template(self) -> str:
+        """Return the RapiDoc page template with its module script."""
         return """
         <!DOCTYPE html>
         <html>
@@ -45,6 +51,7 @@ class RapiDoc(Base):
                 <title>{title}</title>
                 <link rel="shortcut icon" href="{favicon_url}">
                 {head_css_str}
+                <script type="module" src="{js_url}"></script>
                 {head_js_str}
             </head>
             <body>
