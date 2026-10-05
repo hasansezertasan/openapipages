@@ -13,10 +13,11 @@ JavaScript has booted, fetched ``/openapi.json``, parsed it, and rendered it.
 
 from __future__ import annotations
 
-from fastapi import FastAPI
 from fastapi.responses import HTMLResponse, PlainTextResponse
-from openapipages import Elements, RapiDoc, ReDoc, Scalar, SwaggerUI
 from pydantic import BaseModel
+
+from fastapi import FastAPI
+from openapipages import Elements, RapiDoc, ReDoc, Scalar, SwaggerUI
 
 API_TITLE = "OpenAPIPages E2E API"
 """``info.title`` of the served spec. Asserted to appear in the rendered DOM."""

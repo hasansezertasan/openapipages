@@ -1,8 +1,9 @@
 from dataclasses import dataclass
 from typing import Annotated
 
-from openapipages.base import Base
 from typing_extensions import Doc
+
+from openapipages.base import Base
 
 
 @dataclass
@@ -15,7 +16,7 @@ class RapiDoc(Base):
             """
             The URL to use to load the RapiDoc JavaScript.
             It is normally set to a CDN URL.
-            """,
+            """
         ),
     ] = "https://unpkg.com/rapidoc/dist/rapidoc-min.js"
 

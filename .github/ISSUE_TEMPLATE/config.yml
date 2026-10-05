@@ -1,0 +1,20 @@
+---
+# Structured issue forms (bug_report.yml, feature_request.yml) cover the common
+# cases; force reporters through those instead of a free-form blank issue.
+blank_issues_enabled: false
+contact_links:
+  - name: Questions on Discussions
+    url: https://github.com/hasansezertasan/openapipages/discussions/
+    about: Ask questions about your own code or scenarios on the Discussions tab.
+  - name: Security Contact
+    url: https://github.com/hasansezertasan/openapipages/security/policy
+    about: Please report security vulnerabilities privately to hasansezertasan@gmail.com
+  - name: Question or Problem
+    about: Ask a question or ask about a problem in GitHub Discussions.
+    url: https://github.com/hasansezertasan/openapipages/discussions/categories/questions
+  - name: Feature Request
+    about: To suggest an idea or ask about a feature, please start with a question saying what you would like to achieve. There might be a way to do it already.
+    url: https://github.com/hasansezertasan/openapipages/discussions/categories/questions
+  - name: Show and tell
+    about: Show what you built with openapipages or to be used with openapipages.
+    url: https://github.com/hasansezertasan/openapipages/discussions/categories/show-and-tell

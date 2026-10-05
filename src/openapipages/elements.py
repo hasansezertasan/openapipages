@@ -1,8 +1,9 @@
 from dataclasses import dataclass
 from typing import Annotated
 
-from openapipages.base import Base
 from typing_extensions import Doc
+
+from openapipages.base import Base
 
 
 @dataclass
@@ -15,7 +16,7 @@ class Elements(Base):
             """
             The URL to use to load the Stoplight Elements JavaScript.
             It is normally set to a CDN URL.
-            """,
+            """
         ),
     ] = "https://unpkg.com/@stoplight/elements/web-components.min.js"
     css_url: Annotated[
@@ -24,7 +25,7 @@ class Elements(Base):
             """
             The URL to use to load the Stoplight Elements CSS.
             It is normally set to a CDN URL.
-            """,
+            """
         ),
     ] = "https://unpkg.com/@stoplight/elements/styles.min.css"
 

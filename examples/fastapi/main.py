@@ -7,8 +7,9 @@
 # ruff: file-ignore[hardcoded-bind-all-interfaces]
 
 import uvicorn
-from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
+
+from fastapi import FastAPI
 from openapipages import Elements, RapiDoc, ReDoc, Scalar, SwaggerUI
 
 # Disable the built-in /redoc page so we can make a custom one.

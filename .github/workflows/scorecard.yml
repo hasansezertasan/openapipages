@@ -1,0 +1,62 @@
+---
+name: "Scorecard supply-chain security"
+on:
+  # Re-evaluate when branch protection rules change.
+  branch_protection_rule:
+  schedule:
+    - cron: "27 3 * * 1"
+  push:
+    branches: ["main"]
+# Least-privilege default; the analysis job elevates only what it needs.
+permissions: read-all
+jobs:
+  analysis:
+    name: Scorecard analysis
+    # `publish_results` and the code-scanning upload both need a public repo
+    # (GitHub Advanced Security on private/internal ones), so on a private repo
+    # this job just leaves `main` permanently red.
+    #
+    # `||` returns the first truthy operand, so this coalesces two visibility
+    # sources and falls back to "public". Two sources because neither covers
+    # every trigger alone, and one is only probably real:
+    #   * `github.event.repository.visibility` is documented, but `schedule`
+    #     carries no event payload at all, so it is empty there.
+    #   * `github.repository_visibility` is the only source a scheduled run
+    #     could have, but it is undocumented -- absent from both the contexts
+    #     and default-env-var references, though actionlint models it.
+    # Hence the 'public' default: if that property does not resolve, a
+    # scheduled run on a *public* repo sees nothing from either source and must
+    # still run. Unknown therefore fails OPEN. Mirrors codeql.yml.
+    if: (github.repository_visibility || github.event.repository.visibility || 'public') == 'public'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      # Job-level permissions replace the workflow's read-all, so re-grant the
+      # repository read that actions/checkout needs.
+      contents: read
+      # Needed to upload the SARIF results to the code-scanning dashboard.
+      security-events: write
+      # Needed to publish the results and mint the OpenSSF Scorecard badge.
+      id-token: write
+    steps:
+      - name: "Checkout code"
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7
+        with:
+          persist-credentials: false
+      - name: "Run analysis"
+        uses: ossf/scorecard-action@2d1146689b8cda280b9bc96326124645441f03bc  # v2.4.4
+        with:
+          results_file: results.sarif
+          results_format: sarif
+          # Publish so the badge at scorecard.dev resolves. Public repos only.
+          publish_results: true
+      - name: "Upload artifact"
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7
+        with:
+          name: SARIF file
+          path: results.sarif
+          retention-days: 5
+      - name: "Upload to code-scanning"
+        uses: github/codeql-action/upload-sarif@ff2f1c621b7f889edc0d3c761ac2e6a3f8cdb0dd  # v4
+        with:
+          sarif_file: results.sarif

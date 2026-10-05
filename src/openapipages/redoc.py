@@ -2,8 +2,9 @@ import json
 from dataclasses import dataclass
 from typing import Annotated, Any
 
-from openapipages.base import Base
 from typing_extensions import Doc
+
+from openapipages.base import Base
 
 default_parameters: Annotated[
     dict[str, Any],
@@ -13,14 +14,9 @@ default_parameters: Annotated[
         You can use it as a template to add any other configurations needed.
         Available options can be found here:
         https://github.com/Redocly/redoc/blob/main/docs/config.md#theme-settings
-        """,
+        """
     ),
-] = {
-    "theme": {
-        "typography": {"code": {"wrap": True}},
-    },
-    "hideDownloadButton": False,
-}
+] = {"theme": {"typography": {"code": {"wrap": True}}}, "hideDownloadButton": False}
 
 
 @dataclass
@@ -33,7 +29,7 @@ class ReDoc(Base):
             """
             The URL to use to load the ReDoc JavaScript.
             It is normally set to a CDN URL.
-            """,
+            """
         ),
     ] = "https://cdn.jsdelivr.net/npm/redoc@2/bundles/redoc.standalone.js"
     with_google_fonts: Annotated[
@@ -41,7 +37,7 @@ class ReDoc(Base):
         Doc(
             """
             Load and use Google Fonts.
-            """,
+            """
         ),
     ] = True
     ui_parameters: Annotated[
@@ -50,7 +46,7 @@ class ReDoc(Base):
             """
             Configuration parameters for Redoc UI.
             It defaults to [default_parameters][openapipages.redoc.default_parameters].
-            """,
+            """
         ),
     ] = None
 

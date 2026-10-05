@@ -1,0 +1,75 @@
+---
+name: "Security scan"
+on:
+  pull_request:
+    branches: ["main"]
+  push:
+    branches: ["main"]
+  schedule:
+    # Weekly, so newly-disclosed CVEs in already-pinned dependencies are caught
+    # between code changes (Renovate bumps them, this proves the current pin is
+    # still clean). Complements the PR-diff-only dependency-review workflow.
+    - cron: "17 5 * * 1"
+# Least-privilege default; each job elevates only what it needs.
+permissions:
+  contents: read
+jobs:
+  gitleaks:
+    name: Secret scan (gitleaks)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7
+        with:
+          persist-credentials: false
+          # Full history so leaked secrets in past commits are found, not just
+          # the diff. GitHub's native push protection only guards new pushes.
+          fetch-depth: 0
+      - name: Run gitleaks
+        uses: gitleaks/gitleaks-action@e0c47f4f8be36e29cdc102c57e68cb5cbf0e8d1e  # v3.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # gitleaks-action is free for personal accounts and public repos. If you
+          # move this repo under a GitHub *organization*, add a GITLEAKS_LICENSE
+          # repository/org secret (https://gitleaks.io) — it is wired into this
+          # step's env (next line), but stays empty (and unused) for
+          # personal/public repos.
+          GITLEAKS_LICENSE: ${{ secrets.GITLEAKS_LICENSE }}
+  pip-audit:
+    name: Dependency audit (pip-audit)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7
+        with:
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v7.0.0
+        with:
+          python-version-file: .python-version
+      - name: Setup uv
+        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9  # v9.0.0
+        with:
+          enable-cache: true
+          cache-dependency-glob: |
+            pyproject.toml
+            uv.lock
+      - name: Export locked runtime dependencies
+        # Audit what ships: the resolved runtime tree, excluding dev tooling and
+        # the project itself. Component/settings deps are core `dependencies`, so
+        # a plain export already covers them; `--all-extras` is retained as a
+        # harmless safeguard in case a future extra reintroduces shipped deps.
+        # --no-hashes keeps pip-audit's resolver from demanding a hash for every
+        # transitive pin.
+        run: uv export --frozen --all-extras --no-dev --no-emit-project --no-hashes --format requirements.txt --output-file requirements-audit.txt
+      - name: Audit dependencies for known vulnerabilities
+        # Queries the PyPI Advisory DB for the full resolved tree; exits non-zero
+        # on any finding. Runs in an ephemeral uvx env so pip-audit itself is not
+        # a project dependency.
+        run: uvx pip-audit --requirement requirements-audit.txt

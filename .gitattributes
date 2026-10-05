@@ -1,2 +1,48 @@
-# Generated files — collapse in GitHub PR diffs
+# Normalize line endings. Store everything as LF in the repo, matching the
+# ruff/EditorConfig LF policy, so CRLF from Windows checkouts never leaks in.
+* text=auto eol=lf
+
+# Scripts keep platform-appropriate endings on checkout.
+*.sh text eol=lf
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
+# Explicit binaries: never normalize, never diff as text.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+*.pdf binary
+*.zip binary
+*.gz binary
+*.whl binary
+
+# SVGs are XML: keep them text so they normalize and diff line-by-line.
+*.svg text
+
+# GitHub Linguist overrides — keep language stats and diffs meaningful.
+src/openapipages/_version.py linguist-generated=true
+CHANGELOG.md linguist-generated=true
 uv.lock linguist-generated=true
+cobo.lock linguist-generated=true
+docs/** linguist-documentation
+
+# Expand the archival placeholders in .git_archival.txt when creating a `git
+# archive` (e.g. GitHub source tarballs) so hatch-vcs/setuptools-scm can recover
+# the tag-derived version without a .git directory. Must NOT be export-ignored --
+# the file has to ship inside the archive.
+.git_archival.txt export-subst
+
+# Keep `git archive` tarballs lean (development-only paths are excluded).
+.github/ export-ignore
+.devcontainer/ export-ignore
+.vscode/ export-ignore
+tests/ export-ignore
+docs/ export-ignore
+.gitattributes export-ignore
+.gitignore export-ignore
+.editorconfig export-ignore

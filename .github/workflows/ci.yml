@@ -1,117 +1,309 @@
 ---
 name: CI
 on:
+  workflow_dispatch:
   push:
     branches: [main, master]
   pull_request:
     branches: [main, master]
-concurrency:
-  group: ci-${{ github.head_ref }}
-  cancel-in-progress: true
-env:
-  PYTHONUNBUFFERED: "1"
-  FORCE_COLOR: "1"
+    # Every job below is draft-gated, so leaving draft must explicitly start a
+    # fresh run; `ready_for_review` is not part of GitHub's default event types.
+    types: [opened, synchronize, reopened, ready_for_review]
 jobs:
-  tests:
-    name: Python ${{ matrix.python-version }} on ${{ startsWith(matrix.os, 'macos-') && 'macOS' || startsWith(matrix.os, 'windows-') && 'Windows' || 'Linux' }}
-    runs-on: ${{ matrix.os }}
+  changes:
+    name: Detect changed components
+    # Draft-skip composes with #159 and is falsy-safe on push/workflow_dispatch
+    # (no pull_request context => the expression is not 'true', so it runs).
+    if: ${{ github.event.pull_request.draft != true }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      # dorny/paths-filter fetches the changed-file list via the REST API on
+      # `pull_request` events (git diff is only used for push/other events, even
+      # with a checkout), so it needs `pull-requests: read`.
+      pull-requests: read
+    outputs:
+      core: ${{ steps.filter.outputs.core }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7
+        with:
+          persist-credentials: false
+      - name: Filter changed paths
+        id: filter
+        uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d  # v4.0.3
+        with:
+          # `core` underpins every component (deps, shared core/, package-root
+          # modules, the root conftest, root-level tests), so a change here
+          # forces the full fan-out — mirrors the import-linter layering
+          # (ADR-014). Each component filter watches only its own src+tests tree.
+          filters: |
+            core:
+              - '.github/workflows/ci.yml'
+              - 'pyproject.toml'
+              - 'uv.lock'
+              - 'tox.ini'
+              - 'src/openapipages/*.py'
+              - 'src/openapipages/core/**'
+              - 'src/openapipages/utils/**'
+              - 'tests/conftest.py'
+              - 'tests/core/**'
+              - 'tests/test_*.py'
+  hooks:
+    name: Run prek hooks
+    if: ${{ github.event.pull_request.draft != true }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7
+        with:
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v7.0.0
+        with:
+          python-version-file: .python-version
+      - name: Setup uv
+        id: setup-uv
+        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9  # v9.0.0
+        with:
+          enable-cache: true
+          cache-dependency-glob: |
+            pyproject.toml
+            uv.lock
+      - name: Install mise tools
+        # ghalint has no PyPI wrapper or pre-commit hook, so the prek `ghalint`
+        # hook runs the mise-managed binary. Install mise's tools (incl. ghalint)
+        # and put them on PATH before prek runs.
+        uses: jdx/mise-action@7e36c90d9ab29c415a2384db3006f3ec8a8cc654  # v4.2.4
+      - name: Run prek hooks
+        run: uv run --locked --group prek prek run --all-files --show-diff-on-failure
+  style:
+    name: Run style and type checks
+    # Keep style in one Linux job rather than repeating it for every component.
+    # The tox env itself sweeps mypy's Python-version and platform axes.
+    if: ${{ github.event.pull_request.draft != true }}
+    runs-on: ubuntu-latest
     timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7
+        with:
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v7.0.0
+        with:
+          python-version-file: .python-version
+      - name: Setup uv
+        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9  # v9.0.0
+        with:
+          enable-cache: true
+          cache-dependency-glob: |
+            pyproject.toml
+            uv.lock
+      - name: Run style and type checks
+        run: uv run --locked tox run -e style
+
+  test-core:
+    name: Test core on ${{ matrix.os }}
+    needs: changes
+    if: ${{ github.event.pull_request.draft != true }}
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-        python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
+        include:
+          - {os: ubuntu-latest, tox_args: "-e 3.14,3.13,3.12,3.11,3.10"}
+          - {os: macos-latest, tox_args: "-e py"}
+          - {os: windows-latest, tox_args: "-e py"}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
     permissions:
       contents: read
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v7.0.0
-        with:
-          python-version: ${{ matrix.python-version }}
-      - name: Install Hatch
-        run: pip install --upgrade hatch
-      - name: Run static analysis
-        if: matrix.os == 'ubuntu-latest' && (matrix.python-version == '3.10' || matrix.python-version == '3.14')
-        run: |
-          hatch run +py=${{ matrix.python-version }} test:style
-      - name: Run tests with coverage
-        run: hatch run +py=${{ matrix.python-version }} test:test
-      - name: List coverage files
+      - name: System Info
         shell: bash
         run: |
-          echo "Current directory: $(pwd)"
-          echo "Coverage files:"
-          find . -name ".coverage*" -type f
-          ls -la .coverage* 2>/dev/null || echo "No .coverage files found"
-      - name: Upload coverage files
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
-        with:
-          name: coverage-${{ matrix.os }}-${{ matrix.python-version }}
-          path: .coverage*
-          retention-days: 1
-          include-hidden-files: true
-  coverage:
-    name: Coverage Report
-    needs:
-      - tests
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
-        with:
-          fetch-depth: 0
-      - name: Set up Python
-        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v7.0.0
-        with:
-          python-version-file: ".python-version"
-      - name: Install Hatch
-        run: pip install --upgrade hatch
-      - name: Download coverage files
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8.0.1
-        with:
-          pattern: coverage*
-          merge-multiple: true
-      - name: List downloaded files
+          if [[ ${{ matrix.os }} == "ubuntu-latest" ]]; then
+              echo "The system is Linux."
+              uname -a || true
+              lsb_release -a || true
+              gcc --version || true
+          elif [[ ${{ matrix.os }} == "macos-latest" ]]; then
+              echo "The system is macOS."
+              sw_vers || true
+              uname -a || true
+              gcc --version || true
+          elif [[ ${{ matrix.os }} == "windows-latest" ]]; then
+              echo "The system is Windows (using a Unix-like environment)."
+              systeminfo || true
+          else
+              echo "Unknown OS: $OS_TYPE"
+              exit 1
+          fi
+      - name: Environment Info
         run: |
-          echo "Downloaded files:"
-          find . -name ".coverage*" -type f
-          ls -la .coverage* 2>/dev/null || echo "No .coverage files found"
-      - name: Generate coverage report
-        run: hatch run +py=3.14 test:cov
-      - name: Upload Coverage
-        uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5  # v7.1.1
+          env || true
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7
         with:
-          files: coverage.xml
-          flags: unit
-          fail_ci_if_error: false
-  e2e:
-    name: E2E (Chromium)
-    needs:
-      - tests
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v7.0.0
+        with:
+          python-version-file: .python-version
+      - name: Setup uv
+        id: setup-uv
+        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9  # v9.0.0
+        with:
+          enable-cache: true
+          cache-dependency-glob: |
+            pyproject.toml
+            uv.lock
+      - name: Restore cache
+        if: steps.setup-uv.outputs.cache-hit == 'true'
+        run: echo "Cache was restored"
+      - name: Run the tests
+        # `matrix.tox_args` selects the interpreter sweep (#159); the posargs
+        # after `--` select this component's marked tests (issue #160).
+        # `matrix.tox_args` is a workflow-defined (trusted) context, used inline
+        # like `matrix.os` in the System Info step — not untrusted GitHub context.
+        run: uv run --locked tox run ${{ matrix.tox_args }}
+
+      - name: Store coverage data
+        # Combine this cell's per-interpreter data and hand the raw `.coverage`
+        # off (under a per-component, per-OS name) to this component's
+        # `coverage-core` gate job, which merges its OS cells and
+        # enforces the scoped `fail_under` gate. The per-cell `coverage report`
+        # here stays for fast feedback but does NOT gate (`--fail-under=0`): a
+        # line covered on one OS yet version/OS-gated off on another only
+        # balances in the per-component union. See ADR-028 (decomposes ADR-026).
+        run: |
+          uv run coverage combine
+          uv run coverage report --show-missing --fail-under=0
+          mv .coverage ".coverage.core.${{ matrix.os }}"
+      - name: Upload coverage data
+        # `include-hidden-files` is required for upload-artifact to pick up the
+        # dotfile `.coverage.*`. Downloaded and merged by `coverage-core`.
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7
+        with:
+          name: coverage-core-${{ matrix.os }}
+          path: .coverage.core.${{ matrix.os }}
+          include-hidden-files: true
+
+  coverage-core:
+    name: Coverage gate (core)
+    needs: [changes, test-core]
+    if: >-
+      ${{ !cancelled() && github.event.pull_request.draft != true }}
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 5
     permissions:
       contents: read
     steps:
       - name: Checkout repository
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
-      - name: Set up Python
-        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v7.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7
         with:
-          python-version: "3.14"
-      - name: Install Hatch
-        run: pip install --upgrade hatch
-      - name: Install Chromium
-        run: hatch run e2e:playwright install --with-deps chromium
-      - name: Run e2e tests
-        run: hatch run e2e:test -v --tracing retain-on-failure --screenshot only-on-failure --video retain-on-failure --output test-results
-      - name: Upload Playwright artifacts on failure
-        if: failure() || cancelled()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
+          persist-credentials: false
+      - name: Setup uv
+        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9  # v9.0.0
+      - name: Download core coverage data
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8
         with:
-          name: playwright-output-${{ github.run_id }}-${{ github.run_attempt }}
-          path: test-results/
+          pattern: coverage-core-*
+          merge-multiple: true
+      - name: Combine and gate the core subtree
+        # `--locked --only-group test` pins the SAME coverage version that produced
+        # the `.coverage.*` data files (no unpinned drift), without building the
+        # project. `relative_files` (pyproject) lets cross-runner paths merge.
+        run: |
+          uv run --locked --only-group test coverage combine
+          uv run --locked --only-group test coverage report --show-missing --omit="*/_version.py" --fail-under=99
+
+  coverage-report:
+    name: Combine coverage and publish
+    # Central non-gating publish (gating lives in the per-component jobs above).
+    # Renders combined HTML/XML from whatever component gates ran and uploads to
+    # Codecov + (optionally) smokeshow. `if: !cancelled()` so it runs even when a
+    # component is path-skipped; downloads all present `coverage-*-*` artifacts.
+    needs: [changes, coverage-core]
+    # `!cancelled()` still publishes when a component gate failed, but must ALSO
+    # carry the draft guard: on a draft PR every dependency is *skipped* (not
+    # cancelled), so without it this job would run with zero coverage artifacts
+    # and `coverage combine` would fail with "No data to combine".
+    if: ${{ !cancelled() && github.event.pull_request.draft != true }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    env:
+      # The `secrets` context is unavailable in `if:`, so surface CODECOV_TOKEN as
+      # a presence flag — never expose the value job-wide.
+      CODECOV_TOKEN_SET: ${{ secrets.CODECOV_TOKEN != '' }}
+      REPO_IS_PUBLIC: ${{ !github.event.repository.private }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7
+        with:
+          persist-credentials: false
+      - name: Setup uv
+        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9  # v9.0.0
+      - name: Download all coverage data
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8
+        with:
+          pattern: coverage-*-*
+          merge-multiple: true
+      - name: Combine and render (non-gating)
+        # `--fail-under=0`: gating is done per component above; this job only
+        # publishes. On a path-filtered PR the skipped components never ran, but
+        # `source_pkgs` still makes coverage discover their (unexecuted) files and
+        # report them at ~0%, which would misrepresent the combined number in
+        # Codecov/smokeshow. So omit every component that did NOT run this time
+        # (derived from the `changes` outputs — `core` forces the full report).
+        # The `changes` booleans are workflow-derived (trusted), passed via env.
+        env:
+          CHANGED_CORE: ${{ needs.changes.outputs.core }}
+        run: |
+          uv run --locked --only-group test coverage combine
+          # `--omit` on the CLI overrides the pyproject omit, so re-add the always
+          # -omitted files, then append each component that was skipped this run.
+          omit="*/_version.py"
+          uv run --locked --only-group test coverage report --show-missing --omit="$omit" --fail-under=0
+          uv run --locked --only-group test coverage html --omit="$omit"
+          uv run --locked --only-group test coverage xml --omit="$omit"
+      - name: Upload combined HTML report
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7
+        with:
+          name: coverage-html
+          path: htmlcov
+      - name: Upload coverage to Codecov
+        # Uploads when the token is set or the repo is public (tokenless); only a
+        # private repo with no token falls through to the visible skip below.
+        # Best-effort (`fail_ci_if_error` defaults to false).
+        if: ${{ env.CODECOV_TOKEN_SET == 'true' || env.REPO_IS_PUBLIC == 'true' }}
+        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f  # v7.0.0
+        with:
+          files: ./coverage.xml
+          # .github/codecov.yml scopes the project status to `flags: [unit]`. An
+          # upload with no flag matches no flag-scoped status, so the 99% target
+          # would never be computed and `if_ci_failed: error` would be inert.
+          flags: unit
+          token: ${{ secrets.CODECOV_TOKEN }}
+      - name: Note skipped coverage upload
+        if: ${{ env.CODECOV_TOKEN_SET != 'true' && env.REPO_IS_PUBLIC != 'true' }}
+        run: echo "::notice::CODECOV_TOKEN secret is not set and this repo is private — skipping the Codecov upload. See docs/maintaining/setup.rst (Repository setup) to enable coverage reporting."
+  check:
+    if: ${{ always() && github.event.pull_request.draft != true }}
+    needs: [changes, test-core, coverage-core, coverage-report, hooks, style]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions: {}
+    steps:
+      - name: Decide whether the needed jobs succeeded or failed
+        uses: re-actors/alls-green@05ac9388f0aebcb5727afa17fcccfecd6f8ec5fe  # v1.2.2
+        with:
+          jobs: ${{ toJSON(needs) }}

@@ -1,0 +1,54 @@
+---
+name: "CodeQL"
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+  schedule:
+    - cron: "21 21 * * 4"
+jobs:
+  analyze:
+    name: Analyze
+    # Code scanning needs GitHub Advanced Security on private/internal repos;
+    # without it every run leaves a permanent red X. Free on public repos.
+    #
+    # `||` returns the first truthy operand, so this coalesces two visibility
+    # sources and falls back to "public". Two sources because neither covers
+    # every trigger alone, and one is only probably real:
+    #   * `github.event.repository.visibility` is documented, but `schedule`
+    #     carries no event payload at all, so it is empty there.
+    #   * `github.repository_visibility` is the only source a scheduled run
+    #     could have, but it is undocumented -- absent from both the contexts
+    #     and default-env-var references, though actionlint models it.
+    # Hence the 'public' default: if that property does not resolve, a
+    # scheduled run on a *public* repo sees nothing from either source and must
+    # still run. Silently disabling CodeQL everywhere is a worse failure than
+    # the red X this guard removes, so unknown fails OPEN.
+    if: (github.repository_visibility || github.event.repository.visibility || 'public') == 'public'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [python]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7
+        with:
+          persist-credentials: false
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@ff2f1c621b7f889edc0d3c761ac2e6a3f8cdb0dd  # v4
+        with:
+          languages: ${{ matrix.language }}
+          config-file: ./.github/linters/.codeql.yml
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@ff2f1c621b7f889edc0d3c761ac2e6a3f8cdb0dd  # v4
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@ff2f1c621b7f889edc0d3c761ac2e6a3f8cdb0dd  # v4
+        with:
+          category: "/language:${{ matrix.language }}"

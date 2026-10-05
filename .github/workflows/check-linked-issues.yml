@@ -1,0 +1,26 @@
+---
+name: Check Linked Issues
+on:
+  # pull_request_target is required so this check gets a token that can read the
+  # PR's linked-issue relationship and post on fork PRs. It is safe here: no PR
+  # code is checked out or executed — the pinned action only reads PR metadata.
+  pull_request_target:  # zizmor: ignore[dangerous-triggers]
+    types: [opened, edited, reopened, synchronize, labeled, unlabeled]
+jobs:
+  check-linked-issues:
+    name: Verify linked issue
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      issues: read
+      pull-requests: write
+    steps:
+      - name: Check for a linked issue
+        # Skip automated PRs (Renovate, Dependabot, etc.) — bots never link an
+        # issue. Keyed on the PR author, not github.actor, so a human labeling or
+        # editing a bot PR still skips. The job itself always runs and reports a
+        # green check, so a required "Verify linked issue" context stays satisfied.
+        if: ${{ !endsWith(github.event.pull_request.user.login, '[bot]') }}
+        uses: nearform-actions/github-action-check-linked-issues@7140e2e01aa0c18b8ac61bddf5e89abde1ca760e  # v1.8.3
+        id: check_linked_issues
+        # Pass the `no-issue` label to a pull request to bypass this check.

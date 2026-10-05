@@ -1,0 +1,17 @@
+{
+  "recommendations": [
+    "aaron-bond.better-comments",
+    "bierner.emojisense",
+    "charliermarsh.ruff",
+    "christian-kohler.path-intellisense",
+    "dotenv.dotenv-vscode",
+    "hverlin.mise-vscode",
+    "mikestead.dotenv",
+    "ms-python.mypy-type-checker",
+    "ms-python.python",
+    "ms-python.vscode-pylance",
+    "pomdtr.markdown-kroki",
+    "redhat.vscode-yaml",
+    "tamasfe.even-better-toml"
+  ]
+}

@@ -1,17 +1,22 @@
 ---
-name: PR Title Lint
+name: Lint PR
 on:
-  pull_request_target:
+  # pull_request_target is required so this check can post its sticky comment on
+  # PRs from forks (a plain `pull_request` run gets a read-only token). It is safe
+  # here: no PR code is checked out or executed — the pinned action only reads the
+  # PR title, and the untrusted error_message is passed via a step output.
+  pull_request_target:  # zizmor: ignore[dangerous-triggers]
     types: [opened, edited, synchronize, reopened]
 jobs:
   main:
     name: Validate PR title
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       pull-requests: write
     steps:
       - name: Lint PR Title
-        uses: amannn/action-semantic-pull-request@48f256284bd46cdaab1048c3721360e808335d50  # v6.1.1
+        uses: amannn/action-semantic-pull-request@48f256284bd46cdaab1048c3721360e808335d50  # v6
         id: lint_pr_title
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,0 +1,58 @@
+---
+name: Sync repository ruleset
+# Applies the rulesets committed under `.github/rulesets/` on every push to the
+# default branch: each is created by name the first time and updated in place
+# thereafter (idempotent). `.github/rulesets/*.json` is the single source of
+# truth — manual edits in the web UI are reverted on the next push.
+#
+# Requires a `REPO_ADMIN_TOKEN` secret: a fine-grained PAT with
+# `Administration: read and write` on this repository. The Actions
+# `GITHUB_TOKEN` cannot manage rulesets (it has no `administration` scope).
+# When the secret is absent the job logs a notice and exits successfully, so a
+# freshly generated repository is never blocked. See CONTRIBUTING.md.
+on:
+  # Reconcile on every push to the default branch (both main- and master-default
+  # repos) so a ruleset changed in the web UI is reverted on the next push, not
+  # only when a `.github/rulesets/**` file happens to change.
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+concurrency:
+  group: ruleset-sync
+  cancel-in-progress: true
+permissions: {}
+jobs:
+  sync:
+    name: Sync repository ruleset
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read  # only needed to check out on private/internal repos
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7
+        with:
+          persist-credentials: false
+      - name: Apply rulesets (create or update by name)
+        env:
+          GH_TOKEN: ${{ secrets.REPO_ADMIN_TOKEN }}
+          REPO: ${{ github.repository }}
+        run: |
+          if [ -z "$GH_TOKEN" ]; then
+            echo "::notice::REPO_ADMIN_TOKEN not set; skipping ruleset sync. See CONTRIBUTING.md to enable branch protection as code."
+            exit 0
+          fi
+          shopt -s nullglob
+          for file in .github/rulesets/*.json; do
+            name="$(jq -r '.name' "$file")"
+            echo "Syncing ruleset '$name' from $file"
+            id="$(NAME="$name" gh api --paginate "repos/$REPO/rulesets" \
+              --jq '.[] | select(.name == env.NAME) | .id' | head -n1)"
+            if [ -n "$id" ]; then
+              echo "Updating existing ruleset #$id"
+              gh api --method PUT "repos/$REPO/rulesets/$id" --input "$file" > /dev/null
+            else
+              echo "Creating new ruleset"
+              gh api --method POST "repos/$REPO/rulesets" --input "$file" > /dev/null
+            fi
+          done

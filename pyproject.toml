@@ -1,17 +1,16 @@
-[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
-
-
 [project]
 name = "openapipages"
-dynamic = ["version"]
-description = 'OpenAPI Spec-based pages (SwaggerUI, ReDoc, RapiDoc, Elements, Scalar) ready with configuration features.'
-readme = "README.md"
-requires-python = ">=3.10"
+description = "OpenAPI Spec-based pages (SwaggerUI, ReDoc, RapiDoc, Elements, Scalar) ready with configuration features."
 license = "MIT"
+readme = "README.md"
+authors = [
+  { name = "Hasan Sezer Taşan", email = "hasansezertasan@gmail.com" },
+]
+maintainers = [
+  { name = "Hasan Sezer Taşan", email = "hasansezertasan@gmail.com" },
+]
+dynamic = ["version"]
 keywords = [
-  "openapipages",
   "fastapi",
   "flask",
   "litestar",
@@ -26,21 +25,45 @@ keywords = [
   "documentation",
   "specification",
   "spec",
-]
-authors = [{ name = "Hasan Sezer Taşan", email = "hasansezertasan@gmail.com" }]
-maintainers = [
-  { name = "Hasan Sezer Taşan", email = "hasansezertasan@gmail.com" },
+  "command-line",
+  "cli",
+  "package",
+  "metadata",
+  "pypi",
+  "python",
+  "template",
+  "copier",
+  "scaffold",
+  "boilerplate",
+  "uv",
+  "hatch",
+  "tox",
+  "pytest",
+  "ruff",
+  "mypy",
+  "basedpyright",
+  "type-hints",
+  "typed",
+  "modern-python",
+  "ci-cd",
+  "github-actions",
+  "automation",
+  "prek",
+  "linting",
+  "testing",
+  "coverage",
+  "release-automation",
 ]
 classifiers = [
   "Development Status :: 4 - Beta",
   "Environment :: Web Environment",
-  "Framework :: FastAPI",
-  "Framework :: Flask",
   "Intended Audience :: Developers",
   "Intended Audience :: Information Technology",
   "License :: OSI Approved :: MIT License",
+  "Natural Language :: English",
   "Operating System :: OS Independent",
   "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
@@ -49,116 +72,284 @@ classifiers = [
   "Programming Language :: Python :: Implementation :: CPython",
   "Programming Language :: Python :: Implementation :: PyPy",
   "Programming Language :: Python",
-  "Topic :: Internet :: WWW/HTTP :: HTTP Servers",
-  "Topic :: Internet :: WWW/HTTP",
+  "Framework :: FastAPI",
+  "Framework :: Flask",
+  "Framework :: Litestar",
   "Topic :: Internet",
+  "Topic :: Internet :: WWW/HTTP",
+  "Topic :: Internet :: WWW/HTTP :: HTTP Servers",
   "Topic :: Software Development :: Libraries :: Application Frameworks",
   "Topic :: Software Development :: Libraries :: Python Modules",
   "Topic :: Software Development :: Libraries",
   "Topic :: Software Development",
   "Typing :: Typed",
-  # TODO @hasansezertasan: Fill in classifiers
 ]
-dependencies = []
-
+requires-python = ">=3.10"
+dependencies = [
+]
 
 [project.urls]
 changelog = "https://github.com/hasansezertasan/openapipages/blob/main/CHANGELOG.md"
-documentation = "https://github.com/hasansezertasan/openapipages#readme"
 homepage = "https://github.com/hasansezertasan/openapipages"
 issues = "https://github.com/hasansezertasan/openapipages/issues"
 releasenotes = "https://github.com/hasansezertasan/openapipages/releases"
 source = "https://github.com/hasansezertasan/openapipages.git"
 
 
+[dependency-groups]
+dev = [
+  "tox==4.58.0",
+  "tox-uv==1.36.0",
+  "debugpy==1.8.21",
+  { include-group = "style" },
+  { include-group = "test" },
+]
+style = [
+  "basedpyright==1.39.9",
+  "detect-secrets==1.5.0",
+  "editorconfig-checker==3.8.0",
+  "import-linter==2.13",
+  "mypy==2.3.0",
+  "pylint==4.0.6",
+  "pyrefly==1.2.0",
+  "ruff==0.16.1",
+  "slotscheck==0.20.1",
+  "taplo==0.9.3",
+  "ty==0.0.66",
+  "typos==1.49.0",
+  "zuban==0.9.1",
+]
+# semgrep is deliberately its own group rather than part of `style`: `dev`
+# includes `style` wholesale, so a plain `uv sync` — and every Windows/macOS
+# cell in ci.yml, which runs `uv run --locked tox run` — would download and
+# unpack ~215 MB (the wheel bundles a native semgrep-core) for a tool that only
+# ever executes in the Linux-only `style` job. The tox `style` env lists this
+# group explicitly. Still a single version source, same as every other pin.
+sast = [
+  "semgrep==1.177.0",
+]
+test = [
+  "coverage-enable-subprocess==1.0",
+  "coverage[toml]==7.15.3",
+  "fastapi>=0.115.0,<0.142.0",
+  "httpx>=0.28.1,<0.29.0",
+  "pytest-mock==3.15.1",
+  "pytest-playwright>=0.5.0",
+  "pytest-rerunfailures==16.4",
+  "pytest-xdist[psutil]==3.8.0",
+  "pytest==9.1.1",
+  "pytest-sugar",
+  "pytest-asyncio>=0.23.0",
+  "dirty-equals",
+  "inline-snapshot",
+  "pytest-deadfixtures==3.1.0",
+]
+tool = [
+  "commitizen==4.17.0",
+  # "marimo==0.15.2",
+  # "inflection==0.5.1",
+  # "copier==9.11.0",
+]
+prek = [
+  "prek==0.4.12",
+]
+
+
+[build-system]
+
+requires = ["hatchling", "hatch-vcs"]
+
+build-backend = "hatchling.build"
+
+
 [tool.uv]
+add-bounds = "exact"
 cache-keys = [
   { file = "pyproject.toml" },
   { git = { commit = true, tags = true } },
 ]
+package = true
+trusted-publishing = "always"
 
 
 [tool.hatch.version]
-path = "src/openapipages/__about__.py"
+source = "vcs"
+# Last-resort sentinel: only used when a build sees neither a .git directory nor
+# an expanded .git_archival.txt (e.g. an archive of a commit with no reachable
+# tag). "0.0.0" reads clearly as "version could not be determined" rather than
+# masquerading as a real early release. See .git_archival.txt + .gitattributes
+# `export-subst` for the archive path that recovers the real tag-derived version.
+fallback-version = "0.0.0"
 
 
-[tool.hatch.envs.default]
-installer = "uv"
-extra-dependencies = ["prek>=0.5.5,<0.6.0"]
+[tool.hatch.build]
+hooks.vcs.version-file = "src/openapipages/_version.py"
 
 
-[tool.hatch.envs.default.scripts]
-pre = "prek run --all-files --show-diff-on-failure"
+[tool.hatch.version.raw-options]
+version_scheme = "only-version"
+local_scheme = "no-local-version"
+
+[tool.hatch.metadata]
+allow-direct-references = true
 
 
-[tool.hatch.envs.test]
-installer = "uv"
-dependencies = [
-  # Based on hatch-test
-  "coverage-enable-subprocess==1.0",
-  "coverage[toml]~=7.4",
-  "pytest~=9.0",
-  "pytest-mock~=3.12",
-  "pytest-randomly~=5.0",
-  "pytest-rerunfailures~=16.1",
-  "pytest-xdist[psutil]~=3.5",
-  # Custom for testing
-  "pytest-asyncio>=0.14.0",
-  "httpx>=0.28.1,<0.29.0",
-  "fastapi>=0.142.1,<0.143.0",
-  # Custom for Style and Static Analysis
-  "ruff==0.16.9",
-  "mypy>=1.0.0",
-  "codespell==2.4.3",
-  "validate-pyproject[toml]>=0.24.1",
-  "vulture>=2.14",
-  "typos>=1.34.0",
-  "taplo>=0.9.3",
+[tool.hatch.build.targets.sdist]
+# The package uses a src layout, so the source tree lives under /src (not
+# /openapipages); including /src ships the actual modules -- and, for
+# C-extension projects, the .pyx/.pxd sources needed to compile from the sdist.
+include = [
+  "/README.md",
+  "LICENSE",
+  "/src",
+  "/tests",
 ]
 
 
-[tool.hatch.envs.test.scripts]
-# `tests/e2e` needs a browser + subprocess server and lives in its own env
-# (see `[tool.hatch.envs.e2e]`); keep it out of the default cross-platform run.
-test = "coverage run -m pytest tests --ignore=tests/e2e"
-cov = ["coverage combine", "coverage report", "coverage xml"]
-style = [
-  "codespell .",
-  "validate-pyproject pyproject.toml",
-  "ruff check",
-  "ruff format",
-  "mypy --install-types --non-interactive {args:src/openapipages tests}",
+[tool.commitizen]
+# Commit-authoring and message linting only. release-please owns version
+# bumping, git tagging, and CHANGELOG.md (see .github/release-please-config.json),
+# so the bump/tag/changelog settings are intentionally omitted here to avoid two
+# tools competing over the same tags and changelog file.
+name = "cz_conventional_commits"
+
+[tool.pytest.ini_options]
+# addopts = "-rXs --strict-config --strict-markers"
+addopts = "-v --tb=short --doctest-glob=README.md"
+# One marker per component, auto-applied by tests/conftest.py from each test's
+# top-level tests/<dir>/. Enables `pytest -m web` locally and per-component CI
+# jobs (issue #160, ADR-028); `integration` (ADR-008) is one axis of the scheme.
+markers = [
+  "core: core/shared component tests",
+  "e2e: end-to-end browser tests (Playwright + subprocess uvicorn)",
 ]
-
-[[tool.hatch.envs.test.matrix]]
-python = ["3.14", "3.13", "3.12", "3.11", "3.10"]
-
-
-# End-to-end browser tests (Playwright). Kept in a dedicated env so the browser,
-# uvicorn, and FastAPI extras never touch the zero-dependency package or the
-# default test matrix. Run `hatch run e2e:install-browser` once, then
-# `hatch run e2e:test`.
-[tool.hatch.envs.e2e]
-installer = "uv"
-dependencies = [
-  "pytest~=9.0",
-  "pytest-asyncio>=0.14.0",    # only to recognize the shared asyncio_* ini options
-  "pytest-playwright>=0.5.0",
-  "fastapi>=0.142.1,<0.143.0",
-  "uvicorn>=0.30",
-  "httpx>=0.28.1,<0.29.0",
+# Strict mode requires explicit @pytest.mark.asyncio annotations, making async
+# test collection intentional instead of silently accepting unmarked coroutines.
+asyncio_mode = "strict"
+filterwarnings = [
+  "error",
 ]
+# The project README is the deliberately small Markdown doctest surface. Other
+# Markdown files can use illustrative snippets without becoming pytest inputs.
+testpaths = ["tests", "README.md"]
+doctest_optionflags = "ELLIPSIS IGNORE_EXCEPTION_DETAIL NORMALIZE_WHITESPACE"
+xfail_strict = true
 
-[tool.hatch.envs.e2e.scripts]
-install-browser = "playwright install chromium"
-test = "pytest tests/e2e -m e2e {args}"
+
+[tool.coverage.run]
+branch = true
+# Match `_version.py` wherever it resolves: `src/...` in editable dev installs and
+# `.../site-packages/...` when tox/CI installs the built wheel or sdist. A
+# `src/**`-only pattern silently misses the installed copy and reports it at 0%.
+omit = ["*/_version.py"]
+parallel = true
+# Store data-file paths relative to the project root so `.coverage` files produced
+# on different runners/OSes merge in the `coverage-combine` CI job without
+# absolute-path mismatches. Complements the `[tool.coverage.paths]` remap below
+# (which unifies the src/ vs site-packages layouts). See ADR-026.
+relative_files = true
+source_pkgs = ["openapipages", "tests"]
+
+
+[tool.coverage.paths]
+# Unify coverage data across environments. tox installs the built wheel/sdist into
+# each env's site-packages, so the same source file is measured under a different
+# `.tox/<env>/.../site-packages/openapipages` path per interpreter. Without
+# remapping those back to the canonical `src/` tree, `coverage combine` keeps a
+# separate copy per env and a version-gated line covered in one interpreter but not
+# another is wrongly counted as missed — silently failing the `fail_under` gate.
+# `tests` needs no remapping: it is never installed, so every environment measures
+# it at the same repo-local path.
+openapipages = ["src/openapipages", "*/site-packages/openapipages"]
+
+
+[tool.coverage.report]
+# Untestable code is excluded per site with `# pragma: no cover`, not with blanket
+# patterns here: a regex matching a `def` line excludes the *whole function body*,
+# so a pattern like `def main\(` would silently un-measure any future `main()`
+# with real logic (and did mask the tested GUI/TUI entrypoints). Pragmas carry the
+# exclusion decision next to the code it affects. See ADR-008.
+exclude_lines = [
+  "no cov",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+]
+fail_under = 99
+# Patterns match both the `src/` (editable) and installed (`site-packages`)
+# layouts (see [tool.coverage.run] omit).
+omit = ["*/_version.py"]
+show_missing = true
+skip_covered = true
+
+
+[tool.vulture]
+# Framework-invoked handlers: Typer commands, FastAPI routes, FastStream
+# lifecycle hooks, and the MCP tool dispatcher.
+ignore_decorators = [
+  "@app.command",
+  "@app.get",
+  "@app.after_startup",
+  "@app.after_shutdown",
+  "@server.call_tool",
+]
+# Public API surfaces vulture cannot see being used: ``main`` entry points are
+# referenced only via pyproject scripts, ``model_config`` is consumed by
+# pydantic-settings, ``logger`` is imported only by optional components, the MCP
+# ``arguments`` parameter is mandated by the call_tool signature, the Textual
+# names (CSS/compose/on_mount/title/BINDINGS) are invoked by the TUI framework,
+# and ``pytestmark``/``pytest_*`` (conftest hooks) are consumed by pytest at
+# collection time.
+ignore_names = ["CONFIG_FILE_PATH", "logger", "main", "model_config", "pytest_*", "collect_ignore_glob"]
+min_confidence = 60
+paths = ["src", "tests"]
+
+
+[tool.slotscheck]
+strict-imports = false
+
+
+[tool.importlinter]
+root_package = "openapipages"
+
+
+[[tool.importlinter.contracts]]
+name = "Layered architecture with independent components"
+type = "layers"
+# Layers are listed high -> low: a layer may import lower layers but never a
+# higher one. Modules joined by ` | ` on one line are independent SIBLINGS that
+# may not import each other. `cli` is the orchestrator layer — the
+# `openapipages` console root, whose subcommands launch the other
+# components (web/gui/tui/mcp/worker) via lazy imports — so it sits ABOVE the
+# independent component group, which sits above `core`, which sits above the leaf
+# `utils`.
+#
+# `exhaustive` makes the contract fail when a subpackage of
+# `openapipages` is not named in `layers` — so a new top-level
+# subpackage is a deliberate architecture decision (add it to a layer here)
+# rather than something that silently accretes at the package root. Feature code
+# belongs inside an existing layer; see "Package structure" in `AGENTS.md`. The
+# `exhaustive_ignores` entries are the non-layer foundations: the metadata and
+# hatch-vcs version modules and the `python -m` dispatcher.
+containers = ["openapipages"]
+exhaustive = true
+exhaustive_ignores = [
+  "__about__",
+  "__main__",
+  "__metadata__",
+  "_version",
+]
+layers = [
+  "elements | rapidoc | redoc | scalar | swaggerui",
+  "base",
+]
 
 
 [tool.ruff]
 fix = true
+output-format = "full"
 preview = true
 show-fixes = true
-src = ["src", "tests"]
+src = ["src", "tests", "examples"]
 target-version = "py310"
 unsafe-fixes = true
 
@@ -172,34 +363,24 @@ preview = true
 docstring-code-format = true
 line-ending = "lf"
 preview = true
+skip-magic-trailing-comma = true
 
 
 [tool.ruff.lint]
-ignore = ["E501", "PLR6301", "PLC0414", "D", "CPY", "COM"]
 fixable = ["ALL"]
+# Two opinionated ruff 0.16 preview rules are disabled: RUF105 would rewrite the
+# portable `# noqa` comments into ruff's own `# ruff: ignore` syntax (its docs note
+# `# noqa` is needed for cross-tool compatibility), and RUF201 would rewrite every
+# rule *code* in this config's selectors into long rule *names*. Both are stylistic.
+ignore = ["COM812", "CPY", "D", "DOC201", "E501", "FIX", "PLR6301", "RUF105", "RUF201", "TD"]
 logger-objects = ["logging_setup.logger"]
 preview = true
 select = ["ALL"]
 
-
-[tool.ruff.lint.per-file-ignores]
-"tests/*.py" = ['S101']
-"tests/unit/*.py" = ['S101']
-"tests/integration/*.py" = ['S101']
-"tests/e2e/*.py" = ['S101']
-# The uvicorn subprocess fixture is inherently branchy and statement-heavy
-# (startup polling + graceful/forced teardown), and S404/S603 cover the
-# subprocess use (also annotated with `# nosec` for Bandit).
-"tests/e2e/conftest.py" = ['S101', 'S404', 'S603', 'C901', 'PLR0912', 'PLR0915']
-
-
-[tool.ruff.lint.pyupgrade]
-keep-runtime-typing = true
-
-
-[tool.ruff.lint.pycodestyle]
-ignore-overlong-task-comments = true
-
+[tool.ruff.lint.isort]
+combine-as-imports = true
+# skip-magic-trailing-comma = true
+split-on-trailing-comma = false
 
 [tool.ruff.lint.flake8-copyright]
 author = "Hasan Sezer Taşan <hasansezertasan@gmail.com>"
@@ -209,99 +390,300 @@ author = "Hasan Sezer Taşan <hasansezertasan@gmail.com>"
 ban-relative-imports = "all"
 
 
-[tool.ruff.lint.isort]
-known-third-party = ["openapipages"]
+[tool.ruff.lint.mccabe]
+max-complexity = 5
+
+
+[tool.ruff.lint.pycodestyle]
+ignore-overlong-task-comments = true
 
 
 [tool.ruff.lint.pydocstyle]
-convention = "google"
+convention = "pep257"
+
+
+[tool.ruff.lint.per-file-ignores]
+# Recursive glob so nested test packages (tests/cli, tests/gui, ...) are covered.
+# Tests legitimately use asserts/magic values, reach into package internals, and
+# don't need return-value documentation on their fixtures and helpers.
+"tests/**/*.py" = ["S101", "PLR2004", "PLC2701", "DOC201"]
+# The e2e server fixture intentionally manages a subprocess and its startup
+# lifecycle in one fixture.
+"tests/e2e/conftest.py" = ["S404", "S603", "C901", "PLR0915"]
+"examples/**/*.py" = ["INP001"]
+
+
+[tool.ruff.lint.pyupgrade]
+keep-runtime-typing = true
 
 
 [tool.ruff.lint.ruff]
 parenthesize-tuple-in-subscript = true
 
 
-[tool.ruff.lint.mccabe]
-max-complexity = 5
-
-
 [tool.mypy]
 files = ["src"]
 pretty = true
 python_version = "3.10"
-show_error_codes = true
 strict = true
-disallow_untyped_defs = true
-ignore_missing_imports = true
-disallow_untyped_decorators = false
 
-
-[tool.codespell]
-ignore-words-list = "Connexion, connexion"
-
-
-[tool.pytest.ini_options]
-asyncio_mode = "auto"
-asyncio_default_fixture_loop_scope = "function"
-# --strict-markers turns any undeclared @pytest.mark.<x> into an error, so every
-# custom marker must be declared here before use.
-addopts = "--strict-markers"
-markers = ["e2e: end-to-end browser tests (Playwright + subprocess uvicorn)"]
-
-
-[tool.coverage.run]
-source_pkgs = ["openapipages", "tests"]
-branch = true
-parallel = true
-omit = [
-  "src/openapipages/__about__.py",
-  # e2e tests run in their own env (no coverage); exclude them from the gate.
-  "tests/e2e/*",
-  "*/tests/e2e/*",
-]
-
-
-[tool.coverage.paths]
-openapipages = ["src/openapipages", "*/openapipages/src/openapipages"]
-tests = ["tests", "*/openapipages/tests"]
-
-
-[tool.coverage.report]
-fail_under = 99
-show_missing = true
-skip_covered = true
-exclude_lines = [
-  "pragma: no cover",
-  "if __name__ == .__main__.:",
-  "if TYPE_CHECKING:",
-]
-
-[tool.bandit]
-# B101 (assert_used) is expected in test code.
-skips = ["B101"]
 
 [tool.basedpyright]
-# Any is intentional: OpenAPI UI parameter dicts are heterogeneous.
+exclude = [".venv"]
+include = ["src/openapipages"]
+pythonVersion = "3.10"
 reportAny = false
 reportExplicitAny = false
-# Subclasses overriding Base methods without @override are intentional.
 reportImplicitOverride = false
-# basedpyright runs in the prek hook env without project deps installed;
-# real type-checking against deps happens via mypy in `hatch run test:style`.
-# All Unknown* and dep-related diagnostics are noise without installed deps.
-reportMissingImports = false
-reportMissingModuleSource = false
-reportUnknownVariableType = false
-reportUnknownMemberType = false
-reportUnknownArgumentType = false
-reportUnknownParameterType = false
-reportUntypedFunctionDecorator = false
-# `class Widget(BaseModel)` in the e2e app reads as an untyped base when
-# pydantic is absent in the prek env — same dep-not-installed noise as above.
-reportUntypedBaseClass = false
+venv = ".venv"
+# venvPath is the directory *containing* the venv, not the venv itself; ".venv"
+# here would make basedpyright look for ".venv/.venv". Use "." so both the venv
+# and basedpyright's strict ruleset resolve the project's installed deps.
+venvPath = "."
 
-[tool.vulture]
-# Default 60% flags FastAPI route handlers as unused since they're only
-# referenced via decorators. Raise threshold to skip those false positives.
-min_confidence = 80
-paths = ["src", "tests"]
+
+[tool.ty.src]
+include = ["src", "tests"]
+respect-ignore-files = false
+
+
+[tool.ty.environment]
+python-version = "3.10"
+
+
+[tool.ty.terminal]
+error-on-warning = true
+
+
+[tool.pyrefly]
+python-version = "3.10"
+project-includes = ["src"]
+
+[tool.pylint.main]
+# pylint runs as an always-on gate that deliberately overlaps ruff's PL* rules.
+# Its canonical invocation is `pylint src`, so it never descends into tests; this
+# ignore-paths is a defensive scope guard for broader invocations (`pylint .`,
+# filename-passing hooks). Tests are linted by ruff, not pylint.
+ignore-paths = ["^tests/.*$"]
+# `.pyi` stubs (the c-extension type stub) are signature-only: their bodies are
+# `...` and every parameter is unused by construction, so pylint's unused-argument
+# check is a guaranteed false positive there. Stubs are type-checked by the
+# type-checker gate, not pylint.
+ignore-patterns = ['.*\.pyi$']
+
+[tool.pylint."messages control"]
+# Only formatter-owned checks, the docstring family, and too-few-public-methods
+# are disabled so pylint is usable out of the box; everything else stays on.
+disable = [
+  "line-too-long", # C0301 — ruff-format owns line length
+  "missing-module-docstring", # C0114
+  "missing-class-docstring", # C0115
+  "missing-function-docstring", # C0116
+  "too-few-public-methods", # R0903 — trips dataclasses / config / Protocol classes
+  # C0415 — the cli->tui/gui/web dispatch, and each component's own heavy or
+  # platform-conditional import (tkinter, uvicorn, the worker's uvloop probe),
+  # are deliberately lazy so import-linter's layering contract holds and a
+  # framework is only imported when the code path that needs it actually runs.
+  # Textual is the exception: the TUI imports it at module scope so `InfoApp`
+  # can be defined there and driven by the headless pilot (ADR-035).
+  "import-outside-toplevel",
+  # W0706 — the generated TUI entry point explicitly re-raises
+  # KeyboardInterrupt/SystemExit ahead of a broad `except Exception` to make the
+  # "let these propagate" intent obvious to readers, even though BaseException
+  # subclasses wouldn't be caught by the Exception clause anyway.
+  "try-except-raise",
+  # R0801 — the component skeletons (gui/tui/mcp/worker) are deliberately
+  # parallel: each fetches package metadata and formats the same info block the
+  # same way. That structural symmetry is a feature of the scaffold, not
+  # copy-paste debt, and R0801 cannot be suppressed inline at the call site.
+  "duplicate-code",
+]
+
+[tool.pylint.design]
+max-args = 10
+max-positional-arguments = 10
+max-branches = 20
+
+[tool.typos.files]
+# copier records `_commit` as a `git describe` string (`v1.2.3-4-g<hash>`) when
+# the template is rendered from an untagged ref, and a fragment of the hex hash
+# can read as a misspelled word, failing the check on a hash nobody chose. The
+# file is machine-written with no prose to check. The prek hook passes
+# `--force-exclude`, so the exclusion holds there as well as in `tox -e style`.
+extend-exclude = [
+  ".copier-answers.yml",
+]
+
+[tool.tox]
+# The ``worker`` env is intentionally omitted: it starts a broker-bound process
+# and would hang/fail under ``tox run`` in CI (where no broker is available).
+# The worker is covered by its pytest TestBroker suite; run it on demand with
+# ``tox -e worker`` when a broker is up (e.g. inside the devcontainer).
+env_list = [
+  "style",
+  "3.14",
+  "3.13",
+  "3.12",
+  "3.11",
+  "3.10",
+]
+requires = ["tox>=4"]
+
+
+[tool.tox.env_run_base]
+commands = [
+  [
+    "coverage",
+    "run",
+    "--module",
+    "pytest",
+    "-v",
+    "--tb=short",
+    "--basetemp={env_tmp_dir}",
+    { replace = "posargs", default = [
+    ], extend = true },
+  ],
+]
+constrain_package_deps = true
+dependency_groups = ["test"]
+description = "Run the tests under {base_python}"
+env_tmp_dir = "{toxworkdir}/tmp/{envname}"
+# Arms coverage-enable-subprocess so xdist/subprocess workers are measured too;
+# `coverage run` plus `parallel = true` writes per-env data files that the CI
+# `coverage combine` step merges.
+set_env = { COVERAGE_PROCESS_START = "{tox_root}/pyproject.toml" }
+
+package = "wheel"
+
+runner = "uv-venv-runner"
+use_frozen_constraints = true
+wheel_build_env = ".pkg"
+
+
+[tool.tox.env.style]
+base_python = ["3.10"]
+commands = [
+  [
+    "ruff",
+    "check",
+    "--no-fix",
+  ],
+  [
+    "ruff",
+    "format",
+    "--check",
+    "--diff",
+  ],
+  [
+    "mypy",
+    "--python-version",
+    "3.10",
+  ],
+  [
+    "mypy",
+    "--python-version",
+    "3.14",
+  ],
+  # Style runs once on Linux, so explicitly sweep platform-gated branches that
+  # mypy would otherwise prune as unreachable on the host platform.
+  [
+    "mypy",
+    "--platform",
+    "win32",
+  ],
+  [
+    "mypy",
+    "--platform",
+    "darwin",
+  ],
+  [
+    "basedpyright",
+  ],
+  [
+    "ty",
+    "check",
+  ],
+  [
+    "pyrefly",
+    "check",
+  ],
+  [
+    "zuban",
+    "check",
+    "src",
+  ],
+  [
+    "pylint",
+    "src",
+  ],
+  [
+    "python",
+    "-m",
+    "slotscheck",
+    "src",
+  ],
+  [
+    "lint-imports",
+  ],
+  # Rules-database SAST. Deliberately style-env-only (like ty/pyrefly/zuban) and
+  # not a prek hook: semgrep keeps no on-disk rule cache, so a pre-commit hook
+  # would make a registry request on every `git commit`. The ruleset is named
+  # explicitly rather than `--config auto` so rule selection does not depend on
+  # language auto-detection; it is still fetched from the registry, which is why
+  # this cannot be vendored (see ADR-032). `--error` makes findings blocking;
+  # silence a false positive with a trailing `# nosemgrep: <rule-id>`.
+  [
+    "semgrep",
+    "scan",
+    "--config",
+    "p/python",
+    "--error",
+    "--metrics=off",
+    "src",
+  ],
+  [
+    "taplo",
+    "lint",
+    "*.toml",
+  ],
+  # A strict `--check` gate, not fix mode: a generated file that taplo would
+  # rewrite fails its own CI on first push and drifts on every `copier update`.
+  # `.taplo.toml` disables array auto expand/collapse so the shipped layout is
+  # the canonical one regardless of which components are enabled. The `*.toml`
+  # glob is non-recursive, so it scopes taplo to this project's own root TOML
+  # (pyproject/prek/mise/taplo) without walking vendored `.tox`/`.venv`/
+  # site-packages trees — no `.taplo.toml` exclude config needed.
+  [
+    "taplo",
+    "format",
+    "--check",
+    "--diff",
+    "*.toml",
+  ],
+  [
+    "typos",
+    "--diff",
+  ],
+  [
+    "ec",
+  ],
+  # Collects (does not run) the suite and flags fixtures that are never used --
+  # cheap, deterministic, and a natural fit next to the other whole-program
+  # analyzers above (lint-imports, slotscheck).
+  [
+    "pytest",
+    "--dead-fixtures",
+  ],
+]
+# `test` is included so the type checkers that scope tests (e.g. ty) can
+# resolve pytest and other test-only imports.
+dependency_groups = ["sast", "style", "test"]
+description = "Run Checkers, Linters and Formatters"
+runner = "uv-venv-runner"
+
+
+[tool.tox.env.prek]
+commands = [["prek", "run", "--all-files"]]
+dependency_groups = ["prek"]
+description = "Run prek hooks"
+runner = "uv-venv-runner"
