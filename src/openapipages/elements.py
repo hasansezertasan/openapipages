@@ -5,6 +5,8 @@ from typing_extensions import Doc
 
 from openapipages.base import Base
 
+__all__ = ["Elements"]
+
 
 @dataclass
 class Elements(Base):

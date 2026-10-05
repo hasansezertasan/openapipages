@@ -126,7 +126,7 @@ style = [
 # ever executes in the Linux-only `style` job. The tox `style` env lists this
 # group explicitly. Still a single version source, same as every other pin.
 sast = [
-  "semgrep==1.177.0",
+  "semgrep==1.179.0",
 ]
 test = [
   "coverage-enable-subprocess==1.0",
@@ -143,8 +143,10 @@ test = [
   "dirty-equals",
   "inline-snapshot",
   "pytest-deadfixtures==3.1.0",
+  "uvicorn>=0.30",
 ]
 tool = [
+  "cobo==0.4.0; python_version >= '3.14'",
   "commitizen==4.17.0",
   # "marimo==0.15.2",
   # "inflection==0.5.1",
@@ -241,7 +243,7 @@ branch = true
 # Match `_version.py` wherever it resolves: `src/...` in editable dev installs and
 # `.../site-packages/...` when tox/CI installs the built wheel or sdist. A
 # `src/**`-only pattern silently misses the installed copy and reports it at 0%.
-omit = ["*/_version.py"]
+omit = ["*/_version.py", "tests/e2e/*", "*/tests/e2e/*"]
 parallel = true
 # Store data-file paths relative to the project root so `.coverage` files produced
 # on different runners/OSes merge in the `coverage-combine` CI job without
@@ -277,7 +279,7 @@ exclude_lines = [
 fail_under = 99
 # Patterns match both the `src/` (editable) and installed (`site-packages`)
 # layouts (see [tool.coverage.run] omit).
-omit = ["*/_version.py"]
+omit = ["*/_version.py", "tests/e2e/*", "*/tests/e2e/*"]
 show_missing = true
 skip_covered = true
 
@@ -299,7 +301,7 @@ ignore_decorators = [
 # names (CSS/compose/on_mount/title/BINDINGS) are invoked by the TUI framework,
 # and ``pytestmark``/``pytest_*`` (conftest hooks) are consumed by pytest at
 # collection time.
-ignore_names = ["CONFIG_FILE_PATH", "logger", "main", "model_config", "pytest_*", "collect_ignore_glob"]
+ignore_names = ["CONFIG_FILE_PATH", "id", "logger", "main", "model_config", "name", "pytest_*", "collect_ignore_glob"]
 min_confidence = 60
 paths = ["src", "tests"]
 
@@ -539,6 +541,7 @@ commands = [
     "pytest",
     "-v",
     "--tb=short",
+    "--ignore=tests/e2e",
     "--basetemp={env_tmp_dir}",
     { replace = "posargs", default = [
     ], extend = true },

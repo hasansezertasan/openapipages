@@ -6,6 +6,9 @@ from typing_extensions import Doc
 
 from openapipages.base import Base
 
+__all__ = ["ReDoc"]
+
+
 default_parameters: Annotated[
     dict[str, Any],
     Doc(

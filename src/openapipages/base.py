@@ -4,6 +4,8 @@ from typing import Annotated
 
 from typing_extensions import Doc
 
+__all__ = ["Base"]
+
 
 @dataclass
 class Base:

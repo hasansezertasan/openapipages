@@ -6,6 +6,9 @@ from typing_extensions import Doc
 
 from openapipages.base import Base
 
+__all__ = ["SwaggerUI"]
+
+
 default_parameters: Annotated[
     dict[str, Any],
     Doc(

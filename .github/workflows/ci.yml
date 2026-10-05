@@ -222,7 +222,7 @@ jobs:
         # project. `relative_files` (pyproject) lets cross-runner paths merge.
         run: |
           uv run --locked --only-group test coverage combine
-          uv run --locked --only-group test coverage report --show-missing --omit="*/_version.py" --fail-under=99
+          uv run --locked --only-group test coverage report --show-missing --omit="*/_version.py,tests/e2e/*,*/tests/e2e/*" --fail-under=99
 
   coverage-report:
     name: Combine coverage and publish
@@ -271,7 +271,7 @@ jobs:
           uv run --locked --only-group test coverage combine
           # `--omit` on the CLI overrides the pyproject omit, so re-add the always
           # -omitted files, then append each component that was skipped this run.
-          omit="*/_version.py"
+          omit="*/_version.py,tests/e2e/*,*/tests/e2e/*"
           uv run --locked --only-group test coverage report --show-missing --omit="$omit" --fail-under=0
           uv run --locked --only-group test coverage html --omit="$omit"
           uv run --locked --only-group test coverage xml --omit="$omit"

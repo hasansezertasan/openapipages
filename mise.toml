@@ -12,12 +12,6 @@ python = "{{ get_env(name='PYTHON_VERSION', default=read_file(path=config_root ~
 # explicitly so resolution does not depend on the mise registry short name. The
 # prek `ghalint` hook and the CI `hooks` job invoke this binary.
 "aqua:suzuki-shunsuke/ghalint" = "1.5.6"
-# cobo (copy boilerplates) manages the .gitignore fenced block from the
-# github/gitignore templates recorded in cobo.lock. Delivered via mise's pipx
-# backend (Renovate-tracked) and invoked as `mise exec -- cobo` by the
-# gitignore-check task and the gitignore-drift.yml workflow. 0.4.0+ ships the
-# `--eol` policy the block was sealed with.
-"pipx:cobo" = "0.4.0"
 
 [tasks.install]
 description = "Install dependencies"
@@ -52,7 +46,7 @@ run = "uv run --locked tox run -e prek"
 
 [tasks.gitignore-check]
 description = "Check .gitignore for drift from the github/gitignore templates"
-run = "mise exec -- cobo update && mise exec -- cobo check --strict"
+run = "uv run --locked --group tool cobo update && uv run --locked --group tool cobo check --strict"
 
 [tasks.build]
 description = "Build the package"

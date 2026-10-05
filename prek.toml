@@ -235,5 +235,5 @@ hooks = [
   # itself on PATH, which local contributors have and the CI `hooks` job supplies
   # via jdx/mise-action.
   { id = "ghalint", name = "ghalint", entry = "mise exec -- ghalint run", language = "system", pass_filenames = false, always_run = true },
-  { id = "pytest", name = "Pytest Test Runner", entry = "uv run --locked pytest", language = "system", pass_filenames = false, always_run = true },
+  { id = "pytest", name = "Pytest Test Runner", entry = "uv run --locked pytest -m 'not e2e'", language = "system", pass_filenames = false, always_run = true },
 ]
