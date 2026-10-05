@@ -8,7 +8,7 @@ documentation:
 # packages they do not contain.
 area:core:
   - changed-files:
-      - any-glob-to-any-file: ['src/openapipages/core/**', 'src/openapipages/utils/**', 'tests/core/**', 'tests/test_*.py']
+      - any-glob-to-any-file: ['src/openapipages/**', 'tests/unit/**', 'tests/integration/**', 'tests/e2e/**', 'tests/test_*.py']
 area:docs:
   - changed-files:
       - any-glob-to-any-file: ['docs/**', '**/*.md', '**/*.rst']

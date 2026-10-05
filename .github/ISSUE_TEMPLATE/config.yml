@@ -1,6 +1,6 @@
 ---
-# Structured issue forms (bug_report.yml, feature_request.yml) cover the common
-# cases; force reporters through those instead of a free-form blank issue.
+# Structured issue forms cover bug reports and feature requests. Markdown
+# templates remain available for other report types; blank issues are disabled.
 blank_issues_enabled: false
 contact_links:
   - name: Questions on Discussions

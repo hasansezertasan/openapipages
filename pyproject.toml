@@ -146,7 +146,7 @@ test = [
   "uvicorn>=0.30",
 ]
 tool = [
-  "cobo==0.4.0; python_version >= '3.14'",
+  "cobo==0.5.1; python_version >= '3.14'",
   "commitizen==4.17.0",
   # "marimo==0.15.2",
   # "inflection==0.5.1",
