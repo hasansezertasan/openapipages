@@ -34,10 +34,9 @@ jobs:
         id: filter
         uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d  # v4.0.3
         with:
-          # `core` underpins every component (deps, shared core/, package-root
-          # modules, the root conftest, root-level tests), so a change here
-          # forces the full fan-out — mirrors the import-linter layering
-          # (ADR-014). Each component filter watches only its own src+tests tree.
+          # This library's flat package and test layout is represented as one
+          # `core` component. Package, dependency, and test changes trigger its
+          # complete cross-platform matrix and coverage gate.
           filters: |
             core:
               - '.github/workflows/ci.yml'
@@ -169,8 +168,8 @@ jobs:
         if: steps.setup-uv.outputs.cache-hit == 'true'
         run: echo "Cache was restored"
       - name: Run the tests
-        # `matrix.tox_args` selects the interpreter sweep (#159); the posargs
-        # after `--` select this component's marked tests (issue #160).
+        # `matrix.tox_args` selects the interpreter sweep (#159). The tox base
+        # command excludes browser tests; those run in the dedicated e2e job.
         # `matrix.tox_args` is a workflow-defined (trusted) context, used inline
         # like `matrix.os` in the System Info step — not untrusted GitHub context.
         run: uv run --locked tox run ${{ matrix.tox_args }}
@@ -195,6 +194,46 @@ jobs:
           name: coverage-core-${{ matrix.os }}
           path: .coverage.core.${{ matrix.os }}
           include-hidden-files: true
+
+  e2e:
+    name: E2E (Chromium)
+    needs: [test-core]
+    if: ${{ github.event.pull_request.draft != true }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7
+        with:
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v7.0.0
+        with:
+          python-version-file: .python-version
+      - name: Setup uv
+        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9  # v9.0.0
+        with:
+          enable-cache: true
+          cache-dependency-glob: |
+            pyproject.toml
+            uv.lock
+      - name: Install dependencies
+        run: uv sync --locked
+      - name: Install Chromium
+        run: uv run --locked --group test playwright install --with-deps chromium
+      - name: Run end-to-end tests
+        run: |
+          uv run --locked --group test pytest tests/e2e -m e2e -v \
+            --tracing retain-on-failure --screenshot only-on-failure \
+            --video retain-on-failure --output test-results
+      - name: Upload Playwright artifacts on failure
+        if: failure() || cancelled()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7
+        with:
+          name: playwright-output-${{ github.run_id }}-${{ github.run_attempt }}
+          path: test-results/
 
   coverage-core:
     name: Coverage gate (core)
@@ -299,7 +338,7 @@ jobs:
         run: echo "::notice::CODECOV_TOKEN secret is not set and this repo is private — skipping the Codecov upload. See docs/maintaining/setup.rst (Repository setup) to enable coverage reporting."
   check:
     if: ${{ always() && github.event.pull_request.draft != true }}
-    needs: [changes, test-core, coverage-core, coverage-report, hooks, style]
+    needs: [changes, test-core, e2e, coverage-core, coverage-report, hooks, style]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions: {}

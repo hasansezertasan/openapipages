@@ -215,25 +215,26 @@ The suite is organised in layers under `tests/`:
 - `tests/integration/` — each renderer rendered through a FastAPI app over an in-process ASGI client.
 - `tests/e2e/` — real-browser (Playwright/Chromium) tests that boot each UI, load its JS from the CDN, and verify the spec renders.
 
-Run the fast suites (unit + integration) and static analysis with [Hatch](https://hatch.pypa.io):
+Run the cross-version unit and integration suites with [tox](https://tox.wiki):
 
 ```bash
-hatch run test:test    # unit + integration (e2e is excluded)
-hatch run +py=3.14 test:cov # combine coverage once and generate reports
-hatch run test:style   # ruff + mypy + codespell
-hatch env create test  # install development dependencies
+uv sync                         # install development dependencies
+uv run --locked tox run         # style checks and the supported Python matrix
+uv run --locked tox run -e 3.14 # run the suite on one Python version
+uv run --locked tox run -e style
 ```
 
-The end-to-end tests live in their own environment so the browser/uvicorn extras
-never touch the zero-dependency package. They load each UI's JavaScript from its
-real CDN, so they need network access and run Chromium only:
+The end-to-end tests run separately from the cross-platform matrix. They load
+each UI's JavaScript from its real CDN, so they need network access and run
+Chromium only:
 
 ```bash
-hatch run e2e:install-browser   # one-time: playwright install chromium
-hatch run e2e:test              # run the browser tests
+uv run --locked --group test playwright install chromium
+uv run --locked --group test pytest tests/e2e -m e2e -v
 ```
 
-In CI they run as a separate `E2E (Chromium)` job, gated behind the cross-platform test matrix.
+CI runs these tests in a dedicated `E2E (Chromium)` job after the cross-platform
+test matrix.
 
 ### CI/CD Pipeline
 
