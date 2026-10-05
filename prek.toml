@@ -46,11 +46,11 @@ hooks = [{ id = "actionlint" }]
 [[repos]]
 repo = "https://github.com/adrienverge/yamllint"
 rev = "v1.38.0"
-hooks = [{ id = "yamllint" }]
+hooks = [{ id = "yamllint", args = ["-c", ".config/.yamllint.yaml"] }]
 [[repos]]
 repo = "https://github.com/google/yamlfmt"
 rev = "v0.21.0"
-hooks = [{ id = "yamlfmt" }]
+hooks = [{ id = "yamlfmt", args = ["-conf", ".config/.yamlfmt.yml"] }]
 [[repos]]
 repo = "https://github.com/ComPWA/taplo-pre-commit"
 rev = "v0.9.3"
