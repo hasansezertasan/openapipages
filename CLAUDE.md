@@ -25,7 +25,7 @@ hatch run test:cov
 # Style + static analysis (codespell, validate-pyproject, ruff check/format, mypy)
 hatch run test:style
 
-# Run pre-commit on all files
+# Run the prek hooks (prek.toml) on all files
 hatch run pre
 
 # A single test file or test
@@ -53,7 +53,7 @@ Fields use `Annotated[..., Doc(...)]` for inline documentation — `Annotated` c
 
 ## Conventions
 
-- **Conventional Commits** for commit messages and **Conventional Branch** for branch names (enforced via `.pre-commit-config.yaml` / repo policy).
+- **Conventional Commits** for commit messages and **Conventional Branch** for branch names (commit messages enforced by the commitizen hook in `prek.toml`).
 - Ruff is configured with `select = ["ALL"]` and `preview = true`; relative imports are banned (`ban-relative-imports = "all"`) — always import from `openapipages.<module>`.
 - `mypy --strict` is enforced over `src/`. Keep everything fully typed.
 - Examples in `examples/fastapi` and `examples/litestar` should stay runnable; if you change the public API, update them.

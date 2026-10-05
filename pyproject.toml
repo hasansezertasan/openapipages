@@ -84,11 +84,11 @@ path = "src/openapipages/__about__.py"
 
 [tool.hatch.envs.default]
 installer = "uv"
-extra-dependencies = ["pre-commit>=4.6.0,<4.7.0"]
+extra-dependencies = ["prek>=0.5.5,<0.6.0"]
 
 
 [tool.hatch.envs.default.scripts]
-pre = "pre-commit run --all-files --hook-stage manual --show-diff-on-failure"
+pre = "prek run --all-files --show-diff-on-failure"
 
 
 [tool.hatch.envs.test]
