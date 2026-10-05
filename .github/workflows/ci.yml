@@ -45,10 +45,11 @@ jobs:
               - 'uv.lock'
               - 'tox.ini'
               - 'src/openapipages/*.py'
-              - 'src/openapipages/core/**'
-              - 'src/openapipages/utils/**'
+              - 'src/openapipages/**'
               - 'tests/conftest.py'
-              - 'tests/core/**'
+              - 'tests/unit/**'
+              - 'tests/integration/**'
+              - 'tests/e2e/**'
               - 'tests/test_*.py'
   hooks:
     name: Run prek hooks

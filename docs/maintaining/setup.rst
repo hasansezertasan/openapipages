@@ -69,12 +69,10 @@ the next push.
 
    gh secret set REPO_ADMIN_TOKEN --repo hasansezertasan/openapipages
 
-**[AGENT]** Trigger the workflow once (push a change under ``.github/rulesets/``
-or run it directly):
-
-.. code-block:: sh
-
-   gh workflow run ruleset-sync.yml --repo hasansezertasan/openapipages
+The workflow applies the ruleset on every push to the default branch. After
+storing the secret, merge a change to the default branch to trigger the first
+sync; manual dispatch is intentionally disabled so the admin token cannot be
+used by a workflow definition from an unprotected branch.
 
 **[CHECK]** The ``Protect main`` ruleset is applied and active — verifying the
 end state (not just that the ``REPO_ADMIN_TOKEN`` secret exists), so a repo where

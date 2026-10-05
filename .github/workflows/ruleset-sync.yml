@@ -16,7 +16,6 @@ on:
   # only when a `.github/rulesets/**` file happens to change.
   push:
     branches: [main, master]
-  workflow_dispatch:
 concurrency:
   group: ruleset-sync
   cancel-in-progress: true
