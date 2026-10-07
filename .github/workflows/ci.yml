@@ -46,7 +46,7 @@ jobs:
           find . -name ".coverage*" -type f
           ls -la .coverage* 2>/dev/null || echo "No .coverage files found"
       - name: Upload coverage files
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9  # v7.0.2
         with:
           name: coverage-${{ matrix.os }}-${{ matrix.python-version }}
           path: .coverage*
@@ -111,7 +111,7 @@ jobs:
         run: hatch run e2e:test -v --tracing retain-on-failure --screenshot only-on-failure --video retain-on-failure --output test-results
       - name: Upload Playwright artifacts on failure
         if: failure() || cancelled()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9  # v7.0.2
         with:
           name: playwright-output-${{ github.run_id }}-${{ github.run_attempt }}
           path: test-results/
