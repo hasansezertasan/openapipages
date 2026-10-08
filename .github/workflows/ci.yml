@@ -9,6 +9,9 @@ on:
     # Every job below is draft-gated, so leaving draft must explicitly start a
     # fresh run; `ready_for_review` is not part of GitHub's default event types.
     types: [opened, synchronize, reopened, ready_for_review]
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 jobs:
   changes:
     name: Detect changed components
