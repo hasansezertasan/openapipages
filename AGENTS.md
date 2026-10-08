@@ -12,7 +12,7 @@ Guidance for AI coding agents working in this repository.
 | ---- | ------- |
 | Run one test file | `uv run --locked pytest tests/test_smoke.py -v` |
 | Full test matrix | `uv run --locked tox run` |
-| Lint + type-check | `uv run --locked tox run -e style` |
+| Lint + type-check | `uv run --locked tox run -e style,sast` |
 | Git hooks | `uv run --locked tox run -e prek` |
 | Build package | `uv build` |
 

@@ -161,7 +161,7 @@ uv run --locked --group prek prek install
 
 Common tasks are exposed as mise tasks (`mise run test`, `mise run style`,
 `mise run lint`, `mise run format`, …); run `mise tasks` to list them. The full
-lint/type-check suite is `uv run --locked tox run -e style`, and the fast git
+lint/type-check suite is `uv run --locked tox run -e style,sast`, and the fast git
 hook gate is `uv run --locked tox run -e prek`.
 
 GitHub Copilot's coding agent runs `.github/workflows/copilot-setup-steps.yml`

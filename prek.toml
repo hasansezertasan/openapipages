@@ -144,7 +144,7 @@ hooks = [{ id = "vulture" }]
 
 [[repos]]
 repo = "https://github.com/crate-ci/typos"
-rev = "v1.49.0"
+rev = "v1.51.1"
 hooks = [{ id = "typos" }]
 
 # validate-pyproject checks pyproject.toml against its schema. The upstream hook
@@ -217,7 +217,7 @@ hooks = [{ id = "yamlfmt", exclude = "^\\.copier-answers\\.yml$", args = ["-conf
 
 [[repos]]
 repo = "https://github.com/commitizen-tools/commitizen"
-rev = "v4.17.0"
+rev = "v4.19.2"
 hooks = [
   { id = "commitizen" },
   { id = "commitizen-branch", stages = ["pre-push"] },

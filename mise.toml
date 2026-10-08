@@ -26,7 +26,7 @@ run = "uv run --locked tox run"
 [tasks.style]
 description = "Run style checks"
 alias = "s"
-run = "uv run --locked tox run -e style"
+run = "uv run --locked tox run -e style,sast"
 
 [tasks.lint]
 description = "Lint the code with ruff"

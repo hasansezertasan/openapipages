@@ -221,7 +221,7 @@ Run the cross-version unit and integration suites with [tox](https://tox.wiki):
 uv sync                         # install development dependencies
 uv run --locked tox run         # style checks and the supported Python matrix
 uv run --locked tox run -e 3.14 # run the suite on one Python version
-uv run --locked tox run -e style
+uv run --locked tox run -e style,sast
 ```
 
 The end-to-end tests run separately from the cross-platform matrix. They load

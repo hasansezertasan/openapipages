@@ -26,7 +26,7 @@ jobs:
       - name: Sync dependencies
         # --all-extras pulls the optional `otel` group so basedpyright can
         # resolve the soft-imported OpenTelemetry symbols in factory.py.
-        run: uv sync --all-groups --all-extras --frozen
+        run: uv sync --all-groups --no-group sast --all-extras --frozen
       - name: Run prek
         # no-commit-to-branch guards local commits; on a push to main it
         # always fails because CI checks out main itself.

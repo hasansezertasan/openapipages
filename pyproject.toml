@@ -116,22 +116,18 @@ style = [
   "slotscheck==0.20.1",
   "taplo==0.9.3",
   "ty==0.0.66",
-  "typos==1.49.0",
+  "typos==1.51.1",
   "zuban==0.9.1",
 ]
-# semgrep is deliberately its own group rather than part of `style`: `dev`
-# includes `style` wholesale, so a plain `uv sync` — and every Windows/macOS
-# cell in ci.yml, which runs `uv run --locked tox run` — would download and
-# unpack ~215 MB (the wheel bundles a native semgrep-core) for a tool that only
-# ever executes in the Linux-only `style` job. The tox `style` env lists this
-# group explicitly. Still a single version source, same as every other pin.
+# Semgrep pins an older OpenTelemetry API than FastAPI. Keep its scan in a
+# separate tox environment so test dependencies do not enter the SAST resolver.
 sast = [
   "semgrep==1.179.0",
 ]
 test = [
   "coverage-enable-subprocess==1.0",
   "coverage[toml]==7.15.3",
-  "fastapi>=0.115.0,<0.142.0",
+  "fastapi>=0.143.0,<0.144.0",
   "httpx>=0.28.1,<0.29.0",
   "pytest-mock==3.15.1",
   "pytest-playwright>=0.5.0",
@@ -147,7 +143,7 @@ test = [
 ]
 tool = [
   "cobo==0.5.1; python_version >= '3.14'",
-  "commitizen==4.17.0",
+  "commitizen==4.19.2",
   # "marimo==0.15.2",
   # "inflection==0.5.1",
   # "copier==9.11.0",
@@ -166,6 +162,10 @@ build-backend = "hatchling.build"
 
 [tool.uv]
 add-bounds = "exact"
+conflicts = [
+  [{ group = "sast" }, { group = "dev" }],
+  [{ group = "sast" }, { group = "test" }],
+]
 cache-keys = [
   { file = "pyproject.toml" },
   { git = { commit = true, tags = true } },
@@ -523,6 +523,7 @@ extend-exclude = [
 # ``tox -e worker`` when a broker is up (e.g. inside the devcontainer).
 env_list = [
   "style",
+  "sast",
   "3.14",
   "3.13",
   "3.12",
@@ -628,22 +629,6 @@ commands = [
   [
     "lint-imports",
   ],
-  # Rules-database SAST. Deliberately style-env-only (like ty/pyrefly/zuban) and
-  # not a prek hook: semgrep keeps no on-disk rule cache, so a pre-commit hook
-  # would make a registry request on every `git commit`. The ruleset is named
-  # explicitly rather than `--config auto` so rule selection does not depend on
-  # language auto-detection; it is still fetched from the registry, which is why
-  # this cannot be vendored (see ADR-032). `--error` makes findings blocking;
-  # silence a false positive with a trailing `# nosemgrep: <rule-id>`.
-  [
-    "semgrep",
-    "scan",
-    "--config",
-    "p/python",
-    "--error",
-    "--metrics=off",
-    "src",
-  ],
   [
     "taplo",
     "lint",
@@ -680,8 +665,15 @@ commands = [
 ]
 # `test` is included so the type checkers that scope tests (e.g. ty) can
 # resolve pytest and other test-only imports.
-dependency_groups = ["sast", "style", "test"]
+dependency_groups = ["style", "test"]
 description = "Run Checkers, Linters and Formatters"
+runner = "uv-venv-runner"
+
+
+[tool.tox.env.sast]
+commands = [["semgrep", "scan", "--config", "p/python", "--error", "--metrics=off", "src"]]
+dependency_groups = ["sast"]
+description = "Scan source with Semgrep in an isolated environment"
 runner = "uv-venv-runner"
 
 
