@@ -1727,6 +1727,9 @@ wheels = [
 [[package]]
 name = "openapipages"
 source = { editable = "." }
+dependencies = [
+    { name = "typing-extensions" },
+]
 
 [package.dev-dependencies]
 dev = [
@@ -1806,6 +1809,7 @@ tool = [
 ]
 
 [package.metadata]
+requires-dist = [{ name = "typing-extensions", specifier = ">=4.8.0" }]
 
 [package.metadata.requires-dev]
 dev = [

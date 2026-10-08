@@ -53,7 +53,7 @@ Totally Pythonic, OpenAPI Based customizable documentation pages for [SwaggerUI]
 > Gimme an OpenAPI Spec, leave the rest to me...
 
 - Framework agnostic.
-- Zero dependencies, just Python standard library.
+- Only one runtime dependency: `typing-extensions`.
 - Fully typed.
 - Highly extensible.
 
