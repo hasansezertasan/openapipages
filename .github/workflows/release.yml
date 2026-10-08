@@ -293,11 +293,31 @@ jobs:
             const version = process.env.VERSION;
             const { owner, repo } = context.repo;
 
-            // The previous published release delimits this release's commit range.
+            // Use semantic order: creation order can put a newer backport or
+            // prerelease ahead of the actual predecessor of this stable release.
+            const parseVersion = (value) => {
+              const match = /^v?(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:\+[0-9A-Za-z.-]+)?$/.exec(value || "");
+              return match ? match.slice(1, 4).map(Number) : null;
+            };
+            const compareVersions = (left, right) => {
+              for (let i = 0; i < 3; i++) {
+                if (left[i] !== right[i]) return left[i] - right[i];
+              }
+              return 0;
+            };
+            const currentVersion = parseVersion(version);
+            if (!currentVersion) {
+              core.info("Not a stable semantic version; nothing to notify.");
+              return;
+            }
             const releases = await github.paginate(github.rest.repos.listReleases, {
               owner, repo, per_page: 100,
             });
-            const previous = releases.find((r) => !r.draft && r.tag_name !== tag);
+            const previous = releases
+              .filter((release) => !release.draft && !release.prerelease)
+              .map((release) => ({ release, version: parseVersion(release.tag_name) }))
+              .filter((candidate) => candidate.version && compareVersions(candidate.version, currentVersion) < 0)
+              .sort((left, right) => compareVersions(right.version, left.version))[0]?.release;
             if (!previous) {
               core.info("No previous release found; nothing to notify.");
               return;
