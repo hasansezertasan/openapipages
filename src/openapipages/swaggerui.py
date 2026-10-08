@@ -6,7 +6,7 @@ from typing_extensions import Doc
 
 from openapipages.base import Base
 
-__all__ = ["SwaggerUI"]
+__all__ = ["SwaggerUI", "default_parameters", "default_parameters_presets"]
 
 
 default_parameters: Annotated[
