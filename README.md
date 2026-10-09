@@ -197,6 +197,17 @@ One interface for many! And of course Framework agnostic... So you can use it in
 - [Swagger with hosted files does not work after upgrade · tiangolo/fastapi · Discussion #10426](https://github.com/tiangolo/fastapi/discussions/10426)
 - [♻️ Generate cleaner Swagger HTML by s-rigaud · Pull Request #11072 · tiangolo/fastapi](https://github.com/tiangolo/fastapi/pull/11072)
 
+For adoption or template-update reconciliation, ask your agent to "audit this
+template adoption/update against our existing project behavior".
+The shipped [template-adoption skill](./.claude/skills/template-adoption/SKILL.md)
+also supports audits after an update was applied. It compares workflow behavior,
+required checks, custom tooling, and documentation, and asks before consequential
+cleanup. Its prek-workflow example shows why duplicate commands alone do not
+justify removing a workflow. Use the sibling `repo-setup` skill for repository
+settings and release setup.
+
+## Credits
+
 ## Author
 
 - [Hasan Sezer Tasan](https://www.github.com/hasansezertasan), It's me :wave:

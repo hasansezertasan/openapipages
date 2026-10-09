@@ -59,6 +59,14 @@ repo = "https://github.com/pre-commit/pre-commit-hooks"
 rev = "v6.0.0"
 hooks = [
   { id = "check-yaml" },
+  { id = "check-executables-have-shebangs" },
+  { id = "check-symlinks" },
+  { id = "check-xml" },
+  # Preserve cobo-owned bytes (ADR-012/030).
+  # Windows PowerShell 5.1 needs a UTF-8 BOM for non-ASCII source literals.
+  { id = "fix-byte-order-marker", exclude = '^\.gitignore$|(?i:\.ps[md]?1)$' },
+  { id = "mixed-line-ending", args = ["--fix=auto"], exclude = '^\.gitignore$' },
+  # auto fixes mixed endings, retaining consistent CRLF for Windows scripts.
   { id = "debug-statements" },
   { id = "check-ast" },
 ]
@@ -159,7 +167,15 @@ hooks = [{ id = "validate-pyproject" }]
 repo = "https://github.com/python-jsonschema/check-jsonschema"
 rev = "0.37.4"
 hooks = [
+  # Action metadata and workflow schemas are distinct. The latter complements
+  # actionlint's expression/shell checks and zizmor's security analysis.
   { id = "check-github-actions", args = ["--verbose"] },
+  { id = "check-github-workflows" },
+  { id = "check-github-issue-forms" },
+  { id = "check-github-issue-config", files = '^\.github/ISSUE_TEMPLATE/config\.ya?ml$' },
+  # pyjson5 enables the upstream matcher's .json5 Renovate configurations.
+  { id = "check-renovate", additional_dependencies = ["pyjson5"] },
+  { id = "check-dependabot" },
 ]
 
 [[repos]]
