@@ -53,7 +53,7 @@ Totally Pythonic, OpenAPI Based customizable documentation pages for [SwaggerUI]
 > Gimme an OpenAPI Spec, leave the rest to me...
 
 - Framework agnostic.
-- Zero dependencies, just Python standard library.
+- Only one runtime dependency: `typing-extensions`.
 - Fully typed.
 - Highly extensible.
 
@@ -197,6 +197,17 @@ One interface for many! And of course Framework agnostic... So you can use it in
 - [Swagger with hosted files does not work after upgrade · tiangolo/fastapi · Discussion #10426](https://github.com/tiangolo/fastapi/discussions/10426)
 - [♻️ Generate cleaner Swagger HTML by s-rigaud · Pull Request #11072 · tiangolo/fastapi](https://github.com/tiangolo/fastapi/pull/11072)
 
+For adoption or template-update reconciliation, ask your agent to "audit this
+template adoption/update against our existing project behavior".
+The shipped [template-adoption skill](./.claude/skills/template-adoption/SKILL.md)
+also supports audits after an update was applied. It compares workflow behavior,
+required checks, custom tooling, and documentation, and asks before consequential
+cleanup. Its prek-workflow example shows why duplicate commands alone do not
+justify removing a workflow. Use the sibling `repo-setup` skill for repository
+settings and release setup.
+
+## Credits
+
 ## Author
 
 - [Hasan Sezer Tasan](https://www.github.com/hasansezertasan), It's me :wave:
@@ -215,25 +226,26 @@ The suite is organised in layers under `tests/`:
 - `tests/integration/` — each renderer rendered through a FastAPI app over an in-process ASGI client.
 - `tests/e2e/` — real-browser (Playwright/Chromium) tests that boot each UI, load its JS from the CDN, and verify the spec renders.
 
-Run the fast suites (unit + integration) and static analysis with [Hatch](https://hatch.pypa.io):
+Run the cross-version unit and integration suites with [tox](https://tox.wiki):
 
 ```bash
-hatch run test:test    # unit + integration (e2e is excluded)
-hatch run +py=3.14 test:cov # combine coverage once and generate reports
-hatch run test:style   # ruff + mypy + codespell
-hatch env create test  # install development dependencies
+uv sync                         # install development dependencies
+uv run --locked tox run         # style checks and the supported Python matrix
+uv run --locked tox run -e 3.14 # run the suite on one Python version
+uv run --locked tox run -e style,sast
 ```
 
-The end-to-end tests live in their own environment so the browser/uvicorn extras
-never touch the zero-dependency package. They load each UI's JavaScript from its
-real CDN, so they need network access and run Chromium only:
+The end-to-end tests run separately from the cross-platform matrix. They load
+each UI's JavaScript from its real CDN, so they need network access and run
+Chromium only:
 
 ```bash
-hatch run e2e:install-browser   # one-time: playwright install chromium
-hatch run e2e:test              # run the browser tests
+uv run --locked --group test playwright install chromium
+uv run --locked --group test pytest tests/e2e -m e2e -v
 ```
 
-In CI they run as a separate `E2E (Chromium)` job, gated behind the cross-platform test matrix.
+CI runs these tests in a dedicated `E2E (Chromium)` job after the cross-platform
+test matrix.
 
 ### CI/CD Pipeline
 
@@ -257,16 +269,9 @@ This project includes comprehensive Visual Studio Code configurations for enhanc
 
 #### Debugging Configurations (`.vscode/launch.json`)
 
-- **Python: Run Tests** - Run all tests with pytest
-- **Python: Run Tests with Coverage** - Run tests with coverage reporting
-- **Python: Debug Test File** - Debug the currently open test file
-- **Python: FastAPI Example Server** - Debug the FastAPI example server
-- **Python: Litestar Example Server** - Debug the Litestar example server
-- **Python: Test Server** - Debug the test server
 - **Python: Current File** - Debug the currently open Python file
-- **Python: Debug with uvicorn (FastAPI)** - Debug FastAPI server with uvicorn
-- **Python: Debug with uvicorn (Litestar)** - Debug Litestar server with uvicorn
-- **Python: Debug with uvicorn (Test Server)** - Debug test server with uvicorn
+- **Python: Tests** - Run all tests with pytest under the debugger
+- **Python: Attach** - Attach the debugger to a process listening on `localhost:5678`
 
 #### Build Tasks (`.vscode/tasks.json`)
 

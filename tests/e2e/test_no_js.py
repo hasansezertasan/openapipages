@@ -25,9 +25,7 @@ NOSCRIPT_TEXT = "requires Javascript to function"
 
 @pytest.mark.parametrize("renderer", list(RENDERER_PATHS))
 def test_noscript_fallback_visible_without_js(
-    no_js_page: Page,
-    base_url: str,
-    renderer: str,
+    no_js_page: Page, base_url: str, renderer: str
 ) -> None:
     """With JavaScript disabled, the renderer's ``<noscript>`` message shows.
 
@@ -38,8 +36,7 @@ def test_noscript_fallback_visible_without_js(
     JS-disabled page is used here instead.)
     """
     no_js_page.goto(
-        f"{base_url}{RENDERER_PATHS[renderer]}",
-        wait_until="domcontentloaded",
+        f"{base_url}{RENDERER_PATHS[renderer]}", wait_until="domcontentloaded"
     )
     body_text = no_js_page.inner_text("body")
     assert NOSCRIPT_TEXT in body_text, (

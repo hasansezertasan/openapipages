@@ -1,8 +1,11 @@
 from dataclasses import dataclass
 from typing import Annotated
 
-from openapipages.base import Base
 from typing_extensions import Doc
+
+from openapipages.base import Base
+
+__all__ = ["Scalar"]
 
 
 @dataclass
@@ -15,7 +18,7 @@ class Scalar(Base):
             """
             The URL to use to load the Scalar JavaScript.
             It is normally set to a CDN URL.
-            """,
+            """
         ),
     ] = "https://cdn.jsdelivr.net/npm/@scalar/api-reference"
     proxy_url: Annotated[
@@ -24,7 +27,7 @@ class Scalar(Base):
             """
             The URL to use to set the Scalar Proxy.
             It is normally set to a Scalar API URL (https://api.scalar.com/request-proxy), but default is empty.
-            """,
+            """
         ),
     ] = ""
 

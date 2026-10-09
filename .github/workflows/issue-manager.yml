@@ -1,0 +1,43 @@
+---
+name: Issue Manager
+on:
+  schedule:
+    - cron: "0 0 * * *"
+  issue_comment:
+    types:
+      - created
+      - edited
+  issues:
+    types:
+      - labeled
+  # Fires only on the `labeled` event so a maintainer's label triggers the
+  # auto-close reminder on PRs (including forks). It is safe here: no PR code is
+  # checked out or executed — the pinned action reads only the label and comments.
+  pull_request_target:  # zizmor: ignore[dangerous-triggers]
+    types:
+      - labeled
+  workflow_dispatch:
+permissions:
+  issues: write
+  pull-requests: write
+jobs:
+  issue-manager:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: tiangolo/issue-manager@dc846170c36eb62fb434b3d943b36399fe240fb5  # 0.8.1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          config: |
+            {
+              "answered": {
+                "users": ["hasansezertasan"],
+                "delay": 864000,
+                "message": "Assuming the original issue was solved, it will be automatically closed now. But feel free to add more comments or create new issues.",
+                "remove_label_on_close": true,
+                "reminder": {
+                  "before": 259200,
+                  "message": "Heads-up: this will be auto-closed in ~3 days unless there's new activity."
+                }
+              }
+            }

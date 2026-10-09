@@ -1,0 +1,47 @@
+---
+name: Task Completed Check
+on:
+  # pull_request_target is required so the check run posts on PRs from forks with
+  # a least-privilege `checks: write` token. It is safe here: no PR code is checked
+  # out or executed — the pinned action only reads the PR description's task list.
+  pull_request_target:  # zizmor: ignore[dangerous-triggers]
+    types: [opened, edited, synchronize, reopened]
+jobs:
+  task-check:
+    name: Check PR task list
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      checks: write
+      pull-requests: read
+    steps:
+      - name: Check completed tasks
+        # Skip automated PRs (Renovate, Dependabot, etc.) — bots leave task
+        # checkboxes (e.g. Renovate's rebase box) unticked. Keyed on the PR
+        # author, not github.actor, so a human editing a bot PR still skips.
+        if: ${{ !endsWith(github.event.pull_request.user.login, '[bot]') }}
+        uses: kentaro-m/task-completed-checker-action@2ddb65fdd5577bae4a8e82e0564e459677aec893  # v0.1.2
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Report the task check as satisfied for bot pull requests
+        # The required status context is the check run `Task Completed Checker`
+        # that the action creates via the Checks API — NOT this job's name. So
+        # the skip above leaves no context behind at all and branch protection
+        # waits forever, making every Renovate/release-please PR unmergeable.
+        # Requiring the job name instead is not an option: the job is green even
+        # when boxes are unticked, so the gate would stop gating for humans.
+        # Publishing the check run green here is what keeps both true.
+        if: ${{ endsWith(github.event.pull_request.user.login, '[bot]') }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Read through env, never interpolated into the shell — the PR head SHA
+          # is fork-controlled data on a pull_request_target run.
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          gh api -X POST "repos/${GITHUB_REPOSITORY}/check-runs" \
+            -f name='Task Completed Checker' \
+            -f head_sha="${HEAD_SHA}" \
+            -f status=completed \
+            -f conclusion=success \
+            -f 'output[title]=Skipped for an automated pull request' \
+            -f 'output[summary]=Automated pull requests leave task checkboxes unticked by design.'

@@ -1,0 +1,40 @@
+---
+name: Sync Labels
+on:
+  # Provision the repository's labels from .github/labels.yml. Running on push to
+  # the default branch means the very first push after generation creates them —
+  # including `no-issue`, which the "Check Linked Issues" workflow needs as its
+  # bypass label. Re-runs whenever the manifest changes; workflow_dispatch allows
+  # a manual re-sync.
+  push:
+    branches: [main]
+    paths: [.github/labels.yml]
+  workflow_dispatch:
+# Serialize sync runs so a slower older run can't finish last and reset labels
+# to a stale manifest; cancel any in-progress run in favor of the newest.
+concurrency:
+  group: label-sync
+  cancel-in-progress: true
+permissions: {}
+jobs:
+  sync:
+    name: Sync repository labels
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read  # only needed for private/internal repos (actions/checkout)
+      # Creating and updating labels is an issues-write operation.
+      issues: write
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7
+        with:
+          persist-credentials: false
+      - name: Sync labels from .github/labels.yml
+        uses: crazy-max/ghaction-github-labeler@548a7c3603594ec17c819e1239f281a3b801ab4d  # v6.0.0
+        with:
+          yaml-file: .github/labels.yml
+          # Only create and update labels; never delete labels missing from the
+          # manifest, so GitHub's defaults and labels other automation creates
+          # (e.g. actions/labeler) survive.
+          skip-delete: true

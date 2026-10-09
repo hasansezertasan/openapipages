@@ -4,6 +4,8 @@ from typing import Annotated
 
 from typing_extensions import Doc
 
+__all__ = ["Base"]
+
 
 @dataclass
 class Base:
@@ -14,7 +16,7 @@ class Base:
         Doc(
             """
             The HTML `<title>` content, normally shown in the browser tab.
-            """,
+            """
         ),
     ]
     js_url: Annotated[
@@ -23,7 +25,7 @@ class Base:
             """
             The URL to use to load the JavaScript.
             It is normally set to a CDN URL.
-            """,
+            """
         ),
     ]
     openapi_url: Annotated[
@@ -32,7 +34,7 @@ class Base:
             """
             The OpenAPI URL that page should load and use.
             Default URL `/openapi.json`.
-            """,
+            """
         ),
     ] = "/openapi.json"
     head_js_urls: Annotated[
@@ -40,7 +42,7 @@ class Base:
         Doc(
             """
             A list of URLs to JavaScript files that should be loaded in the `<head>` tag.
-            """,
+            """
         ),
     ] = field(default_factory=list)
     tail_js_urls: Annotated[
@@ -48,7 +50,7 @@ class Base:
         Doc(
             """
             A list of URLs to JavaScript files that should be loaded at the end of the `<body>` tag.
-            """,
+            """
         ),
     ] = field(default_factory=list)
     head_css_urls: Annotated[
@@ -56,7 +58,7 @@ class Base:
         Doc(
             """
             A list of URLs to CSS files that should be loaded in the `<head>` tag.
-            """,
+            """
         ),
     ] = field(default_factory=list)
     favicon_url: Annotated[
@@ -64,7 +66,7 @@ class Base:
         Doc(
             """
             The URL of the favicon to use. It is normally shown in the browser tab.
-            """,
+            """
         ),
     ] = "/favicon.ico"
 

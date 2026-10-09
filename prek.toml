@@ -1,133 +1,255 @@
-#:schema: https://www.schemastore.org/prek.json
-# Configuration file for `prek`, a git hook framework written in Rust.
+# Configuration file for `prek`, a fast Rust-native pre-commit replacement.
 # See https://prek.j178.dev for more information.
-default_language_version.python = "3.14"
-exclude.glob = [".devcontainer/**", ".vscode/**"]
+# No `#:schema` directive: `taplo lint` in the tox `style` env would download it
+# on every run (even with `--no-schema`), so a flaky or offline network fails the
+# gate. Editors still get completion from SchemaStore's `prek.toml` fileMatch.
+#
+# Hook revisions are kept current by Renovate (see the customManagers block in
+# .github/renovate.json). There is no pre-commit.ci integration and no sync-with-uv
+# hook — Renovate owns every `rev` bump, including the tools shared with the uv
+# `style` dependency group.
+default_language_version.python = "python3.10"
+default_stages = ["pre-commit", "pre-push"]
+exclude = '''(?x)^(
+    # Editor/debugger JSON configs that carry comments or trailing commas
+    \.devcontainer/devcontainer\.json$
+    |\.vscode/launch\.json$
+
+    # VCS and Python build/virtualenv directories
+    |\.git
+    |\.hg
+    |\.mypy_cache
+    |\.nox
+    |\.tox
+    |\.venv
+    |_build
+    |buck-out
+    |build
+    |dist
+    |alembic
+)$'''
+
+# Fast Rust-native reimplementations of common pre-commit-hooks. No git clone.
 [[repos]]
 repo = "builtin"
 hooks = [
   { id = "check-added-large-files", args = [
     "--maxkb=1000",
   ] },
-  { id = "check-case-conflict" },
-  { id = "check-executables-have-shebangs" },
-  { id = "check-json" },
-  { id = "check-json5" },
-  { id = "check-merge-conflict" },
-  { id = "check-symlinks" },
   { id = "check-toml" },
-  { id = "check-xml" },
-  { id = "check-yaml" },
-  { id = "detect-private-key" },
+  { id = "check-json" },
   { id = "end-of-file-fixer" },
-  { id = "fix-byte-order-marker" },
-  { id = "mixed-line-ending", exclude = "^\\.gitignore$" },
-  { id = "no-commit-to-branch" },
-  { id = "trailing-whitespace", exclude = "^\\.gitignore$" },
+  # `.gitignore` is a cobo-sealed block (hash-verified); its bytes must stay
+  # verbatim, but upstream github/gitignore ships trailing whitespace on some
+  # comment lines. Exclude it so the hook does not break the seal (cobo owns
+  # this file — see ADR-012).
+  { id = "trailing-whitespace", exclude = '^\.gitignore$' },
+  { id = "check-merge-conflict", args = [
+    "--assume-in-merge",
+  ] },
+  { id = "check-case-conflict" },
+  { id = "detect-private-key" },
 ]
+
+# check-yaml, debug-statements and check-ast have no Rust builtin (they need a
+# YAML loader / the Python AST), so they stay on the upstream repo. prek runs
+# them correctly, just without the builtin fast path.
 [[repos]]
-repo = "https://github.com/crate-ci/typos"
-rev = "v1.51.1"
-hooks = [{ id = "typos" }]
-[[repos]]
-repo = "https://github.com/python-jsonschema/check-jsonschema"
-rev = "0.38.2"
+repo = "https://github.com/pre-commit/pre-commit-hooks"
+rev = "v6.0.0"
 hooks = [
-  { id = "check-dependabot" },
-  { id = "check-github-actions" },
-  { id = "check-github-issue-forms" },
-  { id = "check-github-workflows" },
-  { id = "check-renovate" },
+  { id = "check-yaml" },
+  { id = "check-executables-have-shebangs" },
+  { id = "check-symlinks" },
+  { id = "check-xml" },
+  # Preserve cobo-owned bytes (ADR-012/030).
+  # Windows PowerShell 5.1 needs a UTF-8 BOM for non-ASCII source literals.
+  { id = "fix-byte-order-marker", exclude = '^\.gitignore$|(?i:\.ps[md]?1)$' },
+  { id = "mixed-line-ending", args = ["--fix=auto"], exclude = '^\.gitignore$' },
+  # auto fixes mixed endings, retaining consistent CRLF for Windows scripts.
+  { id = "debug-statements" },
+  { id = "check-ast" },
 ]
-[[repos]]
-repo = "https://github.com/rhysd/actionlint"
-rev = "v1.7.12"
-hooks = [{ id = "actionlint" }]
-[[repos]]
-repo = "https://github.com/adrienverge/yamllint"
-rev = "v1.38.0"
-hooks = [{ id = "yamllint", args = ["-c", ".config/.yamllint.yaml"] }]
-[[repos]]
-repo = "https://github.com/google/yamlfmt"
-rev = "v0.21.0"
-hooks = [{ id = "yamlfmt", args = ["-conf", ".config/.yamlfmt.yml"] }]
-[[repos]]
-repo = "https://github.com/ComPWA/taplo-pre-commit"
-rev = "v0.9.3"
-# taplo-lint requires fetching a schema catalog over the network on every
-# run, which flakes in CI (schema catalog API drifts). Format-only is
-# enough — pyproject.toml schema is enforced via validate-pyproject.
-hooks = [{ id = "taplo-format" }]
-[[repos]]
-repo = "https://github.com/sqlfluff/sqlfluff"
-rev = "4.4.0"
-hooks = [{ id = "sqlfluff-lint" }, { id = "sqlfluff-fix" }]
+
 [[repos]]
 repo = "https://github.com/astral-sh/uv-pre-commit"
 rev = "0.12.24"
 hooks = [{ id = "uv-lock" }]
+
+# Runs before ruff so any `__all__` it inserts is sorted/formatted in the same pass.
 [[repos]]
-repo = "https://github.com/abravalheri/validate-pyproject"
-rev = "0.26"
-hooks = [{ id = "validate-pyproject" }]
+repo = "https://github.com/python-formate/flake8-dunder-all"
+rev = "v0.5.0"
+hooks = [{ id = "ensure-dunder-all", files = "^src/" }]
+
 [[repos]]
 repo = "https://github.com/astral-sh/ruff-pre-commit"
-rev = "v0.16.10"
-hooks = [{ id = "ruff-check" }, { id = "ruff-format" }]
+rev = "v0.16.1"
+hooks = [
+  { id = "ruff" },
+  { id = "ruff-format" },
+]
+
+[[repos]]
+repo = "local"
+hooks = [
+  { id = "basedpyright", name = "basedpyright Type Checker", entry = "uv run --locked --group style basedpyright", language = "system", types = ["python"], pass_filenames = false },
+  # pylint runs as a whole-package gate (`pylint src`) that deliberately overlaps
+  # ruff's PL* rules. Like basedpyright it needs the installed package + deps to
+  # resolve imports, so it is a `local` `system` hook via `uv run`, not an upstream
+  # repo hook. Single version source: the `style` group pin.
+  { id = "pylint", name = "Pylint", entry = "uv run --locked --group style pylint src", language = "system", pass_filenames = false, always_run = true },
+  # import-linter (lint-imports) enforces the [tool.importlinter] architecture
+  # contract. Like basedpyright it is a whole-program analyzer that needs the
+  # installed package + its deps to build the import graph (via grimp), so it is a
+  # `local` `system` hook that shells out through `uv run --locked --group style`
+  # — NOT an upstream repo hook (that pattern runs in an isolated venv without the
+  # project installed, which is why it lived only in the tox `style` env before).
+  # Single version source: the `style` group pin (see ADR-014 §3). It builds the
+  # whole graph regardless of which files changed, so filenames are not passed.
+  { id = "import-linter", name = "Import Linter", entry = "uv run --locked --group style lint-imports", language = "system", pass_filenames = false, always_run = true },
+  # slotscheck imports every module under src/ to verify __slots__ definitions, so
+  # like basedpyright/import-linter it is a whole-program analyzer needing the
+  # installed package — a `local` `system` hook via `uv run`, not an upstream repo
+  # hook. It checks a property (slot correctness) no other tool covers, so it runs
+  # on the fast gate too (unlike the redundant type checkers ty/pyrefly/zuban,
+  # which stay style-env-only). Single version source: the `style` group pin.
+  { id = "slotscheck", name = "slotscheck", entry = "uv run --locked --group style python -m slotscheck src", language = "system", pass_filenames = false, always_run = true },
+  # editorconfig-checker is run via the uv `style` group (not an upstream prek
+  # repo) so its version has a single source of truth: its PyPI wrapper lags the
+  # Go release tags, so a separate `rev` pin would drift permanently out of sync
+  # with the `style` group. It reads `.editorconfig-checker.json` and scans the
+  # whole tree (respecting .gitignore), so filenames are not passed.
+  { id = "editorconfig-checker", name = "EditorConfig Checker", entry = "uv run --locked --group style ec", language = "system", pass_filenames = false },
+  # detect-secrets is a local pre-commit gate against a committed baseline
+  # (.secrets.baseline), catching a secret at `git commit` time before it ever
+  # enters history. It complements (does not replace) the history-spanning
+  # gitleaks scan in check-security.yml, which runs on PR/push/weekly cron —
+  # local prevention (commit stage) layered with CI detection (history stage).
+  # A hit that slips past a contributor's local hook is still caught in CI, since
+  # `prek run --all-files` runs this hook there too. Single version source: the
+  # `style` group pin (its PyPI wrapper has no separate upstream pre-commit repo
+  # revision worth tracking here).
+  { id = "detect-secrets", name = "detect-secrets (pre-commit secret scan)", entry = "uv run --locked --group style detect-secrets-hook --baseline .secrets.baseline", language = "system", pass_filenames = true },
+]
+
+[[repos]]
+repo = "https://github.com/pre-commit/mirrors-mypy"
+rev = "v2.3.0"
+hooks = [
+  # Scope the hook to src/ to match tox's canonical mypy (which type-checks only
+  # src/). Without this, the hook passes every changed .py file, which (a) trips
+  # mypy's duplicate-module check on the sibling examples/*/main.py demo scripts
+  # and (b) surfaces strict-decorator errors in tests/ that the canonical run
+  # never checks — neither is part of the shipped, type-checked surface.
+  { id = "mypy", files = "^src/", additional_dependencies = [] },
+]
+
 [[repos]]
 repo = "https://github.com/jendrikseipp/vulture"
 rev = "v2.16"
 hooks = [{ id = "vulture", pass_filenames = false, args = ["src", "tests"] }]
+
 [[repos]]
-repo = "https://github.com/gitleaks/gitleaks"
-rev = "v8.30.1"
-hooks = [{ id = "gitleaks" }]
+repo = "https://github.com/crate-ci/typos"
+rev = "v1.51.1"
+hooks = [{ id = "typos" }]
+
+# validate-pyproject checks pyproject.toml against its schema. The upstream hook
+# installs the `.[all]` extra via additional_dependencies (trove-classifiers,
+# packaging, ...), matching the former `validate-pyproject[all]` style-group pin.
+[[repos]]
+repo = "https://github.com/abravalheri/validate-pyproject"
+rev = "v0.25"
+hooks = [{ id = "validate-pyproject" }]
+
+[[repos]]
+repo = "https://github.com/python-jsonschema/check-jsonschema"
+rev = "0.37.4"
+hooks = [
+  # Action metadata and workflow schemas are distinct. The latter complements
+  # actionlint's expression/shell checks and zizmor's security analysis.
+  { id = "check-github-actions", args = ["--verbose"] },
+  { id = "check-github-workflows" },
+  { id = "check-github-issue-forms" },
+  { id = "check-github-issue-config", files = '^\.github/ISSUE_TEMPLATE/config\.ya?ml$' },
+  # pyjson5 enables the upstream matcher's .json5 Renovate configurations.
+  { id = "check-renovate", additional_dependencies = ["pyjson5"] },
+  { id = "check-dependabot" },
+]
+
+[[repos]]
+repo = "https://github.com/rhysd/actionlint"
+rev = "v1.7.12"
+hooks = [{ id = "actionlint" }]
+
+# zizmor statically audits the GitHub Actions workflows for security issues
+# (credential persistence, excessive permissions, template injection, ...). This
+# hook is the blocking gate — it runs in the CI `hooks` job and locally; the
+# .github/workflows/zizmor.yml workflow additionally uploads findings to the
+# Security tab as a non-blocking dashboard. Default (regular) persona.
+[[repos]]
+repo = "https://github.com/zizmorcore/zizmor-pre-commit"
+rev = "v1.29.0"
+hooks = [{ id = "zizmor" }]
+
+[[repos]]
+repo = "https://github.com/adrienverge/yamllint.git"
+rev = "v1.38.0"
+# `.copier-answers.yml` is excluded for the same reason the yamlfmt hook below
+# excludes it: copier owns the file ("NEVER EDIT MANUALLY") and writes block
+# sequences unindented, which yamllint's `indentation` rule rejects. The only
+# way to satisfy the linter would be to hand-edit a file the next `copier
+# update` overwrites, so the gate can only ever produce an unfixable failure —
+# it fires the moment any answer is a list (e.g. `ai_rulez_presets`).
+hooks = [{ id = "yamllint", exclude = "^\\.copier-answers\\.yml$", args = ["-c", ".github/yamllint.yaml"] }]
+
+[[repos]]
+repo = "https://github.com/DavidAnson/markdownlint-cli2"
+rev = "v0.23.2"
+hooks = [{ id = "markdownlint-cli2" }]
+
+# shellcheck lints standalone shell scripts a project adds later (workflow
+# `run:` blocks are already shellchecked by actionlint). Delivered via the
+# shellcheck-py wheel so the hook needs no system shellcheck install; runs only
+# on files types-detected as shell.
+[[repos]]
+repo = "https://github.com/shellcheck-py/shellcheck-py"
+rev = "v0.11.0.1"
+hooks = [{ id = "shellcheck" }]
+
+# checkmake lints Makefiles a project adds later. Built from source via prek's
+# `golang` language support (the hook's manifest `types: [makefile]` scopes it,
+# so it is a no-op until a Makefile exists).
+[[repos]]
+repo = "https://github.com/checkmake/checkmake"
+rev = "v0.3.2"
+hooks = [{ id = "checkmake" }]
+
+[[repos]]
+repo = "https://github.com/google/yamlfmt"
+rev = "v0.21.0"
+hooks = [{ id = "yamlfmt", exclude = "^\\.copier-answers\\.yml$", args = ["-conf", ".github/yamlfmt.yml"] }]
+
 [[repos]]
 repo = "https://github.com/commitizen-tools/commitizen"
 rev = "v4.19.2"
-hooks = [{ id = "commitizen", stages = ["commit-msg"] }]
-[[repos]]
-repo = "https://github.com/DetachHead/basedpyright-prek-mirror"
-rev = "1.40.2"
-hooks = [{ id = "basedpyright", files = "^((src|tests)/.*\\.py)$" }]
-[[repos]]
-repo = "https://github.com/PyCQA/bandit"
-rev = "1.9.4"
 hooks = [
-  { id = "bandit", pass_filenames = false, additional_dependencies = [
-    "bandit[toml]",
-  ], args = [
-    "-c",
-    "pyproject.toml",
-    "-r",
-    "./src",
-    "./tests",
-  ] },
+  { id = "commitizen" },
+  { id = "commitizen-branch", stages = ["pre-push"] },
 ]
+
 [[repos]]
-repo = "https://github.com/ariebovenberg/slotscheck"
-rev = "v0.21.0"
+repo = "local"
 hooks = [
-  { id = "slotscheck", args = [
-    "--no-strict-imports",
-  ], files = "^((src|tests)/.*\\.py)$" },
-]
-[[repos]]
-repo = "https://github.com/pypa/pip-audit"
-rev = "v2.10.1"
-hooks = [{ id = "pip-audit", stages = ["pre-push"] }]
-[[repos]]
-repo = "https://github.com/asottile/pyupgrade"
-rev = "v3.22.0"
-hooks = [{ id = "pyupgrade", args = ["--py310-plus"] }]
-[[repos]]
-repo = "https://github.com/djlint/djLint"
-rev = "v1.46.4"
-hooks = [
-  { id = "djlint-reformat-jinja", args = [
-    "--configuration=pyproject.toml",
-  ] },
-  { id = "djlint-jinja", args = [
-    "--configuration=pyproject.toml",
-  ] },
+  # ghalint (GitHub Actions workflow security-policy linter) has neither a PyPI
+  # wrapper nor a pre-commit hook, so it cannot join the uv `style` group or be a
+  # standard prek repo hook. It is installed via mise (aqua backend, see
+  # mise.toml) and invoked here through `mise exec` — this resolves the
+  # mise-managed binary deterministically after `mise install`, without needing
+  # an activated mise shell environment (shims on PATH). It only requires `mise`
+  # itself on PATH, which local contributors have and the CI `hooks` job supplies
+  # via jdx/mise-action.
+  { id = "ghalint", name = "ghalint", entry = "mise exec -- ghalint run", language = "system", pass_filenames = false, always_run = true },
+  { id = "pytest", name = "Pytest Test Runner", entry = "uv run --locked pytest -m 'not e2e'", language = "system", pass_filenames = false, always_run = true },
 ]

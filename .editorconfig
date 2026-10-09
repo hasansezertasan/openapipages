@@ -1,0 +1,70 @@
+# EditorConfig is awesome: https://editorconfig.org
+
+# top-most EditorConfig file
+root = true
+
+# Unix-style newlines with a newline ending every file
+[*]
+charset = utf-8
+end_of_line = lf
+indent_size = 4
+indent_style = space
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# Docstrings and comments use max_line_length = 88
+[*.py]
+max_line_length = 88
+
+# Makefiles always use tabs for indentation
+[Makefile]
+indent_style = tab
+indent_size = unset
+
+# Batch Files and PowerShell Scripts use tabs for indentation
+[*.{bat,ps1}]
+indent_style = tab
+end_of_line = crlf
+
+# HTML, CSS, JavaScript, JSON(C), CFF, Markdown, Shell, YAML, TOML files use 2
+# spaces for indentation. `.jsonc` (JSON-with-comments configs) and `.cff`
+# (Citation File Format, which is YAML) are variants of json/yaml and share
+# their 2-space convention, so they are listed explicitly.
+[*.{css,html,js,json,jsonc,cff,md,sh,yml,yaml,toml}]
+indent_size = 2
+
+# `.all-contributorsrc` is JSON but has no `.json` extension, so it needs its own
+# stanza to inherit the 2-space convention the all-contributors CLI writes (the
+# stanza is inert when the file is absent). Only present when the toggle is on.
+[.all-contributorsrc]
+indent_size = 2
+
+# `.secrets.baseline` is JSON but has no `.json` extension, so it needs its own
+# stanza to inherit the 2-space convention detect-secrets writes (the stanza is
+# inert when the file is absent). Only present when the detect-secrets gate is on.
+[.secrets.baseline]
+indent_size = 2
+
+# cobo.lock is a generated TOML lockfile (2-space subtable indent, like the
+# other 2-space TOML above); the `.lock` extension is outside the TOML glob, so
+# it needs its own stanza. taplo does not lint it (its glob is `*.toml`), leaving
+# editorconfig-checker as the sole indent authority here.
+[cobo.lock]
+indent_size = 2
+
+# Ignore binary or generated files
+[*.{png,jpg,gif,ico,woff,woff2,ttf,eot,svg,pdf}]
+charset = unset
+end_of_line = unset
+indent_style = unset
+indent_size = unset
+trim_trailing_whitespace = unset
+insert_final_newline = unset
+max_line_length = unset
+
+[*.{diff,patch}]
+trim_trailing_whitespace = false
+
+# Ignore files and directories: node_modules, .git, .vscode, .DS_Store, .venv, .pytest_cache, .ruff_cache
+[**]
+ignore = node_modules, .git, .vscode, .DS_Store, .venv, .pytest_cache, .ruff_cache

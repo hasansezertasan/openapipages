@@ -1,2 +1,8 @@
-# Default owners for everything
+# Code owners are automatically requested for review on pull requests.
+# https://docs.github.com/articles/about-code-owners
+#
+# Each line is a file pattern followed by one or more owners.
+# Later matches take precedence over earlier ones.
+
+# Default owner for everything in the repository.
 * @hasansezertasan

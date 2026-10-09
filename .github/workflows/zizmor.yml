@@ -1,0 +1,48 @@
+---
+# zizmor security dashboard: runs the GitHub Actions static analysis and uploads
+# the findings to the repository's Security tab (code scanning) for stateful,
+# incremental triage. This is the NON-BLOCKING half of the two-layer setup — it
+# never fails the build on findings (that is the job of the blocking `zizmor`
+# prek hook in the CI `hooks` job). Use branch protection / rulesets on the
+# code-scanning results if you want the dashboard to gate merges too.
+#
+# Advanced Security / code scanning is free on public repositories; on private
+# repositories it requires GitHub Advanced Security. The action's SARIF upload
+# is unconditional and not best-effort, so on a private repo it would fail every
+# run -- hence the visibility-driven `advanced-security`/`annotations` switch
+# below, which keeps the audit running and only drops the Security-tab dashboard.
+name: zizmor
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+# Least-privilege default; the single job elevates only what it needs.
+permissions: {}
+jobs:
+  zizmor:
+    name: Audit workflows with zizmor
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      security-events: write  # upload SARIF to the code-scanning dashboard
+      contents: read  # only needed for private/internal repos
+      actions: read  # only needed for private/internal repos
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7
+        with:
+          persist-credentials: false
+      - name: Run zizmor
+        uses: zizmorcore/zizmor-action@3dc1ecc9bcb9e94e9b2c709687979e1298497054  # v0.6.2
+        with:
+          # `advanced-security` defaults to true and the action uploads SARIF
+          # with no visibility detection and no `continue-on-error`, which fails
+          # every run on a private/internal repo without GHAS. Fall back to
+          # inline workflow annotations there -- same audit, no code-scanning
+          # upload. The two inputs are mutually exclusive per the action's docs.
+          # This workflow only runs on `push`/`pull_request`, which always carry
+          # the event payload, so no fallback for an unknown visibility is
+          # needed (unlike scorecard.yml, which also runs on `schedule`).
+          advanced-security: ${{ github.event.repository.visibility == 'public' }}
+          annotations: ${{ github.event.repository.visibility != 'public' }}

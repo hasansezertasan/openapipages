@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+type: software
+authors:
+  - family-names: "Taşan"
+    given-names: "Hasan Sezer"
+    email: "hasansezertasan@gmail.com"
+title: "openapipages"
+abstract: "OpenAPI Spec-based pages (SwaggerUI, ReDoc, RapiDoc, Elements, Scalar) ready with configuration features."
+repository-code: "https://github.com/hasansezertasan/openapipages"
+license: MIT
