@@ -73,7 +73,7 @@ hooks = [
 
 [[repos]]
 repo = "https://github.com/astral-sh/uv-pre-commit"
-rev = "0.12.1"
+rev = "0.12.24"
 hooks = [{ id = "uv-lock" }]
 
 # Runs before ruff so any `__all__` it inserts is sorted/formatted in the same pass.
