@@ -269,16 +269,9 @@ This project includes comprehensive Visual Studio Code configurations for enhanc
 
 #### Debugging Configurations (`.vscode/launch.json`)
 
-- **Python: Run Tests** - Run all tests with pytest
-- **Python: Run Tests with Coverage** - Run tests with coverage reporting
-- **Python: Debug Test File** - Debug the currently open test file
-- **Python: FastAPI Example Server** - Debug the FastAPI example server
-- **Python: Litestar Example Server** - Debug the Litestar example server
-- **Python: Test Server** - Debug the test server
 - **Python: Current File** - Debug the currently open Python file
-- **Python: Debug with uvicorn (FastAPI)** - Debug FastAPI server with uvicorn
-- **Python: Debug with uvicorn (Litestar)** - Debug Litestar server with uvicorn
-- **Python: Debug with uvicorn (Test Server)** - Debug test server with uvicorn
+- **Python: Tests** - Run all tests with pytest under the debugger
+- **Python: Attach** - Attach the debugger to a process listening on `localhost:5678`
 
 #### Build Tasks (`.vscode/tasks.json`)
 

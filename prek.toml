@@ -148,7 +148,7 @@ hooks = [
 [[repos]]
 repo = "https://github.com/jendrikseipp/vulture"
 rev = "v2.16"
-hooks = [{ id = "vulture" }]
+hooks = [{ id = "vulture", pass_filenames = false, args = ["src", "tests"] }]
 
 [[repos]]
 repo = "https://github.com/crate-ci/typos"
