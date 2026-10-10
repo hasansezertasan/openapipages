@@ -10,7 +10,10 @@
       "request": "launch",
       "program": "${file}",
       "console": "integratedTerminal",
-      "justMyCode": true
+      "justMyCode": true,
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}/src"
+      }
     },
     {
       "name": "Python: Tests",
@@ -19,7 +22,103 @@
       "module": "pytest",
       "args": ["-v", "--tb=short"],
       "console": "integratedTerminal",
-      "justMyCode": true
+      "justMyCode": true,
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}/src"
+      }
+    },
+    {
+      "name": "Python: Debug Test File",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "pytest",
+      "args": ["${file}", "-v", "--tb=short", "-s"],
+      "console": "integratedTerminal",
+      "justMyCode": true,
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}/src"
+      }
+    },
+    {
+      // Mirrors the tox env_run_base invocation (coverage run --module pytest),
+      // since pytest-cov is not a project dependency. Run
+      // `coverage combine && coverage report` (or `coverage html`) afterwards
+      // to merge the parallel-mode data file. e2e is excluded like in CI:
+      // it needs Playwright browsers and a live server.
+      "name": "Python: Run Tests with Coverage",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "coverage",
+      "args": ["run", "--module", "pytest", "-v", "--tb=short", "--ignore=tests/e2e"],
+      "console": "integratedTerminal",
+      "justMyCode": true,
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}/src",
+        "COVERAGE_PROCESS_START": "${workspaceFolder}/pyproject.toml"
+      }
+    },
+    {
+      "name": "Python: FastAPI Example Server",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/examples/fastapi/main.py",
+      "console": "integratedTerminal",
+      "justMyCode": true,
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}/src"
+      }
+    },
+    {
+      "name": "Python: Litestar Example Server",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/examples/litestar/main.py",
+      "console": "integratedTerminal",
+      "justMyCode": true,
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}/src"
+      }
+    },
+    {
+      // No plain "Test Server" program entry: tests/main.py only defines
+      // `app` and has no `__main__` block, so running it directly exits
+      // silently. Use the uvicorn entry below instead.
+      // --reload is intentionally omitted: the reloader subprocess fights
+      // the debugger. Restart the session to pick up changes.
+      "name": "Python: Debug with uvicorn (FastAPI)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "uvicorn",
+      "args": ["examples.fastapi.main:app", "--host", "0.0.0.0", "--port", "8000"],
+      "console": "integratedTerminal",
+      "justMyCode": true,
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}/src"
+      }
+    },
+    {
+      "name": "Python: Debug with uvicorn (Litestar)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "uvicorn",
+      "args": ["examples.litestar.main:app", "--host", "0.0.0.0", "--port", "8001"],
+      "console": "integratedTerminal",
+      "justMyCode": true,
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}/src"
+      }
+    },
+    {
+      "name": "Python: Debug with uvicorn (Test Server)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "uvicorn",
+      "args": ["tests.main:app", "--host", "0.0.0.0", "--port", "8002"],
+      "console": "integratedTerminal",
+      "justMyCode": true,
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}/src"
+      }
     },
     {
       "name": "Python: Attach",
@@ -30,8 +129,6 @@
         "port": 5678
       },
       "justMyCode": false
-    },
-  ],
-  "inputs": [
+    }
   ]
 }
