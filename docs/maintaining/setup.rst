@@ -449,6 +449,13 @@ check on them
 copier PR can look mergeable while carrying conflicts. Reconcile before merging:
 keep your project identity, adopt the template's tooling/config changes.
 
+If the update touches ``.vscode/launch.json``, keep the project overlay: resolve
+the conflict in favour of the committed file and port only genuine template-side
+improvements (e.g. a debugger-type migration or a new generic entry) instead of
+taking the template file wholesale. The project-specific entries (example and
+test servers, uvicorn targets, coverage invocation) are not something the
+template can render — re-applying them is expected, not a merge failure.
+
 If the update touches dependency metadata in ``pyproject.toml`` — the
 ``dependencies`` list, a dependency group, or the optional-dependency table —
 also run ``uv lock`` and commit the refreshed ``uv.lock`` in the same PR.
