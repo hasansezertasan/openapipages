@@ -180,6 +180,10 @@ Debug in VS Code using the launch configurations shipped in `.vscode/launch.json
 
 - **Current File**: Debug the currently open Python file.
 - **Tests**: Debug pytest runs.
+- **Debug Test File**: Debug the currently open test file.
+- **Run Tests with Coverage**: Debug pytest runs under coverage (e2e excluded, as in CI).
+- **FastAPI / Litestar Example Server**: Debug the example apps directly.
+- **Debug with uvicorn (FastAPI / Litestar / Test Server)**: Serve the example and test apps on ports 8000/8001/8002 under the debugger.
 - **Attach**: Attach to a running process.
 
 Select a configuration from the Run and Debug panel in VS Code.

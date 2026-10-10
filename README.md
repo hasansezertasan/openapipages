@@ -271,6 +271,13 @@ This project includes comprehensive Visual Studio Code configurations for enhanc
 
 - **Python: Current File** - Debug the currently open Python file
 - **Python: Tests** - Run all tests with pytest under the debugger
+- **Python: Debug Test File** - Debug the currently open test file with pytest
+- **Python: Run Tests with Coverage** - Run tests under `coverage run --module pytest` (e2e excluded, as in CI); follow with `coverage combine && coverage report`
+- **Python: FastAPI Example Server** - Debug `examples/fastapi/main.py` directly
+- **Python: Litestar Example Server** - Debug `examples/litestar/main.py` directly
+- **Python: Debug with uvicorn (FastAPI)** - Serve `examples.fastapi.main:app` on port 8000 under the debugger
+- **Python: Debug with uvicorn (Litestar)** - Serve `examples.litestar.main:app` on port 8001 under the debugger
+- **Python: Debug with uvicorn (Test Server)** - Serve `tests.main:app` on port 8002 under the debugger
 - **Python: Attach** - Attach the debugger to a process listening on `localhost:5678`
 
 #### Build Tasks (`.vscode/tasks.json`)
