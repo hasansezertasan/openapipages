@@ -70,7 +70,7 @@ hooks = [{ id = "uv-lock" }]
 # Runs before ruff so any `__all__` it inserts is sorted/formatted in the same pass.
 [[repos]]
 repo = "https://github.com/python-formate/flake8-dunder-all"
-rev = "v0.5.0"
+rev = "v0.6.0"
 hooks = [{ id = "ensure-dunder-all", files = "^src/" }]
 
 [[repos]]
