@@ -99,22 +99,22 @@ source = "https://github.com/hasansezertasan/openapipages.git"
 
 [dependency-groups]
 dev = [
-  "tox==4.58.0",
-  "tox-uv==1.36.0",
-  "debugpy==1.8.21",
+  "tox==4.64.10",
+  "tox-uv==1.36.1",
+  "debugpy==1.8.22",
   { include-group = "style" },
   { include-group = "test" },
 ]
 style = [
-  "basedpyright==1.39.9",
+  "basedpyright==1.40.2",
   "detect-secrets==1.5.0",
   "editorconfig-checker==3.8.0",
-  "import-linter==2.13",
-  "mypy==2.3.0",
+  "import-linter==2.15",
+  "mypy==2.4.0",
   "pylint==4.0.6",
   "pyrefly==1.2.0",
   "ruff==0.16.1",
-  "slotscheck==0.20.1",
+  "slotscheck==0.21.0",
   "taplo==0.9.3",
   "ty==0.0.66",
   "typos==1.51.1",
@@ -123,16 +123,16 @@ style = [
 # Semgrep pins an older OpenTelemetry API than FastAPI. Keep its scan in a
 # separate tox environment so test dependencies do not enter the SAST resolver.
 sast = [
-  "semgrep==1.179.0",
+  "semgrep==1.180.0",
 ]
 test = [
   "coverage-enable-subprocess==1.0",
-  "coverage[toml]==7.15.3",
+  "coverage[toml]==7.16.2",
   "fastapi>=0.143.0,<0.144.0",
   "httpx>=0.28.1,<0.29.0",
-  "pytest-mock==3.15.1",
+  "pytest-mock==3.16.0",
   "pytest-playwright>=0.5.0",
-  "pytest-rerunfailures==16.4",
+  "pytest-rerunfailures==16.7",
   "pytest-xdist[psutil]==3.8.0",
   "pytest==9.1.1",
   "pytest-sugar",

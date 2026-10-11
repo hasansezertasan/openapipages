@@ -206,7 +206,7 @@ hooks = [{ id = "yamllint", exclude = "^\\.copier-answers\\.yml$", args = ["-c",
 
 [[repos]]
 repo = "https://github.com/DavidAnson/markdownlint-cli2"
-rev = "v0.23.2"
+rev = "v0.23.3"
 hooks = [{ id = "markdownlint-cli2" }]
 
 # shellcheck lints standalone shell scripts a project adds later (workflow
@@ -217,6 +217,15 @@ hooks = [{ id = "markdownlint-cli2" }]
 repo = "https://github.com/shellcheck-py/shellcheck-py"
 rev = "v0.11.0.1"
 hooks = [{ id = "shellcheck" }]
+
+# shfmt formats those same scripts (shellcheck lints, it does not format). The
+# `shfmt` hook id installs a prebuilt binary from PyPI (no Go toolchain, unlike
+# `shfmt-src`). No style flags are passed, so shfmt reads `.editorconfig` and
+# indents `*.sh` with the 2 spaces editorconfig-checker enforces.
+[[repos]]
+repo = "https://github.com/scop/pre-commit-shfmt"
+rev = "v3.14.1-1"
+hooks = [{ id = "shfmt" }]
 
 # checkmake lints Makefiles a project adds later. Built from source via prek's
 # `golang` language support (the hook's manifest `types: [makefile]` scopes it,
