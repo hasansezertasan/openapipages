@@ -75,6 +75,23 @@ Check particularly:
   skips for legitimate default-branch runs. Preserve generator-owned bytes,
   including cobo-managed `.gitignore`, when introducing fixing hooks.
   Ask before removing a check or accepting reduced coverage/later feedback.
+- **Manifest parity (`pyproject.toml`):** compare the pre-adoption manifest
+  table by table, not as one diff; the template reorders tables, so the raw diff
+  overstates the change. Map each removed env-manager entry point (Hatch/PDM/nox
+  envs and scripts, Makefile targets) to the tox env, mise task, or CI step that
+  now runs it, including on-demand ones such as e2e/browser runs, browser
+  installs, and coverage combine/report; otherwise record it as missing.
+  Classify each removed dev dependency (e.g. pytest-randomly, codespell) as
+  retained, replaced, or dropped. Compare rendered pins with the project's
+  previous pins: a lower rendered pin is a downgrade, not an update. Check that
+  strictness and scope did not narrow: pytest `strict`/`--strict-markers`,
+  `filterwarnings`, and type-checker `files`/`include` that used to cover tests.
+  Check runtime `dependencies` against the shipped package's actual imports, and
+  metadata (keywords, URLs, classifiers, sdist contents) against the old values.
+  Confirm the tag-derived version equals the last release (tag prefix,
+  release-please manifest). Trim template leftovers, such as keywords describing
+  the template and ignores or comments naming components the answers did not
+  enable, and rerun each tool to prove an ignore is unused before removing it.
 - **Overlapping workflows:** compare events, branch/path filters, schedules,
   manual dispatch, job conditions, permissions, secrets, concurrency,
   dependencies (`needs`), runner platforms, commands, artifacts, and failure
@@ -138,6 +155,8 @@ customizations retained, validation results, and unresolved tasks or unavailable
 evidence. Include any required-status/settings handoff to repo-setup.
 Include the per-check coverage classifications, timing changes, evidence for
 replacements, and user decisions on genuine gaps; flag unverified equivalence.
+Include the manifest-parity map of old entry points and dependencies to their
+replacements, pin downgrades, and template leftovers trimmed or kept.
 
 ## Example: an existing prek workflow
 

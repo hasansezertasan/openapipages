@@ -11,10 +11,10 @@
 default_language_version.python = "python3.10"
 default_stages = ["pre-commit", "pre-push"]
 exclude = '''(?x)^(
-    # Editor/devcontainer configs (JSONC with comments or trailing commas)
-    \.devcontainer/
-    |\.vscode/
-)'''
+    # Editor/debugger JSON configs that carry comments or trailing commas
+    \.devcontainer/devcontainer\.json
+    |\.vscode/launch\.json
+)$'''
 
 # Fast Rust-native reimplementations of common pre-commit-hooks. No git clone.
 [[repos]]

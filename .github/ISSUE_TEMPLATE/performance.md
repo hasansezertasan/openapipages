@@ -25,7 +25,7 @@ A clear and concise description of what you expected to happen.
 - openapipages version: [e.g. 0.1.2]
 - Python version: [e.g. 3.10]
 - OS: [e.g. Ubuntu 20.04]
-- Installation method: [e.g. pip, uv, uvx, from source]
+- Installation method: [e.g. pip, uv, from source]
 
 ## Additional context
 
