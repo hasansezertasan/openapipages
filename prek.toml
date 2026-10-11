@@ -11,23 +11,10 @@
 default_language_version.python = "python3.10"
 default_stages = ["pre-commit", "pre-push"]
 exclude = '''(?x)^(
-    # Editor/debugger JSON configs that carry comments or trailing commas
-    \.devcontainer/devcontainer\.json$
-    |\.vscode/launch\.json$
-
-    # VCS and Python build/virtualenv directories
-    |\.git
-    |\.hg
-    |\.mypy_cache
-    |\.nox
-    |\.tox
-    |\.venv
-    |_build
-    |buck-out
-    |build
-    |dist
-    |alembic
-)$'''
+    # Editor/devcontainer configs (JSONC with comments or trailing commas)
+    \.devcontainer/
+    |\.vscode/
+)'''
 
 # Fast Rust-native reimplementations of common pre-commit-hooks. No git clone.
 [[repos]]
@@ -38,35 +25,36 @@ hooks = [
   ] },
   { id = "check-toml" },
   { id = "check-json" },
+  { id = "check-yaml" },
+  { id = "check-xml" },
+  { id = "check-symlinks" },
+  { id = "check-executables-have-shebangs" },
   { id = "end-of-file-fixer" },
   # `.gitignore` is a cobo-sealed block (hash-verified); its bytes must stay
   # verbatim, but upstream github/gitignore ships trailing whitespace on some
   # comment lines. Exclude it so the hook does not break the seal (cobo owns
   # this file — see ADR-012).
   { id = "trailing-whitespace", exclude = '^\.gitignore$' },
+  # Preserve cobo-owned bytes (ADR-012/030).
+  # Windows PowerShell 5.1 needs a UTF-8 BOM for non-ASCII source literals.
+  { id = "fix-byte-order-marker", exclude = '^\.gitignore$|(?i:\.ps[md]?1)$' },
+  # auto fixes mixed endings, retaining consistent CRLF for Windows scripts.
+  { id = "mixed-line-ending", args = ["--fix=auto"], exclude = '^\.gitignore$' },
   { id = "check-merge-conflict", args = [
     "--assume-in-merge",
   ] },
   { id = "check-case-conflict" },
   { id = "detect-private-key" },
+  # Blocks direct commits to the default branch (main/master).
+  { id = "no-commit-to-branch" },
 ]
 
-# check-yaml, debug-statements and check-ast have no Rust builtin (they need a
-# YAML loader / the Python AST), so they stay on the upstream repo. prek runs
-# them correctly, just without the builtin fast path.
+# debug-statements and check-ast have no prek builtin (they need the Python AST),
+# so they stay on the upstream repo.
 [[repos]]
 repo = "https://github.com/pre-commit/pre-commit-hooks"
 rev = "v6.0.0"
 hooks = [
-  { id = "check-yaml" },
-  { id = "check-executables-have-shebangs" },
-  { id = "check-symlinks" },
-  { id = "check-xml" },
-  # Preserve cobo-owned bytes (ADR-012/030).
-  # Windows PowerShell 5.1 needs a UTF-8 BOM for non-ASCII source literals.
-  { id = "fix-byte-order-marker", exclude = '^\.gitignore$|(?i:\.ps[md]?1)$' },
-  { id = "mixed-line-ending", args = ["--fix=auto"], exclude = '^\.gitignore$' },
-  # auto fixes mixed endings, retaining consistent CRLF for Windows scripts.
   { id = "debug-statements" },
   { id = "check-ast" },
 ]
@@ -160,12 +148,12 @@ hooks = [{ id = "typos" }]
 # packaging, ...), matching the former `validate-pyproject[all]` style-group pin.
 [[repos]]
 repo = "https://github.com/abravalheri/validate-pyproject"
-rev = "v0.25"
+rev = "0.26"
 hooks = [{ id = "validate-pyproject" }]
 
 [[repos]]
 repo = "https://github.com/python-jsonschema/check-jsonschema"
-rev = "0.37.4"
+rev = "0.38.2"
 hooks = [
   # Action metadata and workflow schemas are distinct. The latter complements
   # actionlint's expression/shell checks and zizmor's security analysis.
@@ -203,6 +191,15 @@ rev = "v1.38.0"
 # update` overwrites, so the gate can only ever produce an unfixable failure —
 # it fires the moment any answer is a list (e.g. `ai_rulez_presets`).
 hooks = [{ id = "yamllint", exclude = "^\\.copier-answers\\.yml$", args = ["-c", ".github/yamllint.yaml"] }]
+
+# taplo-format auto-formats TOML at commit time; the tox `style` env's
+# `taplo --check` remains the strict gate. Format-only: taplo-lint fetches a
+# schema catalog over the network on every run. Keep `rev` in step with the
+# `style` group's `taplo` pin.
+[[repos]]
+repo = "https://github.com/ComPWA/taplo-pre-commit"
+rev = "v0.9.3"
+hooks = [{ id = "taplo-format" }]
 
 [[repos]]
 repo = "https://github.com/DavidAnson/markdownlint-cli2"
@@ -260,5 +257,7 @@ hooks = [
   # itself on PATH, which local contributors have and the CI `hooks` job supplies
   # via jdx/mise-action.
   { id = "ghalint", name = "ghalint", entry = "mise exec -- ghalint run", language = "system", pass_filenames = false, always_run = true },
-  { id = "pytest", name = "Pytest Test Runner", entry = "uv run --locked pytest -m 'not e2e'", language = "system", pass_filenames = false, always_run = true },
+  # pytest runs on push only, so commits stay fast; CI runs the full test matrix
+  # in its own jobs.
+  { id = "pytest", name = "Pytest Test Runner", entry = "uv run --locked pytest -m 'not e2e'", language = "system", pass_filenames = false, always_run = true, stages = ["pre-push"] },
 ]
