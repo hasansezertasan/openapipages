@@ -72,7 +72,7 @@ source = "https://github.com/hasansezertasan/openapipages.git"
 
 [dependency-groups]
 dev = [
-  "tox==4.64.10",
+  "tox==4.65.0",
   "tox-uv==1.36.1",
   "debugpy==1.8.22",
   { include-group = "style" },
