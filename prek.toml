@@ -82,6 +82,13 @@ hooks = [
 repo = "local"
 hooks = [
   { id = "basedpyright", name = "basedpyright Type Checker", entry = "uv run --locked --group style basedpyright", language = "system", types = ["python"], pass_filenames = false },
+  # mypy needs the installed package + deps to resolve third-party imports, so
+  # like basedpyright it is a `local` `system` hook via `uv run` rather than
+  # mirrors-mypy's isolated venv. Filenames are not passed: mypy checks the
+  # `[tool.mypy] files` set, matching tox's canonical run (passing changed files
+  # would also trip the duplicate-module check on examples/*/main.py). Single
+  # version source: the `style` group pin.
+  { id = "mypy", name = "mypy Type Checker", entry = "uv run --locked --group style mypy", language = "system", types = ["python"], pass_filenames = false },
   # pylint runs as a whole-package gate (`pylint src`) that deliberately overlaps
   # ruff's PL* rules. Like basedpyright it needs the installed package + deps to
   # resolve imports, so it is a `local` `system` hook via `uv run`, not an upstream
@@ -119,18 +126,6 @@ hooks = [
   # `style` group pin (its PyPI wrapper has no separate upstream pre-commit repo
   # revision worth tracking here).
   { id = "detect-secrets", name = "detect-secrets (pre-commit secret scan)", entry = "uv run --locked --group style detect-secrets-hook --baseline .secrets.baseline", language = "system", pass_filenames = true },
-]
-
-[[repos]]
-repo = "https://github.com/pre-commit/mirrors-mypy"
-rev = "v2.3.0"
-hooks = [
-  # Scope the hook to src/ to match tox's canonical mypy (which type-checks only
-  # src/). Without this, the hook passes every changed .py file, which (a) trips
-  # mypy's duplicate-module check on the sibling examples/*/main.py demo scripts
-  # and (b) surfaces strict-decorator errors in tests/ that the canonical run
-  # never checks — neither is part of the shipped, type-checked surface.
-  { id = "mypy", files = "^src/", additional_dependencies = [] },
 ]
 
 [[repos]]
