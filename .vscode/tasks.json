@@ -246,8 +246,9 @@
             "command": "uv",
             "args": [
                 "run",
-                "hatch",
-                "clean"
+                "python",
+                "-c",
+                "import shutil; [shutil.rmtree(d, ignore_errors=True) for d in ('build', 'dist')]"
             ],
             "group": "build",
             "presentation": {
