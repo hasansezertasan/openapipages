@@ -61,11 +61,9 @@ body:
 
         app = FastAPI(redoc_url=None)
 
-
         @app.get("/redoc", response_class=HTMLResponse, include_in_schema=False)
         def get_redoc() -> str:
             return ReDoc(title="ReDoc").render()
-
 
         if __name__ == "__main__":
             uvicorn.run(app, port=8000)

@@ -240,8 +240,8 @@ each UI's JavaScript from its real CDN, so they need network access and run
 Chromium only:
 
 ```bash
-uv run --locked --group test playwright install chromium
-uv run --locked --group test pytest tests/e2e -m e2e -v
+uv run --locked tox run -e e2e      # installs Chromium, then runs tests/e2e
+uv run --locked tox run -e coverage # combine and report the matrix's coverage
 ```
 
 CI runs these tests in a dedicated `E2E (Chromium)` job after the cross-platform

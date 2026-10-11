@@ -11,6 +11,7 @@ maintainers = [
 ]
 dynamic = ["version"]
 keywords = [
+  "openapipages",
   "fastapi",
   "flask",
   "litestar",
@@ -25,34 +26,6 @@ keywords = [
   "documentation",
   "specification",
   "spec",
-  "command-line",
-  "cli",
-  "package",
-  "metadata",
-  "pypi",
-  "python",
-  "template",
-  "copier",
-  "scaffold",
-  "boilerplate",
-  "uv",
-  "hatch",
-  "tox",
-  "pytest",
-  "ruff",
-  "mypy",
-  "basedpyright",
-  "type-hints",
-  "typed",
-  "modern-python",
-  "ci-cd",
-  "github-actions",
-  "automation",
-  "prek",
-  "linting",
-  "testing",
-  "coverage",
-  "release-automation",
 ]
 classifiers = [
   "Development Status :: 4 - Beta",
@@ -113,7 +86,7 @@ style = [
   "mypy==2.4.0",
   "pylint==4.0.6",
   "pyrefly==1.2.0",
-  "ruff==0.16.1",
+  "ruff==0.16.9",
   "slotscheck==0.21.0",
   "taplo==0.9.3",
   "ty==0.0.66",
@@ -132,6 +105,7 @@ test = [
   "httpx>=0.28.1,<0.29.0",
   "pytest-mock==3.16.0",
   "pytest-playwright>=0.5.0",
+  "pytest-randomly==5.0.0",
   "pytest-rerunfailures==16.7",
   "pytest-xdist[psutil]==3.8.0",
   "pytest==9.1.1",
@@ -145,19 +119,14 @@ test = [
 tool = [
   "cobo==0.5.1; python_version >= '3.14'",
   "commitizen==4.19.2",
-  # "marimo==0.15.2",
-  # "inflection==0.5.1",
-  # "copier==9.11.0",
 ]
 prek = [
-  "prek==0.4.12",
+  "prek==0.5.5",
 ]
 
 
 [build-system]
-
 requires = ["hatchling", "hatch-vcs"]
-
 build-backend = "hatchling.build"
 
 
@@ -199,8 +168,7 @@ allow-direct-references = true
 
 [tool.hatch.build.targets.sdist]
 # The package uses a src layout, so the source tree lives under /src (not
-# /openapipages); including /src ships the actual modules -- and, for
-# C-extension projects, the .pyx/.pxd sources needed to compile from the sdist.
+# /openapipages).
 include = [
   "/README.md",
   "LICENSE",
@@ -217,11 +185,9 @@ include = [
 name = "cz_conventional_commits"
 
 [tool.pytest.ini_options]
-# addopts = "-rXs --strict-config --strict-markers"
 addopts = "-v --tb=short --doctest-glob=README.md"
-# One marker per component, auto-applied by tests/conftest.py from each test's
-# top-level tests/<dir>/. Enables `pytest -m web` locally and per-component CI
-# jobs (issue #160, ADR-028); `integration` (ADR-008) is one axis of the scheme.
+# `core` is auto-applied by tests/conftest.py to top-level tests; `e2e` by
+# tests/e2e/conftest.py to every browser test.
 markers = [
   "core: core/shared component tests",
   "e2e: end-to-end browser tests (Playwright + subprocess uvicorn)",
@@ -236,7 +202,9 @@ filterwarnings = [
 # Markdown files can use illustrative snippets without becoming pytest inputs.
 testpaths = ["tests", "README.md"]
 doctest_optionflags = "ELLIPSIS IGNORE_EXCEPTION_DETAIL NORMALIZE_WHITESPACE"
-xfail_strict = true
+# Enables strict_config, strict_markers, strict_xfail and
+# strict_parametrization_ids: an undeclared marker or unknown ini key is an error.
+strict = true
 
 
 [tool.coverage.run]
@@ -249,7 +217,7 @@ parallel = true
 # Store data-file paths relative to the project root so `.coverage` files produced
 # on different runners/OSes merge in the `coverage-combine` CI job without
 # absolute-path mismatches. Complements the `[tool.coverage.paths]` remap below
-# (which unifies the src/ vs site-packages layouts). See ADR-026.
+# (which unifies the src/ vs site-packages layouts).
 relative_files = true
 source_pkgs = ["openapipages", "tests"]
 
@@ -270,8 +238,8 @@ openapipages = ["src/openapipages", "*/site-packages/openapipages"]
 # Untestable code is excluded per site with `# pragma: no cover`, not with blanket
 # patterns here: a regex matching a `def` line excludes the *whole function body*,
 # so a pattern like `def main\(` would silently un-measure any future `main()`
-# with real logic (and did mask the tested GUI/TUI entrypoints). Pragmas carry the
-# exclusion decision next to the code it affects. See ADR-008.
+# with real logic. Pragmas carry the exclusion decision next to the code it
+# affects.
 exclude_lines = [
   "no cov",
   "if __name__ == .__main__.:",
@@ -286,23 +254,11 @@ skip_covered = true
 
 
 [tool.vulture]
-# Framework-invoked handlers: Typer commands, FastAPI routes, FastStream
-# lifecycle hooks, and the MCP tool dispatcher.
-ignore_decorators = [
-  "@app.command",
-  "@app.get",
-  "@app.after_startup",
-  "@app.after_shutdown",
-  "@server.call_tool",
-]
-# Public API surfaces vulture cannot see being used: ``main`` entry points are
-# referenced only via pyproject scripts, ``model_config`` is consumed by
-# pydantic-settings, ``logger`` is imported only by optional components, the MCP
-# ``arguments`` parameter is mandated by the call_tool signature, the Textual
-# names (CSS/compose/on_mount/title/BINDINGS) are invoked by the TUI framework,
-# and ``pytestmark``/``pytest_*`` (conftest hooks) are consumed by pytest at
-# collection time.
-ignore_names = ["CONFIG_FILE_PATH", "id", "logger", "main", "model_config", "name", "pytest_*", "collect_ignore_glob"]
+# The FastAPI test apps' route handlers are reached only through `@app.get`.
+ignore_decorators = ["@app.get"]
+# `id`/`name` are pydantic model fields in the e2e app; pytest consumes conftest
+# hooks and `collect_ignore_glob` at collection time.
+ignore_names = ["id", "name", "pytest_*", "collect_ignore_glob"]
 min_confidence = 60
 paths = ["src", "tests"]
 
@@ -319,26 +275,17 @@ root_package = "openapipages"
 name = "Layered architecture with independent components"
 type = "layers"
 # Layers are listed high -> low: a layer may import lower layers but never a
-# higher one. Modules joined by ` | ` on one line are independent SIBLINGS that
-# may not import each other. `cli` is the orchestrator layer — the
-# `openapipages` console root, whose subcommands launch the other
-# components (web/gui/tui/mcp/worker) via lazy imports — so it sits ABOVE the
-# independent component group, which sits above `core`, which sits above the leaf
-# `utils`.
+# higher one. Renderers joined by ` | ` are independent siblings that may not
+# import each other; all of them build on the shared `base`.
 #
-# `exhaustive` makes the contract fail when a subpackage of
-# `openapipages` is not named in `layers` — so a new top-level
-# subpackage is a deliberate architecture decision (add it to a layer here)
-# rather than something that silently accretes at the package root. Feature code
-# belongs inside an existing layer; see "Package structure" in `AGENTS.md`. The
-# `exhaustive_ignores` entries are the non-layer foundations: the metadata and
-# hatch-vcs version modules and the `python -m` dispatcher.
+# `exhaustive` makes the contract fail when a module of `openapipages` is not
+# named in `layers`, so a new module is a deliberate architecture decision. The
+# `exhaustive_ignores` entries are the non-layer foundations: the metadata
+# re-export and the hatch-vcs version module.
 containers = ["openapipages"]
 exhaustive = true
 exhaustive_ignores = [
   "__about__",
-  "__main__",
-  "__metadata__",
   "_version",
 ]
 layers = [
@@ -382,7 +329,6 @@ select = ["ALL"]
 
 [tool.ruff.lint.isort]
 combine-as-imports = true
-# skip-magic-trailing-comma = true
 split-on-trailing-comma = false
 
 [tool.ruff.lint.flake8-copyright]
@@ -406,7 +352,7 @@ convention = "pep257"
 
 
 [tool.ruff.lint.per-file-ignores]
-# Recursive glob so nested test packages (tests/cli, tests/gui, ...) are covered.
+# Recursive glob so nested test packages (tests/unit, tests/e2e, ...) are covered.
 # Tests legitimately use asserts/magic values, reach into package internals, and
 # don't need return-value documentation on their fixtures and helpers.
 "tests/**/*.py" = ["S101", "PLR2004", "PLC2701", "DOC201"]
@@ -425,7 +371,7 @@ parenthesize-tuple-in-subscript = true
 
 
 [tool.mypy]
-files = ["src"]
+files = ["src", "tests"]
 pretty = true
 python_version = "3.10"
 strict = true
@@ -468,37 +414,19 @@ project-includes = ["src"]
 # ignore-paths is a defensive scope guard for broader invocations (`pylint .`,
 # filename-passing hooks). Tests are linted by ruff, not pylint.
 ignore-paths = ["^tests/.*$"]
-# `.pyi` stubs (the c-extension type stub) are signature-only: their bodies are
-# `...` and every parameter is unused by construction, so pylint's unused-argument
-# check is a guaranteed false positive there. Stubs are type-checked by the
-# type-checker gate, not pylint.
-ignore-patterns = ['.*\.pyi$']
 
 [tool.pylint."messages control"]
-# Only formatter-owned checks, the docstring family, and too-few-public-methods
-# are disabled so pylint is usable out of the box; everything else stays on.
+# Only formatter-owned checks, the docstring family, too-few-public-methods and
+# duplicate-code are disabled so pylint is usable out of the box; everything else stays on.
 disable = [
   "line-too-long", # C0301 — ruff-format owns line length
   "missing-module-docstring", # C0114
   "missing-class-docstring", # C0115
   "missing-function-docstring", # C0116
   "too-few-public-methods", # R0903 — trips dataclasses / config / Protocol classes
-  # C0415 — the cli->tui/gui/web dispatch, and each component's own heavy or
-  # platform-conditional import (tkinter, uvicorn, the worker's uvloop probe),
-  # are deliberately lazy so import-linter's layering contract holds and a
-  # framework is only imported when the code path that needs it actually runs.
-  # Textual is the exception: the TUI imports it at module scope so `InfoApp`
-  # can be defined there and driven by the headless pilot (ADR-035).
-  "import-outside-toplevel",
-  # W0706 — the generated TUI entry point explicitly re-raises
-  # KeyboardInterrupt/SystemExit ahead of a broad `except Exception` to make the
-  # "let these propagate" intent obvious to readers, even though BaseException
-  # subclasses wouldn't be caught by the Exception clause anyway.
-  "try-except-raise",
-  # R0801 — the component skeletons (gui/tui/mcp/worker) are deliberately
-  # parallel: each fetches package metadata and formats the same info block the
-  # same way. That structural symmetry is a feature of the scaffold, not
-  # copy-paste debt, and R0801 cannot be suppressed inline at the call site.
+  # R0801 — each renderer ships its own self-contained HTML page template, so
+  # the shared `<head>`/`<noscript>` boilerplate repeats by design, and R0801
+  # cannot be suppressed inline at the call site.
   "duplicate-code",
 ]
 
@@ -518,10 +446,8 @@ extend-exclude = [
 ]
 
 [tool.tox]
-# The ``worker`` env is intentionally omitted: it starts a broker-bound process
-# and would hang/fail under ``tox run`` in CI (where no broker is available).
-# The worker is covered by its pytest TestBroker suite; run it on demand with
-# ``tox -e worker`` when a broker is up (e.g. inside the devcontainer).
+# `e2e` and `coverage` are on-demand envs, not part of the default run: e2e needs
+# a browser and network access, and coverage combines data the matrix produced.
 env_list = [
   "style",
   "sast",
@@ -683,3 +609,32 @@ commands = [["prek", "run", "--all-files"]]
 dependency_groups = ["prek"]
 description = "Run prek hooks"
 runner = "uv-venv-runner"
+
+
+[tool.tox.env.e2e]
+base_python = ["3.14"]
+commands = [
+  ["playwright", "install", "chromium"],
+  [
+    "pytest",
+    "tests/e2e",
+    "-m",
+    "e2e",
+    "-v",
+    { replace = "posargs", default = [
+    ], extend = true },
+  ],
+]
+dependency_groups = ["test"]
+description = "Run the end-to-end browser tests (Playwright + Chromium)"
+runner = "uv-venv-runner"
+# e2e is excluded from coverage; don't arm subprocess measurement.
+set_env = {}
+
+
+[tool.tox.env.coverage]
+commands = [["coverage", "combine"], ["coverage", "report"], ["coverage", "xml"]]
+dependency_groups = ["test"]
+description = "Combine the matrix's coverage data and report it"
+runner = "uv-venv-runner"
+skip_install = true
