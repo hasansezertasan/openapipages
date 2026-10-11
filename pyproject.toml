@@ -180,7 +180,11 @@ include = [
 name = "cz_conventional_commits"
 
 [tool.pytest.ini_options]
-addopts = "-v --tb=short --doctest-glob=README.md"
+# `-m "not e2e"` keeps a bare `pytest` off the browser suite, matching tox: the
+# Playwright sync API holds a running event loop for the session, which breaks
+# every pytest-asyncio test ordered after it. Run e2e with `-m e2e` (or `tox -e
+# e2e`); a later `-m` overrides this one.
+addopts = "-v --tb=short --doctest-glob=README.md -m \"not e2e\""
 # `core` is auto-applied by tests/conftest.py to top-level tests; `e2e` by
 # tests/e2e/conftest.py to every browser test.
 markers = [
@@ -579,10 +583,13 @@ commands = [
   ],
   # Collects (does not run) the suite and flags fixtures that are never used --
   # cheap, deterministic, and a natural fit next to the other whole-program
-  # analyzers above (lint-imports, slotscheck).
+  # analyzers above (lint-imports, slotscheck). `-m ""` overrides the addopts
+  # `not e2e` filter so the e2e fixtures count as used.
   [
     "pytest",
     "--dead-fixtures",
+    "-m",
+    "",
   ],
 ]
 # `test` is included so the type checkers that scope tests (e.g. ty) can
