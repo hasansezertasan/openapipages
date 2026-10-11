@@ -9,7 +9,7 @@
 # hook — Renovate owns every `rev` bump, including the tools shared with the uv
 # `style` dependency group.
 default_language_version.python = "python3.10"
-default_stages = ["pre-commit", "pre-push"]
+default_stages = ["pre-commit"]
 exclude = '''(?x)^(
     # Editor/debugger JSON configs that carry comments or trailing commas
     \.devcontainer/devcontainer\.json
@@ -74,7 +74,7 @@ hooks = [{ id = "ensure-dunder-all", files = "^src/" }]
 repo = "https://github.com/astral-sh/ruff-pre-commit"
 rev = "v0.17.0"
 hooks = [
-  { id = "ruff" },
+  { id = "ruff-check" },
   { id = "ruff-format" },
 ]
 
@@ -186,15 +186,6 @@ rev = "v1.38.0"
 # update` overwrites, so the gate can only ever produce an unfixable failure —
 # it fires the moment any answer is a list (e.g. `ai_rulez_presets`).
 hooks = [{ id = "yamllint", exclude = "^\\.copier-answers\\.yml$", args = ["-c", ".github/yamllint.yaml"] }]
-
-# taplo-format auto-formats TOML at commit time; the tox `style` env's
-# `taplo --check` remains the strict gate. Format-only: taplo-lint fetches a
-# schema catalog over the network on every run. Keep `rev` in step with the
-# `style` group's `taplo` pin.
-[[repos]]
-repo = "https://github.com/ComPWA/taplo-pre-commit"
-rev = "v0.9.3"
-hooks = [{ id = "taplo-format" }]
 
 [[repos]]
 repo = "https://github.com/DavidAnson/markdownlint-cli2"
