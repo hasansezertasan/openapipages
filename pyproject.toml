@@ -109,10 +109,8 @@ test = [
   "pytest-rerunfailures==16.7",
   "pytest-xdist[psutil]==3.8.0",
   "pytest==9.1.1",
-  "pytest-sugar",
+  "pytest-sugar==1.1.1",
   "pytest-asyncio>=0.23.0",
-  "dirty-equals",
-  "inline-snapshot",
   "pytest-deadfixtures==3.1.0",
   "uvicorn>=0.30",
 ]
@@ -161,9 +159,6 @@ hooks.vcs.version-file = "src/openapipages/_version.py"
 [tool.hatch.version.raw-options]
 version_scheme = "only-version"
 local_scheme = "no-local-version"
-
-[tool.hatch.metadata]
-allow-direct-references = true
 
 
 [tool.hatch.build.targets.sdist]

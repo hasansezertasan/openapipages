@@ -134,15 +134,6 @@ wheels = [
 ]
 
 [[package]]
-name = "asttokens"
-version = "3.0.2"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/25/1e/faf0f247f6f881b98fc4d6d07e14085cb89d13665084e6d6ac1dc2c03d0b/asttokens-3.0.2.tar.gz", hash = "sha256:3ecdbd8f2cc195f53ccada3a613538bb5f9ef6f6869129f13e03c30a677b8fe2", size = 63136, upload-time = "2026-07-12T03:31:49.084Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/d4/2b/04b8a15f3a1c77bc79ddf5c73875327f34b4fa75982df2b76e45e402d364/asttokens-3.0.2-py3-none-any.whl", hash = "sha256:9da13157f5b28becde0bd374fc677dcd3c290614264eff096f167c469cd9f933", size = 28702, upload-time = "2026-07-12T03:31:47.542Z" },
-]
-
-[[package]]
 name = "attrs"
 version = "26.1.0"
 source = { registry = "https://pypi.org/simple" }
@@ -844,15 +835,6 @@ wheels = [
 ]
 
 [[package]]
-name = "dirty-equals"
-version = "0.11"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/30/1d/c5913ac9d6615515a00f4bdc71356d302437cb74ff2e9aaccd3c14493b78/dirty_equals-0.11.tar.gz", hash = "sha256:f4ac74ee88f2d11e2fa0f65eb30ee4f07105c5f86f4dc92b09eb1138775027c3", size = 128067, upload-time = "2025-11-17T01:51:24.451Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/bb/8d/dbff05239043271dbeace563a7686212a3dd517864a35623fe4d4a64ca19/dirty_equals-0.11-py3-none-any.whl", hash = "sha256:b1d7093273fc2f9be12f443a8ead954ef6daaf6746fd42ef3a5616433ee85286", size = 28051, upload-time = "2025-11-17T01:51:22.849Z" },
-]
-
-[[package]]
 name = "distlib"
 version = "0.4.3"
 source = { registry = "https://pypi.org/simple" }
@@ -883,15 +865,6 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/bf/89/780e11f9588d9e7128a3f87788354c7946a9cbb1401ad38a48c4db9a4f07/execnet-2.1.2.tar.gz", hash = "sha256:63d83bfdd9a23e35b9c6a3261412324f964c2ec8dcd8d3c6916ee9373e0befcd", size = 166622, upload-time = "2025-11-12T09:56:37.75Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/ab/84/02fc1827e8cdded4aa65baef11296a9bbe595c474f0d6d758af082d849fd/execnet-2.1.2-py3-none-any.whl", hash = "sha256:67fba928dd5a544b783f6056f449e5e3931a5c378b128bc18501f7ea79e296ec", size = 40708, upload-time = "2025-11-12T09:56:36.333Z" },
-]
-
-[[package]]
-name = "executing"
-version = "2.2.1"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/cc/28/c14e053b6762b1044f34a13aab6859bbf40456d37d23aa286ac24cfd9a5d/executing-2.2.1.tar.gz", hash = "sha256:3632cc370565f6648cc328b32435bd120a1e4ebb20c77e3fdde9a13cd1e533c4", size = 1129488, upload-time = "2025-09-01T09:48:10.866Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/c1/ea/53f2148663b321f21b5a606bd5f191517cf40b7072c0497d3c92c4a13b1e/executing-2.2.1-py2.py3-none-any.whl", hash = "sha256:760643d3452b4d777d295bb167ccc74c64a81df23fb5e08eff250c425a4b2017", size = 28317, upload-time = "2025-09-01T09:48:08.5Z" },
 ]
 
 [[package]]
@@ -1277,23 +1250,6 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/72/34/14ca021ce8e5dfedc35312d08ba8bf51fdd999c576889fc2c24cb97f4f10/iniconfig-2.3.0.tar.gz", hash = "sha256:c76315c77db068650d49c5b56314774a7804df16fee4402c1f19d6d15d8c4730", size = 20503, upload-time = "2025-10-18T21:55:43.219Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/cb/b1/3846dd7f199d53cb17f49cba7e651e9ce294d8497c8c150530ed11865bb8/iniconfig-2.3.0-py3-none-any.whl", hash = "sha256:f631c04d2c48c52b84d0d0549c99ff3859c98df65b3101406327ecc7d53fbf12", size = 7484, upload-time = "2025-10-18T21:55:41.639Z" },
-]
-
-[[package]]
-name = "inline-snapshot"
-version = "0.36.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "asttokens" },
-    { name = "executing" },
-    { name = "pytest" },
-    { name = "rich" },
-    { name = "tomli", marker = "python_full_version < '3.11'" },
-    { name = "typing-extensions" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/bc/39/05067e7dd5c27e3fd31760a21db6a8e9d6908a39b5e17b8698f473b6b7fe/inline_snapshot-0.36.0.tar.gz", hash = "sha256:c45dfc34affc42116fd23e22665fb58e59426c564ddb17114a6833f61a31b1f7", size = 2541802, upload-time = "2026-10-02T12:14:13.112Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/39/de/f625b9c923c4264ee8d94e416c0d5fd59194f7b6cd8fc0d6ec2f51dfc506/inline_snapshot-0.36.0-py3-none-any.whl", hash = "sha256:1079cf302098fedb418c7ac2be9cadd14f2e71461143bcaf605be1214530bef4", size = 98033, upload-time = "2026-10-02T12:14:11.398Z" },
 ]
 
 [[package]]
@@ -1779,12 +1735,10 @@ dev = [
     { name = "coverage-enable-subprocess" },
     { name = "debugpy" },
     { name = "detect-secrets" },
-    { name = "dirty-equals" },
     { name = "editorconfig-checker" },
     { name = "fastapi" },
     { name = "httpx" },
     { name = "import-linter" },
-    { name = "inline-snapshot" },
     { name = "mypy" },
     { name = "pylint" },
     { name = "pyrefly" },
@@ -1831,10 +1785,8 @@ style = [
 test = [
     { name = "coverage", extra = ["toml"], marker = "extra == 'group-12-openapipages-dev' or extra != 'group-12-openapipages-sast' or (extra == 'group-12-openapipages-sast' and extra == 'group-12-openapipages-test')" },
     { name = "coverage-enable-subprocess" },
-    { name = "dirty-equals" },
     { name = "fastapi" },
     { name = "httpx" },
-    { name = "inline-snapshot" },
     { name = "pytest" },
     { name = "pytest-asyncio" },
     { name = "pytest-deadfixtures" },
@@ -1861,12 +1813,10 @@ dev = [
     { name = "coverage-enable-subprocess", specifier = "==1.0" },
     { name = "debugpy", specifier = "==1.8.22" },
     { name = "detect-secrets", specifier = "==1.5.0" },
-    { name = "dirty-equals" },
     { name = "editorconfig-checker", specifier = "==3.8.0" },
     { name = "fastapi", specifier = ">=0.143.0,<0.144.0" },
     { name = "httpx", specifier = ">=0.28.1,<0.29.0" },
     { name = "import-linter", specifier = "==2.15" },
-    { name = "inline-snapshot" },
     { name = "mypy", specifier = "==2.4.0" },
     { name = "pylint", specifier = "==4.0.6" },
     { name = "pyrefly", specifier = "==1.2.0" },
@@ -1877,7 +1827,7 @@ dev = [
     { name = "pytest-playwright", specifier = ">=0.5.0" },
     { name = "pytest-randomly", specifier = "==5.0.0" },
     { name = "pytest-rerunfailures", specifier = "==16.7" },
-    { name = "pytest-sugar" },
+    { name = "pytest-sugar", specifier = "==1.1.1" },
     { name = "pytest-xdist", extras = ["psutil"], specifier = "==3.8.0" },
     { name = "ruff", specifier = "==0.16.9" },
     { name = "slotscheck", specifier = "==0.21.0" },
@@ -1909,10 +1859,8 @@ style = [
 test = [
     { name = "coverage", extras = ["toml"], specifier = "==7.16.2" },
     { name = "coverage-enable-subprocess", specifier = "==1.0" },
-    { name = "dirty-equals" },
     { name = "fastapi", specifier = ">=0.143.0,<0.144.0" },
     { name = "httpx", specifier = ">=0.28.1,<0.29.0" },
-    { name = "inline-snapshot" },
     { name = "pytest", specifier = "==9.1.1" },
     { name = "pytest-asyncio", specifier = ">=0.23.0" },
     { name = "pytest-deadfixtures", specifier = "==3.1.0" },
@@ -1920,7 +1868,7 @@ test = [
     { name = "pytest-playwright", specifier = ">=0.5.0" },
     { name = "pytest-randomly", specifier = "==5.0.0" },
     { name = "pytest-rerunfailures", specifier = "==16.7" },
-    { name = "pytest-sugar" },
+    { name = "pytest-sugar", specifier = "==1.1.1" },
     { name = "pytest-xdist", extras = ["psutil"], specifier = "==3.8.0" },
     { name = "uvicorn", specifier = ">=0.30" },
 ]
