@@ -2,8 +2,12 @@ import json
 from dataclasses import dataclass
 from typing import Annotated, Any
 
-from openapipages.base import Base
 from typing_extensions import Doc
+
+from openapipages.base import Base
+
+__all__ = ["SwaggerUI", "default_parameters", "default_parameters_presets"]
+
 
 default_parameters: Annotated[
     dict[str, Any],
@@ -11,7 +15,7 @@ default_parameters: Annotated[
         """
         Default configurations for Swagger UI.
         You can use it as a template to add any other configurations needed.
-        """,
+        """
     ),
 ] = {
     "dom_id": "#swagger-ui",
@@ -26,7 +30,7 @@ default_parameters_presets: Annotated[
         """
         Default configurations for Swagger UI presets.
         You can use it as a template to add any other configurations needed.
-        """,
+        """
     ),
 ] = ["SwaggerUIBundle.presets.apis", "SwaggerUIBundle.SwaggerUIStandalonePreset"]
 
@@ -41,7 +45,7 @@ class SwaggerUI(Base):
             """
             The URL to use to load the Swagger UI JavaScript.
             It is normally set to a CDN URL.
-            """,
+            """
         ),
     ] = "https://cdn.jsdelivr.net/npm/swagger-ui-dist@5.9.0/swagger-ui-bundle.js"
     css_url: Annotated[
@@ -50,7 +54,7 @@ class SwaggerUI(Base):
             """
             The URL to use to load the Swagger UI CSS.
             It is normally set to a CDN URL.
-            """,
+            """
         ),
     ] = "https://cdn.jsdelivr.net/npm/swagger-ui-dist@5.9.0/swagger-ui.css"
     oauth2_redirect_url: Annotated[
@@ -58,7 +62,7 @@ class SwaggerUI(Base):
         Doc(
             """
             The OAuth2 redirect URL.
-            """,
+            """
         ),
     ] = "/docs/oauth2-redirect"
     init_oauth: Annotated[
@@ -66,7 +70,7 @@ class SwaggerUI(Base):
         Doc(
             """
             A dictionary with Swagger UI OAuth2 initialization configurations.
-            """,
+            """
         ),
     ] = None
     swagger_ui_parameters: Annotated[
@@ -75,7 +79,7 @@ class SwaggerUI(Base):
             """
             Configuration parameters for Swagger UI.
             It defaults to [default_parameters][openapipages.swaggerui.default_parameters].
-            """,
+            """
         ),
     ] = None
     swagger_ui_presets: Annotated[
@@ -84,7 +88,7 @@ class SwaggerUI(Base):
             """
             Configuration parameters for Swagger UI presets.
             It defaults to [default_parameters_presets][openapipages.swaggerui.default_parameters_presets].
-            """,
+            """
         ),
     ] = None
 

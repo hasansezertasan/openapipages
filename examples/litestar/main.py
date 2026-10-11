@@ -3,9 +3,9 @@
 from typing import Any
 
 import uvicorn
-from openapipages import Elements, RapiDoc, ReDoc, Scalar, SwaggerUI
 
 from litestar import Litestar, MediaType, get
+from openapipages import Elements, RapiDoc, ReDoc, Scalar, SwaggerUI
 
 openapi_url = "/schema/openapi.json"
 

@@ -1,0 +1,25 @@
+---
+# Repository settings synced by the "Settings" GitHub App:
+# https://github.com/apps/settings  (repo: repository-settings/app)
+# Install the App on this repository, then edits to this file apply on push to
+# the default branch.
+#
+# SECURITY: the App escalates anyone with push access to admin, because a merge
+# to the default branch syncs whatever is in this file. See the "Optional
+# integrations" note in docs/maintaining/setup.rst for the CODEOWNERS mitigation.
+#
+# NOTE: labels are intentionally NOT managed here. They are provisioned App-free
+# by .github/labels.yml + .github/workflows/label-sync.yml. Do not add a
+# `labels:` block — it would create a second, conflicting source of truth.
+repository:
+  description: "OpenAPI Spec-based pages (SwaggerUI, ReDoc, RapiDoc, Elements, Scalar) ready with configuration features."
+  # No docs site is generated (include_docs is off); point at the repository.
+  homepage: "https://github.com/hasansezertasan/openapipages"
+  # Encodes the squash-merge policy release-please REQUIRES (see the
+  # "Repository setup" guide, docs/maintaining/setup.rst) as code, so it
+  # survives a settings drift.
+  allow_squash_merge: true
+  allow_merge_commit: false
+  allow_rebase_merge: false
+  delete_branch_on_merge: true
+  has_issues: true

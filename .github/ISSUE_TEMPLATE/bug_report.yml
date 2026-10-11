@@ -1,0 +1,119 @@
+---
+name: Bug report
+description: Report a defect in openapipages
+title: 'Bug: '
+labels: ['bug']
+assignees:
+  - 'hasansezertasan'
+body:
+  - type: markdown
+    attributes:
+      value: >-
+        This tracker is for bugs in `openapipages` itself. Please use [Discussions](https://github.com/hasansezertasan/openapipages/discussions) for questions about your own code.
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug description
+      description: A clear and concise description of what the bug is.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: The installed `openapipages` package version.
+      placeholder: 'e.g. 0.2.x'
+    validations:
+      required: true
+  - type: dropdown
+    id: backend
+    attributes:
+      label: Backend
+      description: The web framework serving the rendered page.
+      options:
+        - FastAPI
+        - Litestar
+        - Starlette
+        - Flask
+        - Django
+        - other
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      description: |-
+        Minimal, complete steps that let a maintainer reproduce the bug. See https://stackoverflow.com/help/minimal-reproducible-example for guidance.
+
+        A single self-contained script with [PEP 723](https://peps.python.org/pep-0723/) inline metadata is ideal: maintainers can run it with `uv run bug.py`. For example:
+
+        ```python
+        # /// script
+        # requires-python = ">=3.10"
+        # dependencies = ["openapipages", "fastapi", "uvicorn"]
+        # ///
+        import uvicorn
+        from fastapi import FastAPI
+        from fastapi.responses import HTMLResponse
+
+        from openapipages import ReDoc
+
+        app = FastAPI(redoc_url=None)
+
+        @app.get("/redoc", response_class=HTMLResponse, include_in_schema=False)
+        def get_redoc() -> str:
+            return ReDoc(title="ReDoc").render()
+
+        if __name__ == "__main__":
+            uvicorn.run(app, port=8000)
+        ```
+    validations:
+      required: true
+  - type: textarea
+    id: expected-actual
+    attributes:
+      label: Expected vs. actual behavior
+      description: What did you expect to happen, and what happened instead?
+    validations:
+      required: true
+  - type: textarea
+    id: traceback
+    attributes:
+      label: Traceback or logs
+      description: Paste the full traceback if an exception was raised.
+      render: text
+    validations:
+      required: false
+  - type: input
+    id: python-version
+    attributes:
+      label: Python version
+      placeholder: '3.12'
+    validations:
+      required: true
+  - type: input
+    id: os
+    attributes:
+      label: OS and version
+      placeholder: 'Windows 11, macOS 14, Ubuntu 24.04'
+    validations:
+      required: false
+  - type: dropdown
+    id: install-method
+    attributes:
+      label: Installation method
+      options:
+        - pip
+        - uv
+        - from source
+        - other
+    validations:
+      required: true
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional context
+      description: Add any other context about the problem here.
+    validations:
+      required: false

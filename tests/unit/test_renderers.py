@@ -7,6 +7,7 @@ tests only cover through a full HTTP round-trip.
 """
 
 import pytest
+
 from openapipages import Elements, RapiDoc, ReDoc, Scalar, SwaggerUI
 
 
@@ -35,8 +36,7 @@ class TestSwaggerUI:
     def test_parameters_override_defaults(self) -> None:
         # default_parameters sets deepLinking True; an override must win.
         html = SwaggerUI(
-            title="X",
-            swagger_ui_parameters={"deepLinking": False},
+            title="X", swagger_ui_parameters={"deepLinking": False}
         ).render()
         assert '"deepLinking": false' in html
 

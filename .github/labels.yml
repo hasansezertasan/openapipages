@@ -1,0 +1,87 @@
+---
+# Declarative label set for this repository, synced by
+# .github/workflows/label-sync.yml when this file changes on the default branch
+# (or via a manual workflow_dispatch run). Edit a label here (name, color,
+# description) and the next sync applies it; the sync
+# never deletes labels that are absent from this file (skip-delete is enabled),
+# so GitHub's defaults and labels created by other automation are left alone.
+- name: no-issue
+  color: ededed
+  # Apply to a pull request to bypass the "Check Linked Issues" workflow when the
+  # change legitimately has no associated issue (e.g. a chore or dependency bump).
+  description: PR intentionally has no linked issue
+- name: release
+  color: 0e8a16
+  description: Automated release pull request
+- name: bug
+  color: d73a4a
+  description: Something isn't working
+- name: documentation
+  color: 0075ca
+  description: Improvements or additions to documentation
+- name: duplicate
+  color: cfd3d7
+  description: This issue or pull request already exists
+- name: enhancement
+  color: a2eeef
+  description: New feature or request
+- name: good first issue
+  color: 7057ff
+  description: Good for newcomers
+- name: help wanted
+  color: "008672"
+  description: Extra attention is needed
+- name: invalid
+  color: e4e669
+  description: This doesn't seem right
+- name: question
+  color: d876e3
+  description: Further information is requested
+- name: wontfix
+  color: ffffff
+  description: This will not be worked on
+- name: automated
+  color: ededed
+  description: Opened by automation (e.g. Renovate)
+- name: dependencies
+  color: "0366d6"
+  description: Updates to project dependencies
+- name: github_actions
+  color: 1d76db
+  description: GitHub Actions workflows and labeler config
+- name: tests
+  color: 8a63d2
+  description: Test suite changes
+- name: examples
+  color: b392f0
+  description: Example application changes
+- name: area:core
+  color: "5319e7"
+  description: Core package, utilities, or core tests
+- name: area:cli
+  color: 006b75
+  description: Command-line interface code or tests
+- name: area:gui
+  color: b60205
+  description: Graphical user interface code or tests
+- name: area:tui
+  color: d4c5f9
+  description: Terminal user interface code or tests
+- name: area:web
+  color: 0052cc
+  description: Web application code or tests
+- name: area:mcp
+  color: 1d76db
+  description: Model Context Protocol server code or tests
+- name: area:worker
+  color: fbca04
+  description: Message worker code or tests
+- name: area:docs
+  color: 0075ca
+  description: Documentation or project prose
+- name: area:ci
+  color: 0e8a16
+  description: Continuous integration workflows
+- name: area:deps
+  color: 0366d6
+  description: Dependency declarations or lockfile

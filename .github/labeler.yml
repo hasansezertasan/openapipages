@@ -1,0 +1,34 @@
+---
+# Add 'documentation' label to any changes within 'docs' folder or any subfolders
+documentation:
+  - changed-files:
+      - any-glob-to-any-file: docs/**
+# Apply area labels from the component and cross-cutting paths a PR changes.
+# Keep each component rule gated so generated projects never receive labels for
+# packages they do not contain.
+area:core:
+  - changed-files:
+      - any-glob-to-any-file: ['src/openapipages/**', 'tests/unit/**', 'tests/integration/**', 'tests/e2e/**', 'tests/test_*.py']
+area:docs:
+  - changed-files:
+      - any-glob-to-any-file: ['docs/**', '**/*.md', '**/*.rst']
+area:ci:
+  - changed-files:
+      - any-glob-to-any-file: .github/workflows/**
+area:deps:
+  - changed-files:
+      - any-glob-to-any-file: ['pyproject.toml', 'uv.lock']
+# Add 'release' label to any PR where the head branch name starts with 'release'
+release:
+  - head-branch: ['^release']
+bug:
+  - head-branch: ['^bugfix', '^bug/', '^fix/', '^hotfix']
+github_actions:
+  - changed-files:
+      - any-glob-to-any-file: ['.github/workflows/**', '.github/*labeler*.yml']
+tests:
+  - changed-files:
+      - any-glob-to-any-file: tests/**
+examples:
+  - changed-files:
+      - any-glob-to-any-file: examples/**

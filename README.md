@@ -53,7 +53,7 @@ Totally Pythonic, OpenAPI Based customizable documentation pages for [SwaggerUI]
 > Gimme an OpenAPI Spec, leave the rest to me...
 
 - Framework agnostic.
-- Zero dependencies, just Python standard library.
+- Only one runtime dependency: `typing-extensions`.
 - Fully typed.
 - Highly extensible.
 
@@ -215,25 +215,26 @@ The suite is organised in layers under `tests/`:
 - `tests/integration/` — each renderer rendered through a FastAPI app over an in-process ASGI client.
 - `tests/e2e/` — real-browser (Playwright/Chromium) tests that boot each UI, load its JS from the CDN, and verify the spec renders.
 
-Run the fast suites (unit + integration) and static analysis with [Hatch](https://hatch.pypa.io):
+Run the cross-version unit and integration suites with [tox](https://tox.wiki):
 
 ```bash
-hatch run test:test    # unit + integration (e2e is excluded)
-hatch run +py=3.14 test:cov # combine coverage once and generate reports
-hatch run test:style   # ruff + mypy + codespell
-hatch env create test  # install development dependencies
+uv sync                         # install development dependencies
+uv run --locked tox run         # style checks and the supported Python matrix
+uv run --locked tox run -e 3.14 # run the suite on one Python version
+uv run --locked tox run -e style,sast
 ```
 
-The end-to-end tests live in their own environment so the browser/uvicorn extras
-never touch the zero-dependency package. They load each UI's JavaScript from its
-real CDN, so they need network access and run Chromium only:
+The end-to-end tests run separately from the cross-platform matrix. They load
+each UI's JavaScript from its real CDN, so they need network access and run
+Chromium only:
 
 ```bash
-hatch run e2e:install-browser   # one-time: playwright install chromium
-hatch run e2e:test              # run the browser tests
+uv run --locked tox run -e e2e      # installs Chromium, then runs tests/e2e
+uv run --locked tox run -e coverage # combine and report the matrix's coverage
 ```
 
-In CI they run as a separate `E2E (Chromium)` job, gated behind the cross-platform test matrix.
+CI runs these tests in a dedicated `E2E (Chromium)` job after the cross-platform
+test matrix.
 
 ### CI/CD Pipeline
 
@@ -257,16 +258,16 @@ This project includes comprehensive Visual Studio Code configurations for enhanc
 
 #### Debugging Configurations (`.vscode/launch.json`)
 
-- **Python: Run Tests** - Run all tests with pytest
-- **Python: Run Tests with Coverage** - Run tests with coverage reporting
-- **Python: Debug Test File** - Debug the currently open test file
-- **Python: FastAPI Example Server** - Debug the FastAPI example server
-- **Python: Litestar Example Server** - Debug the Litestar example server
-- **Python: Test Server** - Debug the test server
 - **Python: Current File** - Debug the currently open Python file
-- **Python: Debug with uvicorn (FastAPI)** - Debug FastAPI server with uvicorn
-- **Python: Debug with uvicorn (Litestar)** - Debug Litestar server with uvicorn
-- **Python: Debug with uvicorn (Test Server)** - Debug test server with uvicorn
+- **Python: Tests** - Run all tests with pytest under the debugger
+- **Python: Debug Test File** - Debug the currently open test file with pytest
+- **Python: Run Tests with Coverage** - Run tests under `coverage run --module pytest` (e2e excluded, as in CI); follow with `coverage combine && coverage report`
+- **Python: FastAPI Example Server** - Debug `examples/fastapi/main.py` directly
+- **Python: Litestar Example Server** - Debug `examples/litestar/main.py` directly
+- **Python: Debug with uvicorn (FastAPI)** - Serve `examples.fastapi.main:app` on port 8000 under the debugger
+- **Python: Debug with uvicorn (Litestar)** - Serve `examples.litestar.main:app` on port 8001 under the debugger
+- **Python: Debug with uvicorn (Test Server)** - Serve `tests.main:app` on port 8002 under the debugger
+- **Python: Attach** - Attach the debugger to a process listening on `localhost:5678`
 
 #### Build Tasks (`.vscode/tasks.json`)
 
@@ -281,7 +282,7 @@ This project includes comprehensive Visual Studio Code configurations for enhanc
 - **Start Litestar Example Server** - Start the Litestar example server
 - **Start Test Server** - Start the test server
 - **Build Package** - Build the package using uv
-- **Clean Build Artifacts** - Clean build artifacts using hatch
+- **Clean Build Artifacts** - Remove the `build/` and `dist/` directories
 
 #### Workspace Settings (`.vscode/settings.json`)
 

@@ -16,9 +16,9 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import pytest
-from openapipages import RapiDoc
 from playwright.sync_api import expect
 
+from openapipages import RapiDoc
 from tests.e2e.app import API_TITLE, RENDERER_PATHS
 
 if TYPE_CHECKING:
@@ -52,9 +52,7 @@ def test_ui_renders_spec_title(page: Page, base_url: str, renderer: str) -> None
 
 @pytest.mark.parametrize("renderer", list(RENDERER_PATHS))
 def test_page_tab_title_is_renderer_name(
-    page: Page,
-    base_url: str,
-    renderer: str,
+    page: Page, base_url: str, renderer: str
 ) -> None:
     """The HTML ``<title>`` (browser tab) is the renderer name we configured.
 

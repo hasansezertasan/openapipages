@@ -1,10 +1,7 @@
 ---
 self-hosted-runner:
   # Labels of self-hosted runner in array of strings.
-  # `ubuntu-26.04` is a GitHub-hosted runner that actionlint (<= v1.7.12) does
-  # not know yet; drop it once actionlint ships it in its built-in label list.
-  labels:
-    - ubuntu-26.04
+  labels: []
 # Configuration variables in array of strings defined in your repository or
 # organization. `null` means disabling configuration variables check.
 # Empty array means no configuration variable is allowed.
@@ -19,5 +16,6 @@ config-variables: null
 paths:
   .github/workflows/**/*.{yml,yaml}:
     ignore:
-      - "shellcheck reported issue in this script: SC2086:+"
-      - "shellcheck reported issue in this script: SC2145:+"
+      - 'shellcheck reported issue in this script: SC2006:+'
+      - 'shellcheck reported issue in this script: SC2086:+'
+      - 'shellcheck reported issue in this script: SC2129:+'

@@ -1,0 +1,17 @@
+---
+name: "Pull Request Labeler"
+on:
+  # pull_request_target gives actions/labeler a token that can apply labels to
+  # PRs from forks. It is safe here: no PR code is checked out or executed — the
+  # pinned labeler action only reads the changed paths and writes labels.
+  - pull_request_target  # zizmor: ignore[dangerous-triggers]
+jobs:
+  labeler:
+    permissions:
+      contents: read
+      pull-requests: write
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: "Label Pull Requests"
+        uses: actions/labeler@bf12e9b00b37c5c0ca2b87b79b2daf7891dbda13  # v7.0.0

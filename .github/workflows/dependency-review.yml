@@ -1,0 +1,28 @@
+---
+name: "Dependency review"
+on:
+  pull_request:
+    branches: ["main"]
+permissions:
+  contents: read
+  # Allows the action to post its summary as a PR comment on failure.
+  pull-requests: write
+jobs:
+  dependency-review:
+    name: Dependency review
+    # The action requires GitHub Advanced Security on private repos; without it
+    # every PR gets a permanent red X. Free on public repos, so skip elsewhere.
+    if: github.event.repository.visibility == 'public'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: "Checkout code"
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7
+        with:
+          persist-credentials: false
+      - name: "Dependency review"
+        uses: actions/dependency-review-action@a1d282b36b6f3519aa1f3fc636f609c47dddb294  # v5.0.0
+        with:
+          # Block PRs that introduce high or critical severity vulnerabilities.
+          fail-on-severity: high
+          comment-summary-in-pr: on-failure
