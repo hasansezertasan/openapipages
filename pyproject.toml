@@ -209,20 +209,22 @@ strict = true
 [tool.coverage.run]
 branch = true
 # Match `_version.py` wherever it resolves: `src/...` in editable dev installs and
-# `.../site-packages/...` when tox/CI installs the built wheel or sdist. A
+# `.../site-packages/...` when tox/CI installs the built (non-editable) wheel. A
 # `src/**`-only pattern silently misses the installed copy and reports it at 0%.
+# e2e is excluded from the default run (`--ignore=tests/e2e` in env_run_base and
+# `-m "not e2e"` in addopts); omit it so it does not depress coverage.
 omit = ["*/_version.py", "tests/e2e/*", "*/tests/e2e/*"]
 parallel = true
 # Store data-file paths relative to the project root so `.coverage` files produced
 # on different runners/OSes merge in the `coverage-combine` CI job without
 # absolute-path mismatches. Complements the `[tool.coverage.paths]` remap below
-# (which unifies the src/ vs site-packages layouts).
+# (which unifies the src/ vs site-packages layouts). See ADR-026.
 relative_files = true
 source_pkgs = ["openapipages", "tests"]
 
 
 [tool.coverage.paths]
-# Unify coverage data across environments. tox installs the built wheel/sdist into
+# Unify coverage data across environments. tox installs the built wheel into
 # each env's site-packages, so the same source file is measured under a different
 # `.tox/<env>/.../site-packages/openapipages` path per interpreter. Without
 # remapping those back to the canonical `src/` tree, `coverage combine` keeps a
@@ -474,7 +476,6 @@ commands = [
     ], extend = true },
   ],
 ]
-constrain_package_deps = true
 dependency_groups = ["test"]
 description = "Run the tests under {base_python}"
 env_tmp_dir = "{toxworkdir}/tmp/{envname}"
@@ -482,12 +483,16 @@ env_tmp_dir = "{toxworkdir}/tmp/{envname}"
 # `coverage run` plus `parallel = true` writes per-env data files that the CI
 # `coverage combine` step merges.
 set_env = { COVERAGE_PROCESS_START = "{tox_root}/pyproject.toml" }
-
+# Non-editable: `uv sync --no-editable` builds the project and installs it into
+# site-packages, the layout `[tool.coverage.paths]` remaps and the per-component
+# coverage gates measure (ADR-028).
 package = "wheel"
-
-runner = "uv-venv-runner"
-use_frozen_constraints = true
-wheel_build_env = ".pkg"
+# Every env installs from uv.lock (`uv sync --locked`), so tox tests and lints
+# the exact versions the lockfile pins. The plain `uv-venv-runner` resolves the
+# project's own dependencies fresh on every env creation (tox's
+# `use_frozen_constraints` never reaches its `uv pip install`), so a newer
+# release could float in and clash with a pinned tool such as semgrep.
+runner = "uv-venv-lock-runner"
 
 
 [tool.tox.env.style]
@@ -596,21 +601,25 @@ commands = [
 # resolve pytest and other test-only imports.
 dependency_groups = ["style", "test"]
 description = "Run Checkers, Linters and Formatters"
-runner = "uv-venv-runner"
+runner = "uv-venv-lock-runner"
 
 
 [tool.tox.env.sast]
 commands = [["semgrep", "scan", "--config", "p/python", "--error", "--metrics=off", "src"]]
 dependency_groups = ["sast"]
 description = "Scan source with Semgrep in an isolated environment"
-runner = "uv-venv-runner"
+runner = "uv-venv-lock-runner"
 
 
 [tool.tox.env.prek]
 commands = [["prek", "run", "--all-files"]]
 dependency_groups = ["prek"]
 description = "Run prek hooks"
-runner = "uv-venv-runner"
+# The hooks that need the project call `uv run --locked`, which syncs it (and the
+# groups they name) into this env through the runner's UV_PROJECT_ENVIRONMENT;
+# installing the wheel here too would only be swapped for that install each run.
+package = "skip"
+runner = "uv-venv-lock-runner"
 
 
 [tool.tox.env.e2e]
@@ -629,7 +638,7 @@ commands = [
 ]
 dependency_groups = ["test"]
 description = "Run the end-to-end browser tests (Playwright + Chromium)"
-runner = "uv-venv-runner"
+runner = "uv-venv-lock-runner"
 # e2e is excluded from coverage; don't arm subprocess measurement.
 set_env = {}
 
@@ -638,5 +647,5 @@ set_env = {}
 commands = [["coverage", "combine"], ["coverage", "report"], ["coverage", "xml"]]
 dependency_groups = ["test"]
 description = "Combine the matrix's coverage data and report it"
-runner = "uv-venv-runner"
+runner = "uv-venv-lock-runner"
 skip_install = true

@@ -9,6 +9,9 @@
 # hook — Renovate owns every `rev` bump, including the tools shared with the uv
 # `style` dependency group.
 default_language_version.python = "python3.10"
+# Hooks without an explicit `stages` run at commit only. prek treats an unset
+# `default_stages` as *every* stage, and listing `pre-push` here re-ran the whole
+# gate (type checkers, pylint, ...) on push; push-only hooks opt in per hook.
 default_stages = ["pre-commit"]
 exclude = '''(?x)^(
     # Editor/debugger JSON configs that carry comments or trailing commas
@@ -84,10 +87,10 @@ hooks = [
   { id = "basedpyright", name = "basedpyright Type Checker", entry = "uv run --locked --group style basedpyright", language = "system", types = ["python"], pass_filenames = false },
   # mypy needs the installed package + deps to resolve third-party imports, so
   # like basedpyright it is a `local` `system` hook via `uv run` rather than
-  # mirrors-mypy's isolated venv. Filenames are not passed: mypy checks the
-  # `[tool.mypy] files` set, matching tox's canonical run (passing changed files
-  # would also trip the duplicate-module check on examples/*/main.py). Single
-  # version source: the `style` group pin.
+  # mirrors-mypy's isolated venv, which needed a hand-kept copy of every
+  # component's runtime deps in `additional_dependencies` (see ADR-005).
+  # Filenames are not passed: mypy checks the `[tool.mypy] files` set, matching
+  # tox's canonical run. Single version source: the `style` group pin.
   { id = "mypy", name = "mypy Type Checker", entry = "uv run --locked --group style mypy", language = "system", types = ["python"], pass_filenames = false },
   # pylint runs as a whole-package gate (`pylint src`) that deliberately overlaps
   # ruff's PL* rules. Like basedpyright it needs the installed package + deps to

@@ -1,6 +1,6 @@
 # Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
 ---
-_commit: v1.10.0
+_commit: v1.11.0
 _src_path: https://github.com/hasansezertasan/copier-pyproject.git
 async_style: asyncio
 author_email: hasansezertasan@gmail.com
@@ -26,6 +26,7 @@ include_megalinter: false
 include_postgres: false
 include_profiling: false
 include_pydantic_settings: false
+include_pypi_publish: true
 include_redis: false
 include_repo_ruleset: true
 include_repo_settings: true

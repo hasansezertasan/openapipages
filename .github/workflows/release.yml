@@ -10,8 +10,8 @@ on:
   # that step needs no PAT. The containment is the `publish` environment's
   # deployment-branch policy, which GitHub evaluates OUTSIDE this file so a
   # branch edit cannot bypass it — see docs/maintaining/setup.rst
-  # ("PyPI trusted publishing"). Verify that policy is in place rather than
-  # deleting this trigger.
+  # ("Restrict the publish environment to main"). Verify that policy is in
+  # place rather than deleting this trigger.
   workflow_dispatch:
   push:
     branches:
