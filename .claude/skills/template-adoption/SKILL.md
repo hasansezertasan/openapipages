@@ -127,7 +127,7 @@ surfaces. Inspect auto-fix settings before running tools that write files, then
 review the final diff against both the baseline and the starting user edits.
 Recheck conflicts, command references, workflow gates, and retained customizations.
 When the update touches a project-owned overlay that the template also renders
-(e.g. `.vscode/launch.json`), re-apply the project version on conflict and port
+(e.g. `.vscode/launch.json`, `.github/ISSUE_TEMPLATE/bug_report.yml`), re-apply the project version on conflict and port
 only genuine template-side improvements instead of taking the template file
 wholesale.
 Report checks that failed or could not run with reasons; do not call untested

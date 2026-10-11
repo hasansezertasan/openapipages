@@ -461,6 +461,13 @@ and test servers, uvicorn targets, and the e2e-excluding coverage invocation
 are not something the template can render. (A debugger-type migration or a new
 generic entry from the template side would be ported, not taken wholesale.)
 
+``.github/ISSUE_TEMPLATE/bug_report.yml`` is the second overlay: the **Backend**
+dropdown and the PEP 723 example script in *Steps to reproduce* are specific to
+openapipages, so the template cannot render them. ``uvx``/``pipx`` are also
+removed from *Installation method*, and *OS and version* is optional, because
+this is a library rather than a CLI. Keep those choices on conflict, and port
+any new generic fields or wording fixes from the template side.
+
 If the update touches dependency metadata in ``pyproject.toml`` — the
 ``dependencies`` list, a dependency group, or the optional-dependency table —
 also run ``uv lock`` and commit the refreshed ``uv.lock`` in the same PR.
