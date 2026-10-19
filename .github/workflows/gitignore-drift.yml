@@ -38,7 +38,7 @@ jobs:
       - name: Install mise tools
         # cobo is pinned in mise.toml (pipx backend, Renovate-tracked) and run
         # via `mise exec`, mirroring how ghalint/all-contributors are invoked.
-        uses: jdx/mise-action@08ae2a091c038e1e05ec6f5115dc5c69d5a2a6b8  # v5.1.2
+        uses: jdx/mise-action@fc42bcc7ddbf51124c30f95a877a0c5168a3bfde  # v5.2.1
       - name: Refresh cobo sources
         run: mise exec -- cobo update
       - name: Check for gitignore drift

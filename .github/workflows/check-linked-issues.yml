@@ -21,6 +21,6 @@ jobs:
         # editing a bot PR still skips. The job itself always runs and reports a
         # green check, so a required "Verify linked issue" context stays satisfied.
         if: ${{ !endsWith(github.event.pull_request.user.login, '[bot]') }}
-        uses: nearform-actions/github-action-check-linked-issues@f18c56dc22ba24fb2a06c3563459b4240bc2e986  # v1.9.0
+        uses: nearform-actions/github-action-check-linked-issues@da25b46705a9da660023ab77cb0e5672a65e2910  # v1.9.0
         id: check_linked_issues
         # Pass the `no-issue` label to a pull request to bypass this check.
