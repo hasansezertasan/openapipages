@@ -48,20 +48,8 @@ hooks = [
   ] },
   { id = "check-case-conflict" },
   { id = "detect-private-key" },
-<<<<<<< before updating
   # Blocks direct commits to the default branch (main/master).
   { id = "no-commit-to-branch" },
-=======
-  { id = "check-yaml" },
-  { id = "check-executables-have-shebangs" },
-  { id = "check-symlinks" },
-  { id = "check-xml" },
-  # Preserve cobo-owned bytes.
-  # Windows PowerShell 5.1 needs a UTF-8 BOM for non-ASCII source literals.
-  { id = "fix-byte-order-marker", exclude = '^\.gitignore$|(?i:\.ps[md]?1)$' },
-  { id = "mixed-line-ending", args = ["--fix=auto"], exclude = '^\.gitignore$' },
-  # auto fixes mixed endings, retaining consistent CRLF for Windows scripts.
->>>>>>> after updating
 ]
 
 # debug-statements and check-ast have no prek builtin (they need the Python AST),

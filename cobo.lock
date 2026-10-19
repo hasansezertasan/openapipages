@@ -35,8 +35,6 @@ eol = "lf"
   path = "Python.gitignore"
   commit = "0e5d690153ca3da8a4a1aef2d053406f408f531c"
   blob = "6f596e17917419c463b0d15bf1f0bce19b8918eb"
-<<<<<<< before updating
-=======
 
   [[fragment.files]]
   name = "Node"
@@ -49,4 +47,3 @@ eol = "lf"
   path = "GitHubPages.gitignore"
   commit = "0e5d690153ca3da8a4a1aef2d053406f408f531c"
   blob = "807c07fc551f854566dda3f395ee4c1b08876e62"
->>>>>>> after updating

@@ -181,7 +181,6 @@ One interface for many! And of course Framework agnostic... So you can use it in
 
 ## See Also
 
-<<<<<<< before updating
 ### Projects
 
 - [kemingy/defspec: Create the OpenAPI spec and document from dataclass, attrs, etc.](https://github.com/kemingy/defspec/)
@@ -193,19 +192,6 @@ One interface for many! And of course Framework agnostic... So you can use it in
 - [jmcarp/flask-apispec][Flask-apispec]
 
 ### Issues, PRs, and Discussions
-=======
-Versioning and releases are automated with [release-please](https://github.com/googleapis/release-please), driven by [Conventional Commit](https://www.conventionalcommits.org/en/v1.0.0/) PR titles squash-merged into `main`. release-please maintains a release PR that bumps the version and `CHANGELOG.md`; merging it tags the release and publishes to PyPI. See the [Contributing Guidelines](./.github/CONTRIBUTING.md#releasing) for the commit conventions, and the [Repository setup](./REPOSITORY_SETUP.rst) guide for one-time configuration and optional post-launch integrations such as a social preview, downstream packaging, and Repology.
-
-Pause merges that change `.github/workflows/`, including Renovate action-pin updates, from merging a release PR until the entire Release run finishes. Workflow differences between the release commit and current `main` can block tag or release creation with a 403 when using `GITHUB_TOKEN`. See [Release recovery](./REPOSITORY_SETUP.rst#keep-workflow-changes-out-of-an-active-release) for prevention and recovery steps.
-
-For adopting this project's tooling into an existing package, or reconciling a
-template update with existing project behavior, see the **Template updates** and
-**Adopting into an existing project** sections of
-[REPOSITORY_SETUP.rst](./REPOSITORY_SETUP.rst). They cover the baseline,
-workflow and required-check overlap, custom tooling and documentation, and ask
-for a decision before consequential cleanup. Work through the repository
-settings and release steps in the same file.
->>>>>>> after updating
 
 - [[Question] Is it possible to load the Swagger UI offline? · Issue #261 · 0b01001001/spectree](https://github.com/0b01001001/spectree/issues/261)
 - [Swagger with hosted files does not work after upgrade · tiangolo/fastapi · Discussion #10426](https://github.com/tiangolo/fastapi/discussions/10426)
