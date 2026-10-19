@@ -127,7 +127,7 @@ name = "astroid"
 version = "4.0.4"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "typing-extensions", marker = "python_full_version < '3.11' or (extra == 'group-12-openapipages-dev' and extra == 'group-12-openapipages-sast') or (extra == 'group-12-openapipages-sast' and extra == 'group-12-openapipages-test')" },
+    { name = "typing-extensions", marker = "python_full_version < '3.11'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/07/63/0adf26577da5eff6eb7a177876c1cfa213856be9926a000f65c4add9692b/astroid-4.0.4.tar.gz", hash = "sha256:986fed8bcf79fb82c78b18a53352a0b287a73817d6dbcfba3162da36667c49a0", size = 406358, upload-time = "2026-02-07T23:35:07.509Z" }
 wheels = [
@@ -169,8 +169,8 @@ name = "beautifulsoup4"
 version = "4.15.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "soupsieve", version = "2.10", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11.5' or (extra == 'group-12-openapipages-dev' and extra == 'group-12-openapipages-sast') or (extra == 'group-12-openapipages-sast' and extra == 'group-12-openapipages-test')" },
-    { name = "soupsieve", version = "3.0.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11.5' or (extra == 'group-12-openapipages-dev' and extra == 'group-12-openapipages-sast') or (extra == 'group-12-openapipages-sast' and extra == 'group-12-openapipages-test')" },
+    { name = "soupsieve", version = "2.10", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11.5'" },
+    { name = "soupsieve", version = "3.0.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11.5'" },
     { name = "typing-extensions" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/43/65/318323f98dbee45d42dff61d8f047181bc6f2268a9068cfad035a46be5af/beautifulsoup4-4.15.0.tar.gz", hash = "sha256:288e3ca7d54b06f2ac191970bc275c1939cb46d450b255bf6718b04aa37ab4f7", size = 632571, upload-time = "2026-06-07T16:44:20.453Z" }
@@ -236,7 +236,7 @@ name = "cffi"
 version = "2.1.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "pycparser", marker = "implementation_name != 'PyPy' or (extra == 'group-12-openapipages-dev' and extra == 'group-12-openapipages-sast') or (extra == 'group-12-openapipages-sast' and extra == 'group-12-openapipages-test')" },
+    { name = "pycparser", marker = "implementation_name != 'PyPy'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/9e/ef/008a1939e372c06329a3fce4279c02f328488f3526744906eeec3da7ad5f/cffi-2.1.1.tar.gz", hash = "sha256:dd31f52ea1086513bb9df30f8fcee9b8918323ae067a3d5b78bc826a000712be", size = 530807, upload-time = "2026-08-03T21:21:18.939Z" }
 wheels = [
@@ -509,7 +509,7 @@ name = "click"
 version = "8.4.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "colorama", marker = "sys_platform == 'win32' or (extra == 'group-12-openapipages-dev' and extra == 'group-12-openapipages-sast') or (extra == 'group-12-openapipages-sast' and extra == 'group-12-openapipages-test')" },
+    { name = "colorama", marker = "sys_platform == 'win32'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/76/d4/81420972a676e8ffea40450d8c8c92943e7218a78fe9b64359836cc9876b/click-8.4.2.tar.gz", hash = "sha256:9a6cea6e60b17ebe0a44c5cc636d94f09bd66142c1cd7d8b4cd731c4917a15f6", size = 338000, upload-time = "2026-06-24T17:45:15.148Z" }
 wheels = [
@@ -554,7 +554,7 @@ dependencies = [
     { name = "questionary" },
     { name = "termcolor" },
     { name = "tomlkit" },
-    { name = "typing-extensions", marker = "python_full_version < '3.11' or (extra == 'group-12-openapipages-dev' and extra == 'group-12-openapipages-sast') or (extra == 'group-12-openapipages-sast' and extra == 'group-12-openapipages-test')" },
+    { name = "typing-extensions", marker = "python_full_version < '3.11'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/c4/ad/ad4e6fafa0627f38ebd3c65ad63767f3f07e0b33b72cbff0d3cadddf6ecb/commitizen-4.19.2.tar.gz", hash = "sha256:af0fb25f2fb60956b9d64eecd6e3ec7b710c2f9b012ce8728cb32c728c2c5a8a", size = 69721, upload-time = "2026-10-07T07:31:13.903Z" }
 wheels = [
@@ -716,7 +716,7 @@ dependencies = [
     { name = "nbconvert" },
     { name = "nbformat" },
     { name = "pip-requirements-parser" },
-    { name = "tomli", marker = "python_full_version < '3.11' or (extra == 'group-12-openapipages-dev' and extra == 'group-12-openapipages-sast') or (extra == 'group-12-openapipages-sast' and extra == 'group-12-openapipages-test')" },
+    { name = "tomli", marker = "python_full_version < '3.11'" },
 ]
 wheels = [
     { url = "https://files.pythonhosted.org/packages/ff/57/40242282d437373a6349a083080e1ecf478b20745cf01b645016f0691f60/creosote-5.2.0-py3-none-any.whl", hash = "sha256:6cd63d19c98cb31d87854628e1d59727902a190c84fed2cd75276599a55a6ec4", size = 21639, upload-time = "2026-03-28T17:08:46.712Z" },
@@ -861,10 +861,10 @@ version = "0.25.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "click" },
-    { name = "colorama", marker = "sys_platform == 'win32' or (extra == 'group-12-openapipages-dev' and extra == 'group-12-openapipages-sast') or (extra == 'group-12-openapipages-sast' and extra == 'group-12-openapipages-test')" },
+    { name = "colorama", marker = "sys_platform == 'win32'" },
     { name = "packaging" },
     { name = "requirements-parser" },
-    { name = "tomli", marker = "python_full_version < '3.15' or (extra == 'group-12-openapipages-dev' and extra == 'group-12-openapipages-sast') or (extra == 'group-12-openapipages-sast' and extra == 'group-12-openapipages-test')" },
+    { name = "tomli", marker = "python_full_version < '3.15'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/b8/b2/50ccc99362ae7757342978b7ecb3b98e47fade721fd617d74db1948ec3a1/deptry-0.25.1.tar.gz", hash = "sha256:45c8cd982c85cd4faae573ddff6920de7eec735336db6973f26a765ae7950f7d", size = 509748, upload-time = "2026-03-18T23:22:18.139Z" }
 wheels = [
@@ -963,7 +963,7 @@ wheels = [
 
 [[package]]
 name = "fastapi"
-version = "0.143.0"
+version = "0.150.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "annotated-doc" },
@@ -973,9 +973,9 @@ dependencies = [
     { name = "typing-extensions" },
     { name = "typing-inspection" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/0b/d7/6a8753ab6c1d432dc53703c3e1b92974a94531b7d047c32bbaae461ea844/fastapi-0.143.0.tar.gz", hash = "sha256:1acffe48206a80917cf7dac21992b5c44b25384e8902bf745c1fd9dabcf6c51f", size = 468391, upload-time = "2026-10-08T12:29:46.54Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/35/ae/3c8fe5ea133a13dbdb0c84e586087aa811f311cb11b00efdb11c364793e6/fastapi-0.150.0.tar.gz", hash = "sha256:97583806e6de1b6fc299866bdb88730fa311ff640829af876c9e847f4c3a3b29", size = 483799, upload-time = "2026-10-19T22:39:44.108Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/bd/f4/27e386913417ad32aae42bba48b0c0cce40e9ff2fba1a871ca2702c37324/fastapi-0.143.0-py3-none-any.whl", hash = "sha256:3e9395fd35276425b61b516a31fdd7c77fe2af83e41b4da22e30696fb1304c5d", size = 144665, upload-time = "2026-10-08T12:29:44.853Z" },
+    { url = "https://files.pythonhosted.org/packages/14/41/7c472e281c147dae4f1dd4a85d9a1b7f6ce8b919e4053f14c83abb1488c7/fastapi-0.150.0-py3-none-any.whl", hash = "sha256:e566bc3f1347cfacf61f2f9ea1d7ab4576fbcff02eb9747c2807b8ced16d9e9a", size = 145281, upload-time = "2026-10-19T22:39:42.71Z" },
 ]
 
 [[package]]
@@ -1309,7 +1309,7 @@ dependencies = [
     { name = "click" },
     { name = "grimp" },
     { name = "rich" },
-    { name = "tomli", marker = "python_full_version < '3.11' or (extra == 'group-12-openapipages-dev' and extra == 'group-12-openapipages-sast') or (extra == 'group-12-openapipages-sast' and extra == 'group-12-openapipages-test')" },
+    { name = "tomli", marker = "python_full_version < '3.11'" },
     { name = "typing-extensions" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/3c/81/1bb414f8c8bcd024499e91f112d317c36a86bc264da1fd43f9797fc2b7b0/import_linter-2.15.tar.gz", hash = "sha256:1da912bea5e172a82a3ce617b5543f75cf64dc0d8f4d9b46c5578b68ccb81590", size = 1405973, upload-time = "2026-09-04T14:47:56.097Z" }
@@ -1367,8 +1367,8 @@ dependencies = [
     { name = "attrs" },
     { name = "jsonschema-specifications" },
     { name = "referencing" },
-    { name = "rpds-py", version = "0.30.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11' or (extra == 'group-12-openapipages-dev' and extra == 'group-12-openapipages-sast') or (extra == 'group-12-openapipages-sast' and extra == 'group-12-openapipages-test')" },
-    { name = "rpds-py", version = "2026.9.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11' or (extra == 'group-12-openapipages-dev' and extra == 'group-12-openapipages-sast') or (extra == 'group-12-openapipages-sast' and extra == 'group-12-openapipages-test')" },
+    { name = "rpds-py", version = "0.30.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
+    { name = "rpds-py", version = "2026.9.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/74/69/f7185de793a29082a9f3c7728268ffb31cb5095131a9c139a74078e27336/jsonschema-4.25.1.tar.gz", hash = "sha256:e4a9655ce0da0c0b67a085847e00a3a51449e1157f4f75e9fb5aa545e122eb85", size = 357342, upload-time = "2025-08-18T17:03:50.038Z" }
 wheels = [
@@ -1409,8 +1409,8 @@ name = "jupyter-core"
 version = "5.9.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "platformdirs", version = "4.12.4", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11' or (extra == 'group-12-openapipages-dev' and extra == 'group-12-openapipages-sast') or (extra == 'group-12-openapipages-sast' and extra == 'group-12-openapipages-test')" },
-    { name = "platformdirs", version = "4.13.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11' or (extra == 'group-12-openapipages-dev' and extra == 'group-12-openapipages-sast') or (extra == 'group-12-openapipages-sast' and extra == 'group-12-openapipages-test')" },
+    { name = "platformdirs", version = "4.12.4", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
+    { name = "platformdirs", version = "4.13.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
     { name = "traitlets" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/02/49/9d1284d0dc65e2c757b74c6687b6d319b02f822ad039e5c512df9194d9dd/jupyter_core-5.9.1.tar.gz", hash = "sha256:4d09aaff303b9566c3ce657f580bd089ff5c91f5f89cf7d8846c3cdf465b5508", size = 89814, upload-time = "2025-10-16T19:19:18.444Z" }
@@ -1562,8 +1562,8 @@ name = "loguru"
 version = "0.7.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "colorama", marker = "sys_platform == 'win32' or (extra == 'group-12-openapipages-dev' and extra == 'group-12-openapipages-sast') or (extra == 'group-12-openapipages-sast' and extra == 'group-12-openapipages-test')" },
-    { name = "win32-setctime", marker = "sys_platform == 'win32' or (extra == 'group-12-openapipages-dev' and extra == 'group-12-openapipages-sast') or (extra == 'group-12-openapipages-sast' and extra == 'group-12-openapipages-test')" },
+    { name = "colorama", marker = "sys_platform == 'win32'" },
+    { name = "win32-setctime", marker = "sys_platform == 'win32'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/3a/05/a1dae3dffd1116099471c643b8924f5aa6524411dc6c63fdae648c4f1aca/loguru-0.7.3.tar.gz", hash = "sha256:19480589e77d47b8d85b2c827ad95d49bf31b0dcde16593892eb51dd18706eb6", size = 63559, upload-time = "2024-12-06T11:20:56.608Z" }
 wheels = [
@@ -1773,7 +1773,7 @@ name = "mistune"
 version = "3.4.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "typing-extensions", marker = "python_full_version < '3.11' or (extra == 'group-12-openapipages-dev' and extra == 'group-12-openapipages-sast') or (extra == 'group-12-openapipages-sast' and extra == 'group-12-openapipages-test')" },
+    { name = "typing-extensions", marker = "python_full_version < '3.11'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/96/eb/749a4e69bf7396e751ae37444abe997eff2254e695a8095b84d1c89c1181/mistune-3.4.0.tar.gz", hash = "sha256:2eaf7952af928ca8d33b779762effc1da517b62c6ad85ec8ca957e3b07b9782a", size = 136772, upload-time = "2026-10-19T10:44:28.172Z" }
 wheels = [
@@ -1786,10 +1786,10 @@ version = "2.4.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "ast-serialize" },
-    { name = "librt", marker = "platform_python_implementation != 'PyPy' or (extra == 'group-12-openapipages-dev' and extra == 'group-12-openapipages-sast') or (extra == 'group-12-openapipages-sast' and extra == 'group-12-openapipages-test')" },
+    { name = "librt", marker = "platform_python_implementation != 'PyPy'" },
     { name = "mypy-extensions" },
     { name = "pathspec" },
-    { name = "tomli", marker = "python_full_version < '3.11' or (extra == 'group-12-openapipages-dev' and extra == 'group-12-openapipages-sast') or (extra == 'group-12-openapipages-sast' and extra == 'group-12-openapipages-test')" },
+    { name = "tomli", marker = "python_full_version < '3.11'" },
     { name = "typing-extensions" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/34/4e/64300736cf0a0373a27b94a91b664ee7382e36f77b0621bae6381da3e180/mypy-2.4.0.tar.gz", hash = "sha256:77bdaebd452f43fcfc4cc3ba94352a3ea537cd01e3f2d0879f48673d2ec00d6e", size = 4064425, upload-time = "2026-10-01T20:40:39.229Z" }
@@ -1993,7 +1993,7 @@ style = [
     { name = "zuban" },
 ]
 test = [
-    { name = "coverage", extra = ["toml"], marker = "extra == 'group-12-openapipages-dev' or extra != 'group-12-openapipages-sast' or (extra == 'group-12-openapipages-sast' and extra == 'group-12-openapipages-test')" },
+    { name = "coverage", extra = ["toml"], marker = "extra == 'group-12-openapipages-dev' or extra != 'group-12-openapipages-sast' or extra == 'group-12-openapipages-test'" },
     { name = "coverage-enable-subprocess" },
     { name = "fastapi" },
     { name = "httpx" },
@@ -2005,7 +2005,7 @@ test = [
     { name = "pytest-randomly" },
     { name = "pytest-rerunfailures" },
     { name = "pytest-sugar" },
-    { name = "pytest-xdist", extra = ["psutil"], marker = "extra == 'group-12-openapipages-dev' or extra != 'group-12-openapipages-sast' or (extra == 'group-12-openapipages-sast' and extra == 'group-12-openapipages-test')" },
+    { name = "pytest-xdist", extra = ["psutil"], marker = "extra == 'group-12-openapipages-dev' or extra != 'group-12-openapipages-sast' or extra == 'group-12-openapipages-test'" },
     { name = "uvicorn" },
 ]
 tool = [
@@ -2027,7 +2027,7 @@ dev = [
     { name = "debugpy", specifier = "==1.8.22" },
     { name = "detect-secrets", specifier = "==1.5.0" },
     { name = "editorconfig-checker", specifier = "==3.8.0" },
-    { name = "fastapi", specifier = ">=0.143.0,<0.144.0" },
+    { name = "fastapi", specifier = ">=0.150.0,<0.151.0" },
     { name = "httpx", specifier = ">=0.28.1,<0.29.0" },
     { name = "import-linter", specifier = "==2.15" },
     { name = "mypy", specifier = "==2.4.0" },
@@ -2036,7 +2036,7 @@ dev = [
     { name = "pytest", specifier = "==9.1.1" },
     { name = "pytest-asyncio", specifier = ">=0.23.0" },
     { name = "pytest-deadfixtures", specifier = "==3.1.0" },
-    { name = "pytest-mock", specifier = "==3.16.0" },
+    { name = "pytest-mock", specifier = "==3.17.0" },
     { name = "pytest-playwright", specifier = ">=0.5.0" },
     { name = "pytest-randomly", specifier = "==5.0.0" },
     { name = "pytest-rerunfailures", specifier = "==16.7" },
@@ -2072,12 +2072,12 @@ style = [
 test = [
     { name = "coverage", extras = ["toml"], specifier = "==7.16.2" },
     { name = "coverage-enable-subprocess", specifier = "==1.0" },
-    { name = "fastapi", specifier = ">=0.143.0,<0.144.0" },
+    { name = "fastapi", specifier = ">=0.150.0,<0.151.0" },
     { name = "httpx", specifier = ">=0.28.1,<0.29.0" },
     { name = "pytest", specifier = "==9.1.1" },
     { name = "pytest-asyncio", specifier = ">=0.23.0" },
     { name = "pytest-deadfixtures", specifier = "==3.1.0" },
-    { name = "pytest-mock", specifier = "==3.16.0" },
+    { name = "pytest-mock", specifier = "==3.17.0" },
     { name = "pytest-playwright", specifier = ">=0.5.0" },
     { name = "pytest-randomly", specifier = "==5.0.0" },
     { name = "pytest-rerunfailures", specifier = "==16.7" },
@@ -2656,13 +2656,13 @@ version = "4.0.6"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "astroid" },
-    { name = "colorama", marker = "sys_platform == 'win32' or (extra == 'group-12-openapipages-dev' and extra == 'group-12-openapipages-sast') or (extra == 'group-12-openapipages-sast' and extra == 'group-12-openapipages-test')" },
+    { name = "colorama", marker = "sys_platform == 'win32'" },
     { name = "dill" },
     { name = "isort" },
     { name = "mccabe" },
-    { name = "platformdirs", version = "4.12.4", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11' or (extra == 'group-12-openapipages-dev' and extra == 'group-12-openapipages-sast') or (extra == 'group-12-openapipages-sast' and extra == 'group-12-openapipages-test')" },
-    { name = "platformdirs", version = "4.13.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11' or (extra == 'group-12-openapipages-dev' and extra == 'group-12-openapipages-sast') or (extra == 'group-12-openapipages-sast' and extra == 'group-12-openapipages-test')" },
-    { name = "tomli", marker = "python_full_version < '3.11' or (extra == 'group-12-openapipages-dev' and extra == 'group-12-openapipages-sast') or (extra == 'group-12-openapipages-sast' and extra == 'group-12-openapipages-test')" },
+    { name = "platformdirs", version = "4.12.4", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
+    { name = "platformdirs", version = "4.13.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
+    { name = "tomli", marker = "python_full_version < '3.11'" },
     { name = "tomlkit" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/7d/1d/3bb57f303701549550d74bf7ced2b07412be97125c167a0c9d216aa9f762/pylint-4.0.6.tar.gz", hash = "sha256:52f19191bee08bf103f9705ad1a0ece4aa5a0a4ef2bdcbd969375a1e6f6579d5", size = 1585588, upload-time = "2026-06-14T14:43:26.772Z" }
@@ -2779,14 +2779,14 @@ wheels = [
 
 [[package]]
 name = "pytest-mock"
-version = "3.16.0"
+version = "3.17.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "pytest" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/7a/7f/6ed29931d5c8cd396e7c0a55412e6cc88020373365c8685985dea53d26d7/pytest_mock-3.16.0.tar.gz", hash = "sha256:5a8395528b8f498205f3718f575228d0edaed7425fff638f87d1a6c3e0383636", size = 35362, upload-time = "2026-09-27T14:57:55.46Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/97/c2/28b9f5b955ff2bcd4727a6f768e2ca9b586cd7c37b95ea5f7b9b873ac7b3/pytest_mock-3.17.0.tar.gz", hash = "sha256:e36576e0985e01027e999891e7a966c67822d40c89ef1b4c8b6e22737e3590b4", size = 43064, upload-time = "2026-10-17T16:21:42.435Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/db/5b/b83a9bf1a3b4ec222f9fa083147ff6816245223da0ab92370e7e056f113f/pytest_mock-3.16.0-py3-none-any.whl", hash = "sha256:007cfeb257801d88d9c0b2a7b5a15a15e73b71968dfd72e7bf8c4a2f8393aec8", size = 10016, upload-time = "2026-09-27T14:57:54.283Z" },
+    { url = "https://files.pythonhosted.org/packages/e8/ea/47fbdc8f37410956fd445720e927589b1e2a47772c5f28109f0ce2fa26d9/pytest_mock-3.17.0-py3-none-any.whl", hash = "sha256:1b82aa4b37137248bd687055e109723debeb07b489de1565297dc9589c5f2d6b", size = 11248, upload-time = "2026-10-17T16:21:41.265Z" },
 ]
 
 [[package]]
@@ -3005,7 +3005,7 @@ name = "pyzmq"
 version = "27.2.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "cffi", marker = "implementation_name == 'pypy' or (extra == 'group-12-openapipages-dev' and extra == 'group-12-openapipages-sast') or (extra == 'group-12-openapipages-sast' and extra == 'group-12-openapipages-test')" },
+    { name = "cffi", marker = "implementation_name == 'pypy'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/e7/8d/5b3d5631c2f4b4b8862f64cd0c9eb777b5710eeb5125b4be8dd0a200a4c0/pyzmq-27.2.0.tar.gz", hash = "sha256:54d4259d1bfae24ecdb5ca79f7acc2eac6c286a02d6a0ae617797cb45f0726d3", size = 292316, upload-time = "2026-08-20T19:08:21.19Z" }
 wheels = [
@@ -3098,9 +3098,9 @@ version = "0.37.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "attrs" },
-    { name = "rpds-py", version = "0.30.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11' or (extra == 'group-12-openapipages-dev' and extra == 'group-12-openapipages-sast') or (extra == 'group-12-openapipages-sast' and extra == 'group-12-openapipages-test')" },
-    { name = "rpds-py", version = "2026.9.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11' or (extra == 'group-12-openapipages-dev' and extra == 'group-12-openapipages-sast') or (extra == 'group-12-openapipages-sast' and extra == 'group-12-openapipages-test')" },
-    { name = "typing-extensions", marker = "python_full_version < '3.13' or (extra == 'group-12-openapipages-dev' and extra == 'group-12-openapipages-sast') or (extra == 'group-12-openapipages-sast' and extra == 'group-12-openapipages-test')" },
+    { name = "rpds-py", version = "0.30.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
+    { name = "rpds-py", version = "2026.9.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
+    { name = "typing-extensions", marker = "python_full_version < '3.13'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/22/f5/df4e9027acead3ecc63e50fe1e36aca1523e1719559c499951bb4b53188f/referencing-0.37.0.tar.gz", hash = "sha256:44aefc3142c5b842538163acb373e24cce6632bd54bdb01b21ad5863489f50d8", size = 78036, upload-time = "2025-10-13T15:30:48.871Z" }
 wheels = [
@@ -3573,7 +3573,7 @@ name = "slotscheck"
 version = "0.21.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "tomli", marker = "python_full_version < '3.11' or (extra == 'group-12-openapipages-dev' and extra == 'group-12-openapipages-sast') or (extra == 'group-12-openapipages-sast' and extra == 'group-12-openapipages-test')" },
+    { name = "tomli", marker = "python_full_version < '3.11'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/33/34/811f9588dbd55e3adee986e53cd1bcdfabc6c5b6919b9cf1ff208f2878cd/slotscheck-0.21.0.tar.gz", hash = "sha256:0a5296300c5d5d9663e597861d7b3ef16abc74c851498a648116d868960c12c2", size = 15354, upload-time = "2026-09-06T19:08:07.131Z" }
 wheels = [
