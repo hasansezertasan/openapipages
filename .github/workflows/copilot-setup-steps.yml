@@ -30,6 +30,6 @@ jobs:
       - name: Set up uv
         uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884  # v10.3.0
       - name: Install mise tools
-        uses: jdx/mise-action@08ae2a091c038e1e05ec6f5115dc5c69d5a2a6b8  # v5.1.2
+        uses: jdx/mise-action@fc42bcc7ddbf51124c30f95a877a0c5168a3bfde  # v5.2.1
       - name: Sync dependencies
         run: uv sync
