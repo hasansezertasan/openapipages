@@ -8,6 +8,10 @@ name: Sync repository ruleset
 # Requires a `REPO_ADMIN_TOKEN` secret: a fine-grained PAT with
 # `Administration: read and write` on this repository. The Actions
 # `GITHUB_TOKEN` cannot manage rulesets (it has no `administration` scope).
+# Store it as a secret of the `ruleset-admin` *environment* (required reviewer,
+# deployment branches limited to the default branch), not a repository secret:
+# anyone who can merge a PR can edit this file, and the environment gate is
+# evaluated outside the file, so an edit cannot reach the PAT unreviewed.
 # When the secret is absent the job logs a notice and exits successfully, so a
 # freshly generated repository is never blocked. See CONTRIBUTING.md.
 on:
@@ -25,6 +29,7 @@ jobs:
     name: Sync repository ruleset
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    environment: ruleset-admin
     permissions:
       contents: read  # only needed to check out on private/internal repos
     steps:

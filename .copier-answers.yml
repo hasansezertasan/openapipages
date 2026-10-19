@@ -1,20 +1,21 @@
 # Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
 ---
-_commit: v1.11.0
+_commit: v1.14.0
 _src_path: https://github.com/hasansezertasan/copier-pyproject.git
 async_style: asyncio
 author_email: hasansezertasan@gmail.com
 author_family_names: Taşan
 author_full_name: Hasan Sezer Taşan
 author_given_names: Hasan Sezer
+copyright_year: 2026
 github_repo_name: openapipages
 github_user: hasansezertasan
-include_ai_rulez: false
 include_all_contributors: false
 include_benchmarks: false
 include_c_extensions: false
 include_cli: false
 include_compiler: false
+include_database: false
 include_dbeaver: false
 include_docs: false
 include_examples: true

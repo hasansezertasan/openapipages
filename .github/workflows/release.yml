@@ -9,7 +9,7 @@ on:
   # also the documented exception to GITHUB_TOKEN loop-prevention, which is why
   # that step needs no PAT. The containment is the `publish` environment's
   # deployment-branch policy, which GitHub evaluates OUTSIDE this file so a
-  # branch edit cannot bypass it — see docs/maintaining/setup.rst
+  # branch edit cannot bypass it — see REPOSITORY_SETUP.rst
   # ("Restrict the publish environment to main"). Verify that policy is in
   # place rather than deleting this trigger.
   workflow_dispatch:
@@ -214,7 +214,7 @@ jobs:
       actions: write  # IMPORTANT: Mandatory to re-dispatch this workflow
     steps:
       - name: Publish the draft release
-        # KNOWN COSMETIC LIMITATION (accepted, see ADR-002): while the release is
+        # KNOWN COSMETIC LIMITATION (accepted): while the release is
         # a draft it has no public tag page, so its URL is a transient
         # `/releases/tag/untagged-<hash>` slug. release-please writes its
         # "🤖 Created releases:" comment on the merged release PR once, at
@@ -269,7 +269,7 @@ jobs:
     timeout-minutes: 10
     # Runs after the release is published (un-drafted) so the comment links a
     # live release page. Best-effort: a failure here never affects the already
-    # published release or packages. See ADR-010.
+    # published release or packages.
     needs: [release-please, finalize-release]
     if: ${{ needs.release-please.outputs.release_created == 'true' }}
     permissions:

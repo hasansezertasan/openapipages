@@ -36,7 +36,7 @@ hooks = [
   # `.gitignore` is a cobo-sealed block (hash-verified); its bytes must stay
   # verbatim, but upstream github/gitignore ships trailing whitespace on some
   # comment lines. Exclude it so the hook does not break the seal (cobo owns
-  # this file — see ADR-012).
+  # this file).
   { id = "trailing-whitespace", exclude = '^\.gitignore$' },
   # Preserve cobo-owned bytes (ADR-012/030).
   # Windows PowerShell 5.1 needs a UTF-8 BOM for non-ASCII source literals.
@@ -48,8 +48,20 @@ hooks = [
   ] },
   { id = "check-case-conflict" },
   { id = "detect-private-key" },
+<<<<<<< before updating
   # Blocks direct commits to the default branch (main/master).
   { id = "no-commit-to-branch" },
+=======
+  { id = "check-yaml" },
+  { id = "check-executables-have-shebangs" },
+  { id = "check-symlinks" },
+  { id = "check-xml" },
+  # Preserve cobo-owned bytes.
+  # Windows PowerShell 5.1 needs a UTF-8 BOM for non-ASCII source literals.
+  { id = "fix-byte-order-marker", exclude = '^\.gitignore$|(?i:\.ps[md]?1)$' },
+  { id = "mixed-line-ending", args = ["--fix=auto"], exclude = '^\.gitignore$' },
+  # auto fixes mixed endings, retaining consistent CRLF for Windows scripts.
+>>>>>>> after updating
 ]
 
 # debug-statements and check-ast have no prek builtin (they need the Python AST),
@@ -88,7 +100,7 @@ hooks = [
   # mypy needs the installed package + deps to resolve third-party imports, so
   # like basedpyright it is a `local` `system` hook via `uv run` rather than
   # mirrors-mypy's isolated venv, which needed a hand-kept copy of every
-  # component's runtime deps in `additional_dependencies` (see ADR-005).
+  # component's runtime deps in `additional_dependencies`.
   # Filenames are not passed: mypy checks the `[tool.mypy] files` set, matching
   # tox's canonical run. Single version source: the `style` group pin.
   { id = "mypy", name = "mypy Type Checker", entry = "uv run --locked --group style mypy", language = "system", types = ["python"], pass_filenames = false },
@@ -103,7 +115,7 @@ hooks = [
   # `local` `system` hook that shells out through `uv run --locked --group style`
   # — NOT an upstream repo hook (that pattern runs in an isolated venv without the
   # project installed, which is why it lived only in the tox `style` env before).
-  # Single version source: the `style` group pin (see ADR-014 §3). It builds the
+  # Single version source: the `style` group pin. It builds the
   # whole graph regardless of which files changed, so filenames are not passed.
   { id = "import-linter", name = "Import Linter", entry = "uv run --locked --group style lint-imports", language = "system", pass_filenames = false, always_run = true },
   # slotscheck imports every module under src/ to verify __slots__ definitions, so
@@ -180,14 +192,14 @@ rev = "v1.30.1"
 hooks = [{ id = "zizmor" }]
 
 [[repos]]
-repo = "https://github.com/adrienverge/yamllint.git"
+repo = "https://github.com/adrienverge/yamllint"
 rev = "v1.38.0"
 # `.copier-answers.yml` is excluded for the same reason the yamlfmt hook below
-# excludes it: copier owns the file ("NEVER EDIT MANUALLY") and writes block
+# excludes it: it is machine-written ("NEVER EDIT MANUALLY") with block
 # sequences unindented, which yamllint's `indentation` rule rejects. The only
-# way to satisfy the linter would be to hand-edit a file the next `copier
-# update` overwrites, so the gate can only ever produce an unfixable failure —
-# it fires the moment any answer is a list (e.g. `ai_rulez_presets`).
+# way to satisfy the linter would be to hand-edit a file that is overwritten,
+# so the gate can only ever produce an unfixable failure — it fires the moment
+# any answer is a list.
 hooks = [{ id = "yamllint", exclude = "^\\.copier-answers\\.yml$", args = ["-c", ".github/yamllint.yaml"] }]
 
 [[repos]]
@@ -245,6 +257,14 @@ hooks = [
   # an activated mise shell environment (shims on PATH). It only requires `mise`
   # itself on PATH, which local contributors have and the CI `hooks` job supplies
   # via jdx/mise-action.
+  # pip-audit is a push-only hook: auditing the resolved runtime tree queries the
+  # PyPI Advisory DB, which is too slow and network-bound for every commit but
+  # cheap enough once per push, ahead of the weekly/CI `pip-audit` job in
+  # check-security.yml. It runs the same export + `uvx pip-audit` pair as that
+  # job (so pip-audit stays out of the project's dependencies) and cleans up its
+  # temp file whether or not the audit passes. `default_stages` excludes it from
+  # the commit gate; `stages` opts it into push.
+  { id = "pip-audit", name = "pip-audit", entry = "sh -c 'req=$(mktemp) && uv export --frozen --all-extras --no-dev --no-emit-project --no-hashes --format requirements.txt --output-file \"$req\" && uvx pip-audit --requirement \"$req\"; status=$?; rm -f \"$req\"; exit $status'", language = "system", stages = ["pre-push"], pass_filenames = false, always_run = true },
   { id = "ghalint", name = "ghalint", entry = "mise exec -- ghalint run", language = "system", pass_filenames = false, always_run = true },
   # pytest runs on push only, so commits stay fast; CI runs the full test matrix
   # in its own jobs.

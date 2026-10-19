@@ -37,9 +37,16 @@ jobs:
         id: filter
         uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d  # v4.0.3
         with:
+<<<<<<< before updating
           # This library's flat package and test layout is represented as one
           # `core` component. Package, dependency, and test changes trigger its
           # complete cross-platform matrix and coverage gate.
+=======
+          # `core` underpins every component (deps, shared core/, package-root
+          # modules, the root conftest, root-level tests), so a change here
+          # forces the full fan-out — mirrors the import-linter layering
+          # Each component filter watches only its own src+tests tree.
+>>>>>>> after updating
           filters: |
             core:
               - '.github/workflows/ci.yml'
@@ -110,7 +117,38 @@ jobs:
             pyproject.toml
             uv.lock
       - name: Run style and type checks
+<<<<<<< before updating
         run: uv run --locked tox run -e style,sast
+=======
+        run: uv run --locked tox run -e style
+  deps:
+    name: Check dependency hygiene
+    # Own job rather than part of `style`: it needs only the small `deps` group,
+    # and a failure here should name the dependency drift, not a lint run.
+    if: ${{ github.event.pull_request.draft != true }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7
+        with:
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v7.0.0
+        with:
+          python-version-file: .python-version
+      - name: Setup uv
+        uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7  # v10.2.0
+        with:
+          enable-cache: true
+          cache-dependency-glob: |
+            pyproject.toml
+            uv.lock
+      - name: Check dependency hygiene
+        run: uv run --locked tox run -e deps
+>>>>>>> after updating
 
   test-core:
     name: Test core on ${{ matrix.os }}
@@ -171,8 +209,13 @@ jobs:
         if: steps.setup-uv.outputs.cache-hit == 'true'
         run: echo "Cache was restored"
       - name: Run the tests
+<<<<<<< before updating
         # `matrix.tox_args` selects the interpreter sweep (#159). The tox base
         # command excludes browser tests; those run in the dedicated e2e job.
+=======
+        # `matrix.tox_args` selects the interpreter sweep; the posargs
+        # after `--` select this component's marked tests.
+>>>>>>> after updating
         # `matrix.tox_args` is a workflow-defined (trusted) context, used inline
         # like `matrix.os` in the System Info step — not untrusted GitHub context.
         run: uv run --locked tox run ${{ matrix.tox_args }}
@@ -184,7 +227,7 @@ jobs:
         # enforces the scoped `fail_under` gate. The per-cell `coverage report`
         # here stays for fast feedback but does NOT gate (`--fail-under=0`): a
         # line covered on one OS yet version/OS-gated off on another only
-        # balances in the per-component union. See ADR-028 (decomposes ADR-026).
+        # balances in the per-component union.
         run: |
           uv run coverage combine
           uv run coverage report --show-missing --fail-under=0
@@ -338,10 +381,14 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
       - name: Note skipped coverage upload
         if: ${{ env.CODECOV_TOKEN_SET != 'true' && env.REPO_IS_PUBLIC != 'true' }}
-        run: echo "::notice::CODECOV_TOKEN secret is not set and this repo is private — skipping the Codecov upload. See docs/maintaining/setup.rst (Repository setup) to enable coverage reporting."
+        run: echo "::notice::CODECOV_TOKEN secret is not set and this repo is private — skipping the Codecov upload. See REPOSITORY_SETUP.rst (Repository setup) to enable coverage reporting."
   check:
     if: ${{ always() && github.event.pull_request.draft != true }}
+<<<<<<< before updating
     needs: [changes, test-core, e2e, coverage-core, coverage-report, hooks, style]
+=======
+    needs: [changes, test-core, coverage-core, coverage-report, hooks, style, deps]
+>>>>>>> after updating
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions: {}

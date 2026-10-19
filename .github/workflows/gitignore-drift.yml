@@ -5,7 +5,7 @@ name: Gitignore Drift Check
 # network and is inherently flaky, so this runs on a weekly schedule and on
 # demand — never on pull_request, and it is not part of the `check` aggregation
 # gate. A failure here is a maintenance signal (regenerate with cobo), not a
-# merge blocker — the same non-blocking weekly-check posture. See ADR-012.
+# merge blocker — the same non-blocking weekly-check posture.
 on:
   workflow_dispatch:
   schedule:
@@ -24,10 +24,28 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7
         with:
           persist-credentials: false
+<<<<<<< before updating
       - name: Setup uv
         uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884  # v10.3.0
         with:
           enable-cache: true
+=======
+      - name: Set up Python
+        # cobo (mise pipx backend) requires Python >=3.14, but the runner's
+        # system Python is older — and without uv on PATH mise falls back from
+        # uvx to pipx, which ignores the mise-managed Python. Provision both
+        # first so `mise install` resolves cobo against the .python-version
+        # interpreter.
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v7.0.0
+        with:
+          python-version-file: .python-version
+      - name: Set up uv
+        uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7  # v10.2.0
+      - name: Install mise tools
+        # cobo is pinned in mise.toml (pipx backend, Renovate-tracked) and run
+        # via `mise exec`, mirroring how ghalint/all-contributors are invoked.
+        uses: jdx/mise-action@c2a87611a18de5b3828c5652fe268e992400cb5c  # v4.3.0
+>>>>>>> after updating
       - name: Refresh cobo sources
         run: uv run --locked --group tool cobo update
       - name: Check for gitignore drift

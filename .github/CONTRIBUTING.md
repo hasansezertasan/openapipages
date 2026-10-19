@@ -295,8 +295,7 @@ The one-time repository setup — squash-merge policy, branch protection, PyPI
 trusted publishing, coverage and docs-site enablement, dependency and template
 updates, and the optional third-party integrations — is **author/maintainer**
 work, not something a contributor does. It lives in its own home:
-[`docs/maintaining/setup.rst`](../docs/maintaining/setup.rst) (published under
-**Maintainer guide** on the documentation site). Each step there is tagged
+[`REPOSITORY_SETUP.rst`](../REPOSITORY_SETUP.rst) in the repository root. Each step there is tagged
 `[AGENT]` (a scriptable `gh` command) or `[HUMAN]` (browser-only), so it doubles
 as a runnable setup checklist.
 

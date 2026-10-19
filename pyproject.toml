@@ -98,6 +98,15 @@ style = [
 sast = [
   "semgrep==1.180.0",
 ]
+# Dependency hygiene gets its own group for the same reason `sast` does: it is
+# only ever run by the on-demand `deps` tox env and the `deps` CI job, so a plain
+# `uv sync` should not install it. deptry checks the imports against the declared
+# dependencies (missing, transitive, misplaced or obsolete); creosote flags
+# declared runtime dependencies that nothing imports.
+deps = [
+  "creosote==5.2.0",
+  "deptry==0.25.1",
+]
 test = [
   "coverage-enable-subprocess==1.0",
   "coverage[toml]==7.16.2",
@@ -115,8 +124,14 @@ test = [
   "uvicorn>=0.30",
 ]
 tool = [
+<<<<<<< before updating
   "cobo==0.5.1; python_version >= '3.14'",
   "commitizen==4.19.2",
+=======
+  "commitizen==4.17.0",
+  # "marimo==0.15.2",
+  # "inflection==0.5.1",
+>>>>>>> after updating
 ]
 prek = [
   "prek==0.5.5",
@@ -180,6 +195,7 @@ include = [
 name = "cz_conventional_commits"
 
 [tool.pytest.ini_options]
+<<<<<<< before updating
 # `-m "not e2e"` keeps a bare `pytest` off the browser suite, matching tox: the
 # Playwright sync API holds a running event loop for the session, which breaks
 # every pytest-asyncio test ordered after it. Run e2e with `-m e2e` (or `tox -e
@@ -187,6 +203,13 @@ name = "cz_conventional_commits"
 addopts = "-v --tb=short --doctest-glob=README.md -m \"not e2e\""
 # `core` is auto-applied by tests/conftest.py to top-level tests; `e2e` by
 # tests/e2e/conftest.py to every browser test.
+=======
+# addopts = "-rXs --strict-config --strict-markers"
+addopts = "-v --tb=short --doctest-glob=README.md"
+# One marker per component, auto-applied by tests/conftest.py from each test's
+# top-level tests/<dir>/. Enables `pytest -m web` locally and per-component CI
+# jobs; `integration` is one axis of the scheme.
+>>>>>>> after updating
 markers = [
   "core: core/shared component tests",
   "e2e: end-to-end browser tests (Playwright + subprocess uvicorn)",
@@ -218,7 +241,7 @@ parallel = true
 # Store data-file paths relative to the project root so `.coverage` files produced
 # on different runners/OSes merge in the `coverage-combine` CI job without
 # absolute-path mismatches. Complements the `[tool.coverage.paths]` remap below
-# (which unifies the src/ vs site-packages layouts). See ADR-026.
+# (which unifies the src/ vs site-packages layouts).
 relative_files = true
 source_pkgs = ["openapipages", "tests"]
 
@@ -239,8 +262,13 @@ openapipages = ["src/openapipages", "*/site-packages/openapipages"]
 # Untestable code is excluded per site with `# pragma: no cover`, not with blanket
 # patterns here: a regex matching a `def` line excludes the *whole function body*,
 # so a pattern like `def main\(` would silently un-measure any future `main()`
+<<<<<<< before updating
 # with real logic. Pragmas carry the exclusion decision next to the code it
 # affects.
+=======
+# with real logic (and did mask the tested GUI/TUI entrypoints). Pragmas carry the
+# exclusion decision next to the code it affects.
+>>>>>>> after updating
 exclude_lines = [
   "no cov",
   "if __name__ == .__main__.:",
@@ -262,6 +290,22 @@ ignore_decorators = ["@app.get"]
 ignore_names = ["id", "name", "pytest_*", "collect_ignore_glob"]
 min_confidence = 60
 paths = ["src", "tests"]
+
+
+[tool.deptry]
+# `known_first_party` is explicit because the tox `deps` env installs the built
+# wheel, so without it deptry reads the project's own imports as a third-party
+# transitive dependency (DEP003). Add further `per_rule_ignores` entries for the
+# project's own findings, e.g. DEP003 for a package only importable through
+# another declared one, or DEP002 for an optional import guarded by try/except.
+# See https://deptry.com/rules-violations/.
+# Excluded: the Sphinx config, the build hook (its imports belong to
+# `[build-system].requires`, not the runtime dependencies), the benchmarks and the
+# worker probe script (neither ships in the wheel; pytest and anyio come from
+# the dev tooling).
+extend_exclude = [
+]
+known_first_party = ["openapipages"]
 
 
 [tool.slotscheck]
@@ -425,9 +469,28 @@ disable = [
   "missing-class-docstring", # C0115
   "missing-function-docstring", # C0116
   "too-few-public-methods", # R0903 — trips dataclasses / config / Protocol classes
+<<<<<<< before updating
   # R0801 — each renderer ships its own self-contained HTML page template, so
   # the shared `<head>`/`<noscript>` boilerplate repeats by design, and R0801
   # cannot be suppressed inline at the call site.
+=======
+  # C0415 — the cli->tui/gui/web dispatch, and each component's own heavy or
+  # platform-conditional import (tkinter, uvicorn, the worker's uvloop probe),
+  # are deliberately lazy so import-linter's layering contract holds and a
+  # framework is only imported when the code path that needs it actually runs.
+  # Textual is the exception: the TUI imports it at module scope so `InfoApp`
+  # can be defined there and driven by the headless pilot.
+  "import-outside-toplevel",
+  # W0706 — the generated TUI entry point explicitly re-raises
+  # KeyboardInterrupt/SystemExit ahead of a broad `except Exception` to make the
+  # "let these propagate" intent obvious to readers, even though BaseException
+  # subclasses wouldn't be caught by the Exception clause anyway.
+  "try-except-raise",
+  # R0801 — the component skeletons (gui/tui/mcp/worker) are deliberately
+  # parallel: each fetches package metadata and formats the same info block the
+  # same way. That structural symmetry is a feature of the layout, not
+  # copy-paste debt, and R0801 cannot be suppressed inline at the call site.
+>>>>>>> after updating
   "duplicate-code",
 ]
 
@@ -437,10 +500,9 @@ max-positional-arguments = 10
 max-branches = 20
 
 [tool.typos.files]
-# copier records `_commit` as a `git describe` string (`v1.2.3-4-g<hash>`) when
-# the template is rendered from an untagged ref, and a fragment of the hex hash
-# can read as a misspelled word, failing the check on a hash nobody chose. The
-# file is machine-written with no prose to check. The prek hook passes
+# The answers file can record a `git describe` string (`v1.2.3-4-g<hash>`), and
+# a fragment of the hex hash can read as a misspelled word, failing the check on
+# a hash nobody chose. The file is machine-written with no prose to check. The prek hook passes
 # `--force-exclude`, so the exclusion holds there as well as in `tox -e style`.
 extend-exclude = [
   ".copier-answers.yml",
@@ -485,7 +547,7 @@ env_tmp_dir = "{toxworkdir}/tmp/{envname}"
 set_env = { COVERAGE_PROCESS_START = "{tox_root}/pyproject.toml" }
 # Non-editable: `uv sync --no-editable` builds the project and installs it into
 # site-packages, the layout `[tool.coverage.paths]` remaps and the per-component
-# coverage gates measure (ADR-028).
+# coverage gates measure.
 package = "wheel"
 # Every env installs from uv.lock (`uv sync --locked`), so tox tests and lints
 # the exact versions the lockfile pins. The plain `uv-venv-runner` resolves the
@@ -560,13 +622,32 @@ commands = [
   [
     "lint-imports",
   ],
+<<<<<<< before updating
+=======
+  # Rules-database SAST. Deliberately style-env-only (like ty/pyrefly/zuban) and
+  # not a prek hook: semgrep keeps no on-disk rule cache, so a pre-commit hook
+  # would make a registry request on every `git commit`. The ruleset is named
+  # explicitly rather than `--config auto` so rule selection does not depend on
+  # language auto-detection; it is still fetched from the registry, which is why
+  # this cannot be vendored. `--error` makes findings blocking;
+  # silence a false positive with a trailing `# nosemgrep: <rule-id>`.
+  [
+    "semgrep",
+    "scan",
+    "--config",
+    "p/python",
+    "--error",
+    "--metrics=off",
+    "src",
+  ],
+>>>>>>> after updating
   [
     "taplo",
     "lint",
     "*.toml",
   ],
   # A strict `--check` gate, not fix mode: a generated file that taplo would
-  # rewrite fails its own CI on first push and drifts on every `copier update`.
+  # rewrite fails its own CI on first push.
   # `.taplo.toml` disables array auto expand/collapse so the shipped layout is
   # the canonical one regardless of which components are enabled. The `*.toml`
   # glob is non-recursive, so it scopes taplo to this project's own root TOML
@@ -604,10 +685,36 @@ description = "Run Checkers, Linters and Formatters"
 runner = "uv-venv-lock-runner"
 
 
+<<<<<<< before updating
 [tool.tox.env.sast]
 commands = [["semgrep", "scan", "--config", "p/python", "--error", "--metrics=off", "src"]]
 dependency_groups = ["sast"]
 description = "Scan source with Semgrep in an isolated environment"
+=======
+# On-demand and CI-only (not in env_list, like `integration`): the `deps` job in
+# ci.yml runs it and `check` aggregates that job. `test` is included so deptry
+# and creosote can resolve the project's own test-only imports. creosote needs
+# the installed distributions to map import names, which the lock runner provides.
+[tool.tox.env.deps]
+commands = [
+  [
+    "deptry",
+    ".",
+  ],
+  [
+    "creosote",
+    "--deps-file",
+    "pyproject.toml",
+    "--section",
+    "project.dependencies",
+    # Without this creosote skips imports inside functions, so a dependency used
+    # only through a lazy import (the worker's uvloop) is reported as unused.
+    "--include-deferred",
+  ],
+]
+dependency_groups = ["deps", "test"]
+description = "Check dependency hygiene (deptry, creosote)"
+>>>>>>> after updating
 runner = "uv-venv-lock-runner"
 
 
