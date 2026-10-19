@@ -96,7 +96,7 @@ style = [
 # Semgrep pins an older OpenTelemetry API than FastAPI. Keep its scan in a
 # separate tox environment so test dependencies do not enter the SAST resolver.
 sast = [
-  "semgrep==1.180.0",
+  "semgrep==1.181.0",
 ]
 # Dependency hygiene gets its own group for the same reason `sast` does: it is
 # only ever run by the on-demand `deps` tox env and the `deps` CI job, so a plain
