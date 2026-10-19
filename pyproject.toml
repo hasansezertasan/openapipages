@@ -98,6 +98,15 @@ style = [
 sast = [
   "semgrep==1.180.0",
 ]
+# Dependency hygiene gets its own group for the same reason `sast` does: it is
+# only ever run by the on-demand `deps` tox env and the `deps` CI job, so a plain
+# `uv sync` should not install it. deptry checks the imports against the declared
+# dependencies (missing, transitive, misplaced or obsolete); creosote flags
+# declared runtime dependencies that nothing imports.
+deps = [
+  "creosote==5.2.0",
+  "deptry==0.25.1",
+]
 test = [
   "coverage-enable-subprocess==1.0",
   "coverage[toml]==7.16.2",
@@ -115,7 +124,6 @@ test = [
   "uvicorn>=0.30",
 ]
 tool = [
-  "cobo==0.5.1; python_version >= '3.14'",
   "commitizen==4.19.2",
 ]
 prek = [
@@ -218,7 +226,7 @@ parallel = true
 # Store data-file paths relative to the project root so `.coverage` files produced
 # on different runners/OSes merge in the `coverage-combine` CI job without
 # absolute-path mismatches. Complements the `[tool.coverage.paths]` remap below
-# (which unifies the src/ vs site-packages layouts). See ADR-026.
+# (which unifies the src/ vs site-packages layouts).
 relative_files = true
 source_pkgs = ["openapipages", "tests"]
 
@@ -262,6 +270,24 @@ ignore_decorators = ["@app.get"]
 ignore_names = ["id", "name", "pytest_*", "collect_ignore_glob"]
 min_confidence = 60
 paths = ["src", "tests"]
+
+
+[tool.deptry]
+# `known_first_party` is explicit because the tox `deps` env installs the built
+# wheel, so without it deptry reads the project's own imports as a third-party
+# transitive dependency (DEP003). Add further `per_rule_ignores` entries for the
+# project's own findings, e.g. DEP003 for a package only importable through
+# another declared one, or DEP002 for an optional import guarded by try/except.
+# See https://deptry.com/rules-violations/.
+# Excluded: the Sphinx config, the build hook (its imports belong to
+# `[build-system].requires`, not the runtime dependencies), the benchmarks and the
+# worker probe script (neither ships in the wheel; pytest and anyio come from
+# the dev tooling) and the framework examples (they import fastapi, litestar and
+# uvicorn, which are deliberately not dependencies of the library).
+extend_exclude = [
+  "examples",
+]
+known_first_party = ["openapipages"]
 
 
 [tool.slotscheck]
@@ -437,10 +463,9 @@ max-positional-arguments = 10
 max-branches = 20
 
 [tool.typos.files]
-# copier records `_commit` as a `git describe` string (`v1.2.3-4-g<hash>`) when
-# the template is rendered from an untagged ref, and a fragment of the hex hash
-# can read as a misspelled word, failing the check on a hash nobody chose. The
-# file is machine-written with no prose to check. The prek hook passes
+# The answers file can record a `git describe` string (`v1.2.3-4-g<hash>`), and
+# a fragment of the hex hash can read as a misspelled word, failing the check on
+# a hash nobody chose. The file is machine-written with no prose to check. The prek hook passes
 # `--force-exclude`, so the exclusion holds there as well as in `tox -e style`.
 extend-exclude = [
   ".copier-answers.yml",
@@ -485,7 +510,7 @@ env_tmp_dir = "{toxworkdir}/tmp/{envname}"
 set_env = { COVERAGE_PROCESS_START = "{tox_root}/pyproject.toml" }
 # Non-editable: `uv sync --no-editable` builds the project and installs it into
 # site-packages, the layout `[tool.coverage.paths]` remaps and the per-component
-# coverage gates measure (ADR-028).
+# coverage gates measure.
 package = "wheel"
 # Every env installs from uv.lock (`uv sync --locked`), so tox tests and lints
 # the exact versions the lockfile pins. The plain `uv-venv-runner` resolves the
@@ -566,7 +591,7 @@ commands = [
     "*.toml",
   ],
   # A strict `--check` gate, not fix mode: a generated file that taplo would
-  # rewrite fails its own CI on first push and drifts on every `copier update`.
+  # rewrite fails its own CI on first push.
   # `.taplo.toml` disables array auto expand/collapse so the shipped layout is
   # the canonical one regardless of which components are enabled. The `*.toml`
   # glob is non-recursive, so it scopes taplo to this project's own root TOML
@@ -608,6 +633,32 @@ runner = "uv-venv-lock-runner"
 commands = [["semgrep", "scan", "--config", "p/python", "--error", "--metrics=off", "src"]]
 dependency_groups = ["sast"]
 description = "Scan source with Semgrep in an isolated environment"
+runner = "uv-venv-lock-runner"
+
+
+# On-demand and CI-only (not in env_list, like `integration`): the `deps` job in
+# ci.yml runs it and `check` aggregates that job. `test` is included so deptry
+# and creosote can resolve the project's own test-only imports. creosote needs
+# the installed distributions to map import names, which the lock runner provides.
+[tool.tox.env.deps]
+commands = [
+  [
+    "deptry",
+    ".",
+  ],
+  [
+    "creosote",
+    "--deps-file",
+    "pyproject.toml",
+    "--section",
+    "project.dependencies",
+    # Without this creosote skips imports inside functions, so a dependency used
+    # only through a lazy import (the worker's uvloop) is reported as unused.
+    "--include-deferred",
+  ],
+]
+dependency_groups = ["deps", "test"]
+description = "Check dependency hygiene (deptry, creosote)"
 runner = "uv-venv-lock-runner"
 
 

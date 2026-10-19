@@ -111,6 +111,33 @@ jobs:
             uv.lock
       - name: Run style and type checks
         run: uv run --locked tox run -e style,sast
+  deps:
+    name: Check dependency hygiene
+    # Own job rather than part of `style`: it needs only the small `deps` group,
+    # and a failure here should name the dependency drift, not a lint run.
+    if: ${{ github.event.pull_request.draft != true }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7
+        with:
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v7.0.0
+        with:
+          python-version-file: .python-version
+      - name: Setup uv
+        uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884  # v10.3.0
+        with:
+          enable-cache: true
+          cache-dependency-glob: |
+            pyproject.toml
+            uv.lock
+      - name: Check dependency hygiene
+        run: uv run --locked tox run -e deps
 
   test-core:
     name: Test core on ${{ matrix.os }}
@@ -184,7 +211,7 @@ jobs:
         # enforces the scoped `fail_under` gate. The per-cell `coverage report`
         # here stays for fast feedback but does NOT gate (`--fail-under=0`): a
         # line covered on one OS yet version/OS-gated off on another only
-        # balances in the per-component union. See ADR-028 (decomposes ADR-026).
+        # balances in the per-component union.
         run: |
           uv run coverage combine
           uv run coverage report --show-missing --fail-under=0
@@ -338,10 +365,10 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
       - name: Note skipped coverage upload
         if: ${{ env.CODECOV_TOKEN_SET != 'true' && env.REPO_IS_PUBLIC != 'true' }}
-        run: echo "::notice::CODECOV_TOKEN secret is not set and this repo is private — skipping the Codecov upload. See docs/maintaining/setup.rst (Repository setup) to enable coverage reporting."
+        run: echo "::notice::CODECOV_TOKEN secret is not set and this repo is private — skipping the Codecov upload. See REPOSITORY_SETUP.rst (Repository setup) to enable coverage reporting."
   check:
     if: ${{ always() && github.event.pull_request.draft != true }}
-    needs: [changes, test-core, e2e, coverage-core, coverage-report, hooks, style]
+    needs: [changes, test-core, e2e, coverage-core, coverage-report, hooks, style, deps]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions: {}

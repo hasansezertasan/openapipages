@@ -58,24 +58,6 @@
 - name: area:core
   color: "5319e7"
   description: Core package, utilities, or core tests
-- name: area:cli
-  color: 006b75
-  description: Command-line interface code or tests
-- name: area:gui
-  color: b60205
-  description: Graphical user interface code or tests
-- name: area:tui
-  color: d4c5f9
-  description: Terminal user interface code or tests
-- name: area:web
-  color: 0052cc
-  description: Web application code or tests
-- name: area:mcp
-  color: 1d76db
-  description: Model Context Protocol server code or tests
-- name: area:worker
-  color: fbca04
-  description: Message worker code or tests
 - name: area:docs
   color: 0075ca
   description: Documentation or project prose

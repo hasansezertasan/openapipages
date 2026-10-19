@@ -23,14 +23,32 @@ jobs:
         uses: kentaro-m/task-completed-checker-action@2ddb65fdd5577bae4a8e82e0564e459677aec893  # v0.1.2
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Enforce the task check for human pull requests
+        # The action reports through its own `Task Completed Checker` check run
+        # but leaves this job green, so this job's name (`Check PR task list`)
+        # is the required status check. Evaluate the CURRENT PR body here rather
+        # than reading the action's run back: the verdict is then a pure
+        # function of present state, so overlapping runs on one head SHA cannot
+        # disagree about which event was newest. The matchers mirror the action
+        # (unticked `- [ ]` lines after stripping explicitly ignored blocks);
+        # bot PRs skip both steps and stay green via the POST below.
+        if: ${{ !endsWith(github.event.pull_request.user.login, '[bot]') }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          body="$(gh api "repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER}" --jq .body)"
+          stripped="$(printf '%s' "${body}" | python3 -c 'import re,sys; print(re.sub(r"<!-- ignore-task-list-start -->[\s| ]*(- \[[x| ]\] .+[\s| ]*)+<!-- ignore-task-list-end -->", "", sys.stdin.read()))')"
+          if printf '%s' "${stripped}" | grep -Eq -- '- \[[ ]\].+'; then
+            echo "::error::Unticked task-list boxes remain — tick every PR task-list box."
+            exit 1
+          fi
       - name: Report the task check as satisfied for bot pull requests
-        # The required status context is the check run `Task Completed Checker`
-        # that the action creates via the Checks API — NOT this job's name. So
-        # the skip above leaves no context behind at all and branch protection
-        # waits forever, making every Renovate/release-please PR unmergeable.
-        # Requiring the job name instead is not an option: the job is green even
-        # when boxes are unticked, so the gate would stop gating for humans.
-        # Publishing the check run green here is what keeps both true.
+        # Bots leave task checkboxes unticked by design, so the action step is
+        # skipped for them. Publish the informational check run green here; the
+        # required gate is this job's own conclusion, which stays green for
+        # bots. (A required check on the check-run name stopped being honored
+        # by ruleset evaluation on 2026-10-16.)
         if: ${{ endsWith(github.event.pull_request.user.login, '[bot]') }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -24,7 +24,7 @@ MD046:
   style: fenced
 # MD060/table-column-style - Table column style
 #
-# Disabled because its autofix corrupts valid tables (issue #276), and
+# Disabled because its autofix corrupts valid tables, and
 # `.markdownlint-cli2.jsonc` sets `fix: true`, so the damage lands silently on
 # every commit. MD060 rewrites the delimiter row to pad its pipes; on a compact
 # row that starts without a leading pipe (`-|:-:|---`) the padded result

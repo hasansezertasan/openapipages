@@ -53,6 +53,14 @@ head branches**.
 Branch protection
 -----------------
 
+Branch protection and rulesets are free on public repositories, but a
+**private** repository needs a paid GitHub plan (Pro, Team or Enterprise) for
+them to be enforced. On a free-plan private repository mark this section
+**not applicable** and skip its commands and checks.
+Also defer the Settings App installation below until required code-owner review
+can be enforced; its review safeguard depends on branch protection.
+Continue with the remaining applicable steps.
+
 This project ships its branch protection as a repository ruleset
 (``.github/rulesets/main.json``) applied by the ``ruleset-sync.yml`` workflow on
 every push to the default branch. It enforces squash-only merges, linear
@@ -63,16 +71,30 @@ the next push.
 **Administration: read and write** on this repository (the Actions
 ``GITHUB_TOKEN`` cannot manage rulesets).
 
-**[AGENT]** Store it as a repository secret:
+**[HUMAN]** Create the ``ruleset-admin`` environment with yourself (or another
+admin) as a **required reviewer**, and limit its **deployment branches** to the
+default branch (**Settings → Environments → New environment**). The workflow
+job runs in this environment, so the PAT is released only after that review —
+anyone who can merge a pull request can edit ``ruleset-sync.yml``, but an edited
+workflow cannot reach the PAT without the reviewer's approval. Required
+reviewers are available on **public** repositories (and on private ones only on
+GitHub Enterprise). On a private Free/Pro/Team repository do **not** store the
+PAT: skip the secret below, leave ``ruleset-sync.yml`` inert (it exits cleanly
+without it) and apply ``.github/rulesets/main.json`` by hand instead.
+
+**[AGENT]** Store the token as a secret of that environment, never as a
+repository secret (a repository secret is readable by any workflow edit):
 
 .. code-block:: sh
 
-   gh secret set REPO_ADMIN_TOKEN --repo hasansezertasan/openapipages
+   gh secret set REPO_ADMIN_TOKEN --env ruleset-admin --repo hasansezertasan/openapipages
 
-The workflow applies the ruleset on every push to the default branch. After
-storing the secret, merge a change to the default branch to trigger the first
-sync; manual dispatch is intentionally disabled so the admin token cannot be
-used by a workflow definition from an unprotected branch.
+**[AGENT]** Trigger the workflow once (push a change under ``.github/rulesets/``
+or run it directly):
+
+.. code-block:: sh
+
+   gh workflow run ruleset-sync.yml --repo hasansezertasan/openapipages
 
 **[CHECK]** The ``Protect main`` ruleset is applied and active — verifying the
 end state (not just that the ``REPO_ADMIN_TOKEN`` secret exists), so a repo where
@@ -84,8 +106,9 @@ correctly reported as not-done:
    gh api --paginate repos/hasansezertasan/openapipages/rulesets \
      --jq 'any(.[]; .name == "Protect main" and .enforcement == "active")' | grep -qx true
 
-Until the ``REPO_ADMIN_TOKEN`` secret is set the workflow logs a notice and exits
-without error, so the repository is never blocked.
+Until the ``REPO_ADMIN_TOKEN`` environment secret is set the workflow logs a
+notice and exits without error, so the repository is never blocked. Each run
+waits for the ``ruleset-admin`` reviewer's approval before it applies anything.
 
 .. _setup-first-pr:
 
@@ -456,24 +479,49 @@ file and port only genuine template-side improvements instead of taking the
 template file wholesale. Re-applying the overlay is expected, not a merge
 failure.
 
-This project's instance of that rule is ``.vscode/launch.json``: the example
-and test servers, uvicorn targets, and the e2e-excluding coverage invocation
-are not something the template can render. (A debugger-type migration or a new
-generic entry from the template side would be ported, not taken wholesale.)
-
-``.github/ISSUE_TEMPLATE/bug_report.yml`` is the second overlay: the **Backend**
-dropdown and the PEP 723 example script in *Steps to reproduce* are specific to
-openapipages, so the template cannot render them. ``uvx``/``pipx`` are also
-removed from *Installation method*, and *OS and version* is optional, because
-this is a library rather than a CLI. Keep those choices on conflict, and port
-any new generic fields or wording fixes from the template side.
-
 If the update touches dependency metadata in ``pyproject.toml`` — the
 ``dependencies`` list, a dependency group, or the optional-dependency table —
 also run ``uv lock`` and commit the refreshed ``uv.lock`` in the same PR.
 Renovate's copier manager re-renders files but does not re-lock, and CI, the
 ``prek`` hooks, and the ``mise`` tasks all run ``uv run --locked``, which fails
 outright against a stale lockfile.
+
+Check these even when the update runner reports success:
+
+* **Scan for conflicts.** After checkout, run
+  ``git grep -nE '^(<<<<<<<|>>>>>>>)'`` and
+  ``find . -name '*.rej' -not -path './.git/*'``, and list silent deletions with
+  ``git diff --name-only --diff-filter=D <pre-update-commit> HEAD --``.
+* **New questions took their defaults.** Diff ``.copier-answers.yml`` against
+  the pre-update commit (``git show <pre-update-commit>:.copier-answers.yml``)
+  and review every added or changed key before keeping it: a default can enable
+  a dependency or a behaviour.
+* **Project-owned release state is reset.** An update deletes ``CHANGELOG.md``
+  and resets ``.github/release-please-manifest.json`` to ``0.0.0``. Restore both
+  from the pre-update commit (``git restore --source=<pre-update-commit> --
+  <path>``) and confirm the manifest holds the last released version.
+* **Verify the recorded anchor.** After committing the reconciliation, run
+  ``uvx copier@latest update --vcs-ref=<_commit> --pretend --defaults`` pinned
+  to the ``_commit`` you reconciled to; it must report
+  ``Keeping template version``. An unpinned ``--pretend`` selects the latest
+  release tag, which is not divergence from the recorded anchor.
+* **Retired ai-rulez output.** If the pre-update ``.copier-answers.yml`` has
+  ``include_ai_rulez: true``, the update deletes ``.ai-rulez/`` but leaves the
+  host files it generated (``CLAUDE.md``, ``.github/copilot-instructions.md``,
+  per-host skill copies, ...) behind, next to the newly rendered ``AGENTS.md``.
+  Preferably run ``uvx ai-rulez clean --force --keep-gitignore`` *before*
+  updating, while the sources still exist. If the update is already checked
+  out, restore the sources and clean, then put back the rendered ``AGENTS.md``,
+  which ``clean`` also deletes: ``git checkout <pre-update-commit> --
+  .ai-rulez && uvx ai-rulez clean --force --keep-gitignore && git rm -rf
+  --ignore-unmatch .ai-rulez && git checkout HEAD -- AGENTS.md``. Move any
+  guidance kept in the ``.ai-rulez/`` rule sources into ``AGENTS.md``, and drop
+  the ``agents`` dependency group from ``pyproject.toml`` if it remains.
+* **Never run** ``copier copy --overwrite`` **on an adopted project.** It
+  discards every committed reconciliation; use ``copier update`` (``uvx
+  copier@latest`` if a ``copier`` shim cannot resolve a version).
+* **Leave the merge to a human.** An update PR with no linked issue takes the
+  ``no-issue`` label.
 
 Enable GitHub Discussions
 -------------------------
@@ -513,7 +561,39 @@ Repository settings ("Settings" App)
 the `Settings GitHub App <https://github.com/apps/settings>`_ on every push to
 the default branch. Nothing syncs until it is installed.
 
-**[HUMAN]** Install it once on this repository (or your account) from the
+Before installing, enforce **Require review from Code Owners** on the default
+branch as described below. On a free-plan private repository, **defer the
+Settings App** until that safeguard can be enforced. Record this integration
+as deferred and skip its installation and check; the metadata file can stay
+in the repository without the App.
+
+**[HUMAN]** Confirm that a distinct trusted reviewer with write access can
+approve changes authored by the maintainer and is listed in CODEOWNERS for
+``.github/settings.yml`` and ``.github/CODEOWNERS``.
+A sole maintainer cannot approve their own pull requests;
+defer the Settings App until that reviewer is available.
+
+**[HUMAN]** Once that reviewer is available, use GitHub to edit
+``.github/rulesets/main.json`` and set the ``pull_request`` rule's
+``require_code_owner_review`` to ``true``.
+Land this policy change through a reviewed pull request;
+``ruleset-sync.yml`` applies it after merge.
+The shipped ruleset leaves this flag off so a solo maintainer's ordinary PRs
+remain mergeable before this optional integration is configured.
+Keep the committed source in sync; an edit only in the ruleset UI is reverted
+by the sync workflow.
+
+**[CHECK]** Prerequisite: required code-owner review is enforced on ``main``.
+If the check fails or cannot be verified, defer installation and return to that
+policy step; a CODEOWNERS file alone does not enforce review.
+
+.. code-block:: sh
+
+
+   gh api --paginate repos/hasansezertasan/openapipages/rules/branches/main \
+     --jq 'any(.[]; .type == "pull_request" and .parameters.require_code_owner_review == true)' | grep -qx true
+
+**[HUMAN]** Only after the prerequisite check passes, install it once on this repository (or your account) from the
 `App page <https://github.com/apps/settings>`_.
 
 **[CHECK]** No scriptable check — confirm the Settings GitHub App is installed.
@@ -590,7 +670,7 @@ unacceptable.
 Downstream package repositories
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The optional Homebrew tap and Scoop bucket generated by this template are
+The optional Homebrew tap and Scoop bucket this project dispatches to are
 maintainer-owned distribution channels. After the project has stable releases
 and user demand, consider submitting it to community-maintained repositories
 such as Homebrew core, Scoop's main buckets, Arch, Debian, or Fedora. Each has
@@ -610,3 +690,86 @@ stable. Archive a release, add the resulting DOI badge and citation metadata to
 ``README.md``, and update ``CITATION.cff`` if the archive supplies identifiers
 that should be part of the preferred citation. General-purpose applications and
 libraries do not need a DOI solely for completeness.
+
+Adopting into an existing project
+---------------------------------
+
+This section is reference material, not part of the setup walkthrough: it has
+no ``[AGENT]``, ``[HUMAN]`` or ``[CHECK]`` steps. It applies when the template
+was copied over an existing or already-published package. The rendered output is
+a proposed baseline, not authority over the project's existing behaviour: keep
+project-specific functionality unless the owner chooses to change it, and ask
+before any consequential change (removing or merging workflows, changing
+triggers or required checks, supported Python versions or platforms,
+dependencies, test or coverage scope, packaging or release behaviour).
+
+**Set up the baseline first.** Start from a clean tree with all project work
+committed, on a dedicated branch. Record the baseline commit, the last
+published version, and the exact template tag rendered. Render onto that
+committed branch rather than blindly over uncommitted work: the pre-adoption
+commit is the baseline, and the job is restoring the project's side from git.
+``_src_path`` in ``.copier-answers.yml`` must be a git URL such as
+``https://github.com/hasansezertasan/copier-pyproject.git``; the ``gh:``
+shorthand stops Renovate's copier manager from resolving template tags, so no
+update PR ever opens.
+
+Then reconcile, in this order of likely damage:
+
+* **Gate ruff before running any tool.** ``pyproject.toml`` sets ``fix = true``,
+  ``unsafe-fixes = true`` and ``select = ["ALL"]``, so the first ``ruff check``
+  or hook run rewrites ``src/**`` in place. Run ``ruff check --diff`` first and
+  add ``per-file-ignores`` for deliberate patterns before letting it fix. The
+  ``markdownlint-cli2`` config also sets ``"fix": true`` and rewrites every
+  Markdown file it discovers.
+* **The source skeleton collides with real code.** The template renders
+  ``src/openapipages/__init__.py``, ``__main__.py``, ``__metadata__.py``,
+  ``core/`` and ``utils/``, plus tests under ``tests/`` that import them.
+  Restore the project's own files from the baseline, decide which skeleton
+  modules to keep (enabled components read ``core/app.py``), and update the
+  tests that import removed ones.
+* **Release state starts at zero.** ``.github/release-please-manifest.json``
+  renders as ``0.0.0``; set it to the last published version, checked against
+  the release history (the nearest git tag can belong to a draft or unrelated
+  release). The version stays dynamic: hatch-vcs reads the tag release-please
+  cuts.
+* **Dependencies the answers enabled.** A zero-dependency library must not gain
+  runtime dependencies from a component toggle; compare
+  ``[project] dependencies`` with the baseline before keeping any answer.
+* **A raised Python floor is a breaking change.** Mark it with a ``feat!:``
+  title or a ``BREAKING CHANGE:`` footer so release-please recognises it; the
+  ``bump-minor-pre-major`` policy still uses a minor bump before 1.0.
+* **Planted prose passes every gate.** Resolve each ``TODO @hasansezertasan:``
+  marker one at a time (write, remove or keep), and rewrite the example bodies
+  in ``.github/ISSUE_TEMPLATE/``, including the ``openapipages==0.1.0``
+  pin, for the project's real surface.
+* **Lost check coverage.** Before deleting a hook config or quality job, list
+  every old hook and classify it as retained, replaced, missing or intentionally
+  omitted, with its stage (pre-commit, pre-push, CI), file filters, exclusions
+  and feedback timing. A similar tool name is not proof of equivalent coverage
+  (Ruff ``S`` overlaps Bandit without matching it; a CI ``pip-audit`` is later
+  feedback than a local pre-push audit). Ask before accepting reduced coverage.
+* **Manifest parity (``pyproject.toml``).** Compare table by table, not as one
+  diff, since the template reorders tables. Map each removed env-manager entry
+  point (Hatch, PDM or nox envs, Makefile targets) to the tox env, ``mise`` task
+  or CI step that now runs it. Treat a lower rendered pin as a downgrade, not an
+  update. Check that strictness did not narrow (pytest ``strict`` markers,
+  ``filterwarnings``, type-checker ``include`` covering tests), that runtime
+  ``dependencies`` match the package's real imports, and that keywords, URLs
+  and classifiers keep their old values. Trim template leftovers such as
+  keywords describing the template, and prove an ignore is unused by rerunning
+  the tool before removing it.
+* **Overlapping workflows and required checks.** Compare events, branch and path
+  filters, schedules, manual dispatch, permissions, secrets and ``needs`` for
+  any workflow that does the same job as a shipped one. Before deleting or
+  renaming a workflow or job, inspect check names (including matrix names),
+  aggregate gates and the live branch protection or ruleset; if live
+  requirements are unreadable, defer the removal.
+* **Project customisations.** Preserve source behaviour, meaningful tests,
+  coverage expectations, supported Python and OS combinations, package data, the
+  public CLI and API, docs exclusions, real prose and changelog history.
+  Generated skeletons and placeholder tests do not replace real code or tests.
+
+Validate with the project's own lint, type, test, build and docs commands, and
+inspect auto-fix settings before running tools that write files. Report any check
+that failed or could not run, and do not call untested behaviour equivalent
+merely because files parse or CI is green.
