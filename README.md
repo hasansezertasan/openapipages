@@ -240,7 +240,7 @@ test matrix.
 
 The project uses GitHub Actions for continuous integration:
 
-- **Tests**: Runs on multiple Python versions (3.10-3.14) and operating systems
+- **Tests**: Runs on multiple Python versions (3.11-3.14) and operating systems
 - **Coverage**: Generates and uploads coverage reports to Codecov
 - **Static Analysis**: Runs style checks and type checking
 - **Artifacts**: Coverage files are uploaded as artifacts for debugging

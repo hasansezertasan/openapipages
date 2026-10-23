@@ -8,7 +8,7 @@
 # .github/renovate.json). There is no pre-commit.ci integration and no sync-with-uv
 # hook — Renovate owns every `rev` bump, including the tools shared with the uv
 # `style` dependency group.
-default_language_version.python = "python3.10"
+default_language_version.python = "python3.11"
 # Hooks without an explicit `stages` run at commit only. prek treats an unset
 # `default_stages` as *every* stage, and listing `pre-push` here re-ran the whole
 # gate (type checkers, pylint, ...) on push; push-only hooks opt in per hook.

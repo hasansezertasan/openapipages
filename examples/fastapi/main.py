@@ -1,5 +1,5 @@
 # /// script
-# requires-python = ">=3.10"
+# requires-python = ">=3.11"
 # dependencies = ["openapipages", "fastapi", "uvicorn"]
 # [tool.uv.sources]
 # openapipages = { path = "../../", editable = true }

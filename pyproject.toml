@@ -37,7 +37,6 @@ classifiers = [
   "Operating System :: OS Independent",
   "Programming Language :: Python :: 3 :: Only",
   "Programming Language :: Python :: 3",
-  "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
@@ -57,7 +56,7 @@ classifiers = [
   "Topic :: Software Development",
   "Typing :: Typed",
 ]
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 dependencies = [
   "typing-extensions>=4.8.0",
 ]
@@ -327,7 +326,7 @@ output-format = "full"
 preview = true
 show-fixes = true
 src = ["src", "tests", "examples"]
-target-version = "py310"
+target-version = "py311"
 unsafe-fixes = true
 
 
@@ -400,14 +399,14 @@ parenthesize-tuple-in-subscript = true
 [tool.mypy]
 files = ["src", "tests"]
 pretty = true
-python_version = "3.10"
+python_version = "3.11"
 strict = true
 
 
 [tool.basedpyright]
 exclude = [".venv"]
 include = ["src/openapipages"]
-pythonVersion = "3.10"
+pythonVersion = "3.11"
 reportAny = false
 reportExplicitAny = false
 reportImplicitOverride = false
@@ -424,7 +423,7 @@ respect-ignore-files = false
 
 
 [tool.ty.environment]
-python-version = "3.10"
+python-version = "3.11"
 
 
 [tool.ty.terminal]
@@ -432,7 +431,7 @@ error-on-warning = true
 
 
 [tool.pyrefly]
-python-version = "3.10"
+python-version = "3.11"
 project-includes = ["src"]
 
 [tool.pylint.main]
@@ -481,7 +480,6 @@ env_list = [
   "3.13",
   "3.12",
   "3.11",
-  "3.10",
 ]
 requires = ["tox>=4"]
 
@@ -521,7 +519,7 @@ runner = "uv-venv-lock-runner"
 
 
 [tool.tox.env.style]
-base_python = ["3.10"]
+base_python = ["3.11"]
 commands = [
   [
     "ruff",
@@ -537,7 +535,7 @@ commands = [
   [
     "mypy",
     "--python-version",
-    "3.10",
+    "3.11",
   ],
   [
     "mypy",
