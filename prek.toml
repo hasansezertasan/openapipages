@@ -177,7 +177,8 @@ hooks = [{ id = "actionlint" }]
 [[repos]]
 repo = "https://github.com/zizmorcore/zizmor-pre-commit"
 rev = "v1.31.1"
-# zizmor >= 1.31 requires Python >= 3.11, so it opts out of the 3.10 default.
+# zizmor >= 1.31 requires Python >= 3.11; pin the interpreter independently of
+# default_language_version.
 hooks = [{ id = "zizmor", language_version = "python3.14" }]
 
 [[repos]]
