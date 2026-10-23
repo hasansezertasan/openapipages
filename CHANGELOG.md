@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.4.0](https://github.com/hasansezertasan/openapipages/compare/0.3.0...0.4.0) (2026-10-23)
+
+
+### ⚠ BREAKING CHANGES
+
+* drop Python 3.10 support ([#273](https://github.com/hasansezertasan/openapipages/issues/273))
+
+### 🐛 Bug Fixes
+
+* **prek:** run zizmor hook on python 3.14 ([#270](https://github.com/hasansezertasan/openapipages/issues/270)) ([fef2114](https://github.com/hasansezertasan/openapipages/commit/fef2114a8d50fd82a9ab7084c416b2c7474b7923))
+
+
+### 🔧 Chores
+
+* drop Python 3.10 support ([#273](https://github.com/hasansezertasan/openapipages/issues/273)) ([20b1c6d](https://github.com/hasansezertasan/openapipages/commit/20b1c6d6e88b263d415654a277b964c4ec6dadd4))
+
 ## [0.3.0](https://github.com/hasansezertasan/openapipages/compare/0.2.1...0.3.0) (2026-10-12)
 
 
