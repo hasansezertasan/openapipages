@@ -197,7 +197,11 @@ One interface for many! And of course Framework agnostic... So you can use it in
 - [Swagger with hosted files does not work after upgrade · tiangolo/fastapi · Discussion #10426](https://github.com/tiangolo/fastapi/discussions/10426)
 - [♻️ Generate cleaner Swagger HTML by s-rigaud · Pull Request #11072 · tiangolo/fastapi](https://github.com/tiangolo/fastapi/pull/11072)
 
+<<<<<<< before updating
 ## Author
+=======
+Generated from [copier-pyproject](https://github.com/hasansezertasan/copier-pyproject).
+>>>>>>> after updating
 
 - [Hasan Sezer Tasan](https://www.github.com/hasansezertasan), It's me :wave:
 
