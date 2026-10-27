@@ -147,7 +147,7 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - {os: ubuntu-latest, tox_args: "-e 3.14,3.13,3.12,3.11"}
+          - {os: ubuntu-latest, tox_args: "-e 3.15,3.14,3.13,3.12,3.11"}
           - {os: macos-latest, tox_args: "-e py"}
           - {os: windows-latest, tox_args: "-e py"}
     runs-on: ${{ matrix.os }}
