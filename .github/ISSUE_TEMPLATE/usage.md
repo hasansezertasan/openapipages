@@ -22,7 +22,7 @@ A clear and concise description of what you expected to happen.
 > Please complete the following information
 
 - openapipages version: [e.g. 0.2.x]
-- Python version: [e.g. 3.10]
+- Python version: [e.g. 3.11]
 - OS: [e.g. Ubuntu 20.04]
 - Installation method: [e.g. pip, uv, from source]
 
