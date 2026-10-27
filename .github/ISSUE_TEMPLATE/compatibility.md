@@ -22,13 +22,8 @@ A clear and concise description of what you expected to happen.
 
 > Please complete the following information
 
-<<<<<<< before updating
 - openapipages version: [e.g. 0.2.x]
-- Python version: [e.g. 3.10]
-=======
-- openapipages version: [e.g. 0.1.2]
 - Python version: [e.g. 3.11]
->>>>>>> after updating
 - OS: [e.g. Ubuntu 20.04]
 - Installation method: [e.g. pip, uv, from source]
 

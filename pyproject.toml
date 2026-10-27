@@ -407,12 +407,9 @@ strict = true
 exclude = [".venv"]
 include = ["src/openapipages"]
 pythonVersion = "3.11"
-<<<<<<< before updating
 reportAny = false
 reportExplicitAny = false
 reportImplicitOverride = false
-=======
->>>>>>> after updating
 venv = ".venv"
 # venvPath is the directory *containing* the venv, not the venv itself; ".venv"
 # here would make basedpyright look for ".venv/.venv". Use "." so both the venv
