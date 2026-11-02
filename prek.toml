@@ -64,7 +64,7 @@ hooks = [
 
 [[repos]]
 repo = "https://github.com/astral-sh/uv-pre-commit"
-rev = "0.13.5"
+rev = "0.13.6"
 hooks = [{ id = "uv-lock" }]
 
 # Runs before ruff so any `__all__` it inserts is sorted/formatted in the same pass.
@@ -75,7 +75,7 @@ hooks = [{ id = "ensure-dunder-all", files = "^src/" }]
 
 [[repos]]
 repo = "https://github.com/astral-sh/ruff-pre-commit"
-rev = "v0.17.2"
+rev = "v0.17.3"
 hooks = [
   { id = "ruff-check" },
   { id = "ruff-format" },
@@ -151,7 +151,7 @@ hooks = [{ id = "validate-pyproject" }]
 
 [[repos]]
 repo = "https://github.com/python-jsonschema/check-jsonschema"
-rev = "0.38.2"
+rev = "0.39.0"
 hooks = [
   # Action metadata and workflow schemas are distinct. The latter complements
   # actionlint's expression/shell checks and zizmor's security analysis.
