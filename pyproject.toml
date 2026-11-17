@@ -72,8 +72,8 @@ source = "https://github.com/hasansezertasan/openapipages.git"
 
 [dependency-groups]
 dev = [
-  "tox==4.65.0",
-  "tox-uv==1.36.1",
+  "tox==4.67.13",
+  "tox-uv==1.37.7",
   "debugpy==1.8.22",
   { include-group = "style" },
   { include-group = "test" },
@@ -109,12 +109,12 @@ deps = [
 ]
 test = [
   "coverage-enable-subprocess==1.0",
-  "coverage[toml]==7.16.2",
+  "coverage[toml]==7.17.3",
   "fastapi>=0.150.0,<0.151.0",
   "httpx>=0.28.1,<0.29.0",
   "pytest-mock==3.17.0",
   "pytest-playwright>=0.5.0",
-  "pytest-randomly==5.0.0",
+  "pytest-randomly==5.1.0",
   "pytest-rerunfailures==16.7",
   "pytest-xdist[psutil]==3.8.0",
   "pytest==9.1.1",
