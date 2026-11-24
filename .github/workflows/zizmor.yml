@@ -34,7 +34,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Run zizmor
-        uses: zizmorcore/zizmor-action@85b2b9fb8e3325e7a23d7d0a9d7ba5ae0f999e3e  # v0.7.1
+        uses: zizmorcore/zizmor-action@1b4550e929643b8b26a62303c6bd64814271a4f1  # v0.9.2
         with:
           # `advanced-security` defaults to true and the action uploads SARIF
           # with no visibility detection and no `continue-on-error`, which fails
