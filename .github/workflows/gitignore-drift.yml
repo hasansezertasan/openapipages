@@ -30,15 +30,15 @@ jobs:
         # uvx to pipx, which ignores the mise-managed Python. Provision both
         # first so `mise install` resolves cobo against the .python-version
         # interpreter.
-        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v7.0.0
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0  # v7.1.0
         with:
           python-version-file: .python-version
       - name: Set up uv
-        uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884  # v10.3.0
+        uses: astral-sh/setup-uv@1db35dd8eee11c5894872e0b383ae6c406cf738d  # v10.4.0
       - name: Install mise tools
         # cobo is pinned in mise.toml (pipx backend, Renovate-tracked) and run
         # via `mise exec`, mirroring how ghalint/all-contributors are invoked.
-        uses: jdx/mise-action@fc42bcc7ddbf51124c30f95a877a0c5168a3bfde  # v5.2.1
+        uses: jdx/mise-action@924e7c586e33d7d4bae9c14e26c5d22e2beb6e78  # v5.3.0
       - name: Refresh cobo sources
         run: mise exec -- cobo update
       - name: Check for gitignore drift
